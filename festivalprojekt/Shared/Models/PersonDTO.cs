@@ -15,5 +15,7 @@ namespace festivalprojekt.Shared.Models
         public string Kodeord { get; set; }
         public string Fornavn { get; set; }
         public string Efternavn { get; set; }
+        public int KompetenceId { get; set;}
+        public DateTime Fødselsdag { get; set; }
     }
 }

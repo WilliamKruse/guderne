@@ -10,12 +10,12 @@ using festivalprojekt.Shared.Models;
 
 namespace festivalprojekt.Server.Models
 {
-    public class PersonRepositoryDapper
+    public class PersonRepositoryDapper : IPersonRepositoryDapper
     {
         private string connString = "User ID=postgres;Password=1234;Host=localhost;Port=5432;Database=ProjMgr;";
         private string sql = "";
 
-        public async Task<IEnumerable<PersonDTO>> HentAllePersoner()
+        public List<PersonDTO> HentAllePersoner()
         {
             //laver sql statement til query (postgres). Det er vigtigt med AS fordi eller kan dapper ikke matche til klassens navne automatisk.
             sql = "SELECT kompetence_id AS KompetenceId, kompetence_navn AS KompetenceNavn, person_id AS PersonId, rolle_id AS RolleId, email AS Email, telefon AS Telefon, kodeord AS Kodeord, fornavn AS Fornavn, efternavn AS Efternavn, fødelsedag AS Fødeselsdag FROM fuld_person_view_3;";
@@ -30,9 +30,9 @@ namespace festivalprojekt.Server.Models
                     //Vi specificerer hvilken type data der forventes(PersonDTO) og hvis navnene fra databasens kolonner
                     //matcher navnene i klassens properties
                     //laver den automatisk rigtige udfyldte objekter.
-                    var PersonListe = await connection.QueryAsync<PersonDTO>(sql);
+                    var PersonListe = connection.Query<PersonDTO>(sql);
 
-                    return PersonListe;
+                    return PersonListe.ToList();
                 }
             }
             catch (NotImplementedException)
@@ -57,9 +57,20 @@ namespace festivalprojekt.Server.Models
                 ;
             }
         }
-        public async void OpdaterPerson(PersonDTO)
+        public async void OpdaterPerson(PersonDTO NyPerson)
         {
-            sql = $"UPDATE "
+            sql = $"CALL opdater_person(ARRAY[{NyPerson.KompetenceId}], {NyPerson.PersonId} ,{NyPerson.RolleId}, {NyPerson.Email}, {NyPerson.Telefon}, {NyPerson.Kodeord}, {NyPerson.Fornavn}, {NyPerson.Efternavn}, {NyPerson.Fødselsdag};)";
+            try
+            {
+                using (var connection = new NpgsqlConnection(connString))
+                {
+                    await connection.ExecuteAsync(sql);
+                }
+            }
+            catch (NotImplementedException)
+            {
+                ;
+            }
         }
         
          

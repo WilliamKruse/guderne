@@ -8,6 +8,7 @@ using System.Data;
 using Microsoft.Extensions.DependencyInjection;
 using festivalprojekt.Shared.Models;
 
+
 namespace festivalprojekt.Server.Models
 {
 	public class VagtRepositoryDapper

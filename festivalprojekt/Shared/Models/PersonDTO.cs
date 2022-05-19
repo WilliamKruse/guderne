@@ -8,6 +8,8 @@ namespace festivalprojekt.Shared.Models
 {
     public class PersonDTO
     {
+        public int[]? KompetenceId { get; set; }
+        public string[]? KompetenceNavn { get; set; }
         public int? PersonId { get; set; }
         public int RolleId { get; set; }
         public string Email { get; set; }
@@ -15,7 +17,8 @@ namespace festivalprojekt.Shared.Models
         public string Kodeord { get; set; }
         public string Fornavn { get; set; }
         public string Efternavn { get; set; }
-        public int KompetenceId { get; set;}
         public DateTime Fødselsdag { get; set; }
+        
+       
     }
 }

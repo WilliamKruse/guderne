@@ -12,7 +12,7 @@ namespace festivalprojekt.Server.Models
 {
     public class PersonRepositoryDapper : IPersonRepositoryDapper
     {
-        private string connString = "User ID=postgres;Password=wille8601234123;Host=localhost;Port=5432;Database=miliøguderne;";
+        private string connString = "User ID=postgres;Password= kode ;Host=localhost;Port=5432;Database=miliøguderne;";
         private string sql = "";
 
         public List<PersonDTO> HentAllePersoner()

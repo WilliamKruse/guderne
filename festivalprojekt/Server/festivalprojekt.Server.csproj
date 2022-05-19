@@ -12,6 +12,7 @@
     <PackageReference Include="Npgsql" Version="6.0.4" />
     <PackageReference Include="DapperExtensions" Version="1.7.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Dapper.SimpleCRUD" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +27,7 @@
     <None Remove="Models\" />
     <None Remove="DapperExtensions" />
     <None Remove="Microsoft.Extensions.DependencyInjection" />
+    <None Remove="Dapper.SimpleCRUD" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

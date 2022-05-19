@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.ResponseCompression;
+using festivalprojekt.Server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+//her
+builder.Services.AddScoped<IPersonRepositoryDapper, PersonRepositoryDapper>();
 
 var app = builder.Build();
 

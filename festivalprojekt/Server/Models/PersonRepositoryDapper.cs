@@ -12,13 +12,13 @@ namespace festivalprojekt.Server.Models
 {
     public class PersonRepositoryDapper : IPersonRepositoryDapper
     {
-        private string connString = "User ID=postgres;Password=1234;Host=localhost;Port=5432;Database=ProjMgr;";
+        private string connString = "User ID=postgres;Password=wille8601234123;Host=localhost;Port=5432;Database=miliøguderne;";
         private string sql = "";
 
         public List<PersonDTO> HentAllePersoner()
         {
             //laver sql statement til query (postgres). Det er vigtigt med AS fordi eller kan dapper ikke matche til klassens navne automatisk.
-            sql = "SELECT kompetence_id AS KompetenceId, kompetence_navn AS KompetenceNavn, person_id AS PersonId, rolle_id AS RolleId, email AS Email, telefon AS Telefon, kodeord AS Kodeord, fornavn AS Fornavn, efternavn AS Efternavn, fødelsedag AS Fødeselsdag FROM fuld_person_view_3;";
+            sql = "SELECT kompetence_id AS KompetenceId, kompetence_navn AS KompetenceNavn, person_id AS PersonId, rolle_id AS RolleId, email AS Email, telefon AS Telefon, kodeord AS Kodeord, fornavn AS Fornavn, efternavn AS Efternavn, fødselsdag AS Fødeselsdag FROM fuld_person_view_3;";
 
             //try catch, hvis det ikke virker går den til catch
             try

@@ -1,0 +1,29 @@
+﻿@page "/tester";
+@using festivalprojekt.Shared.Models;
+@using System;
+@using festivalprojekt.Client.Services;
+
+
+
+<h3>Component1</h3>
+@foreach (var item in FuldListe)
+            {
+                <li>
+                    <p>
+                        @item.Fornavn
+                    </p>
+                </li>
+            }
+
+
+@code {
+    public List<PersonDTO> FuldListe = new List<PersonDTO>();
+
+    [Inject]
+    public IPersonService Service { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        FuldListe = (await Service.HentAllePersoner()).ToList();
+    }
+}
+

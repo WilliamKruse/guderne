@@ -11,7 +11,7 @@ using festivalprojekt.Shared.Models;
 
 namespace festivalprojekt.Server.Models
 {
-	public class VagtRepositoryDapper
+	public class VagtRepositoryDapper : IVagtRepositoryDapper
 	{
 
 		private string connString = "User ID=postgres;Password=1234;Host=localhost;Port=5432;Database=ProjMgr;";

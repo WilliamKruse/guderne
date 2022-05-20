@@ -19,6 +19,23 @@ namespace festivalprojekt.Client.Services
 			var result = httpClient.GetFromJsonAsync<PersonDTO[]>("api/festivalapi/personer/getthat");
 			return result;
         }
+
+		public async Task<int> OpretPerson(PersonDTO NyPerson)
+        {
+
+			var response = await httpClient.PostAsJsonAsync("api/festivalapi/personer", NyPerson);
+			var responseStatusCode = response.StatusCode;
+			return (int)responseStatusCode;
+
+		}
+
+		public async Task<int> OpdaterPerson(PersonDTO NyPerson)
+        {
+
+			var response = await httpClient.PutAsJsonAsync("api/festivalapi/personer", NyPerson);
+			var responseStatusCode = response.StatusCode;
+			return (int)responseStatusCode;
+
+		}
 	}
 }
-

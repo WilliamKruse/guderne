@@ -10,7 +10,7 @@ using festivalprojekt.Shared.Models;
 //Using skal ændres, der er nogle af dem vi ikke bruger
 namespace festivalprojekt.Server.Models
 {
-	public class VagtTypeRepositoryDapper
+	public class VagtTypeRepositoryDapper : IVagtTypeReposityDapper
 	{
         //definer en connection string som der er vores adgang til databasen(skal ikke være her når vi er færdige)
         private string connString = "User ID=postgres;Password=1234;Host=localhost;Port=5432;Database=ProjMgr;";

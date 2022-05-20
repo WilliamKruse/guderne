@@ -12,7 +12,7 @@ namespace festivalprojekt.Server.Models
     //laver interfacet med metoder til klasserne
     public interface IPersonRepositoryDapper
     {
-       List<PersonDTO> HentAllePersoner();
+       Task<IEnumerable<PersonDTO>> HentAllePersoner();
 
        void OpdaterPerson(PersonDTO NyPerson);
 

@@ -12,10 +12,10 @@ namespace festivalprojekt.Server.Models
 {
     public class PersonRepositoryDapper : IPersonRepositoryDapper
     {
-        private string connString = "User ID=postgres;Password= kode ;Host=localhost;Port=5432;Database=miliøguderne;";
+        private string connString = "User ID=postgres;Password=godtkodeord ;Host=localhost;Port=5432;Database=miliøguderne;";
         private string sql = "";
 
-        public List<PersonDTO> HentAllePersoner()
+        public async Task<IEnumerable<PersonDTO>> HentAllePersoner()
         {
             //laver sql statement til query (postgres). Det er vigtigt med AS fordi eller kan dapper ikke matche til klassens navne automatisk.
             sql = "SELECT kompetence_id AS KompetenceId, kompetence_navn AS KompetenceNavn, person_id AS PersonId, rolle_id AS RolleId, email AS Email, telefon AS Telefon, kodeord AS Kodeord, fornavn AS Fornavn, efternavn AS Efternavn, fødselsdag AS Fødeselsdag FROM fuld_person_view_3;";
@@ -30,7 +30,7 @@ namespace festivalprojekt.Server.Models
                     //Vi specificerer hvilken type data der forventes(PersonDTO) og hvis navnene fra databasens kolonner
                     //matcher navnene i klassens properties
                     //laver den automatisk rigtige udfyldte objekter.
-                    var PersonListe = connection.Query<PersonDTO>(sql);
+                    var PersonListe = await connection.QueryAsync<PersonDTO>(sql);
 
                     return PersonListe.ToList();
                 }

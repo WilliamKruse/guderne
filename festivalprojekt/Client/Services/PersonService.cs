@@ -16,14 +16,14 @@ namespace festivalprojekt.Client.Services
 
 		public Task<PersonDTO[]?> HentAllePersoner()
         {
-			var result = httpClient.GetFromJsonAsync<PersonDTO[]>("api/festivalapi/personer/getthat");
+			var result = httpClient.GetFromJsonAsync<PersonDTO[]>("api/festivalapi/personer/hentallepersoner");
 			return result;
         }
 
 		public async Task<int> OpretPerson(PersonDTO NyPerson)
         {
 
-			var response = await httpClient.PostAsJsonAsync("api/festivalapi/personer", NyPerson);
+			var response = await httpClient.PostAsJsonAsync("api/festivalapi/personer/opretperson", NyPerson);
 			var responseStatusCode = response.StatusCode;
 			return (int)responseStatusCode;
 
@@ -32,7 +32,7 @@ namespace festivalprojekt.Client.Services
 		public async Task<int> OpdaterPerson(PersonDTO NyPerson)
         {
 
-			var response = await httpClient.PutAsJsonAsync("api/festivalapi/personer", NyPerson);
+			var response = await httpClient.PutAsJsonAsync("api/festivalapi/personer/opdaterperson", NyPerson);
 			var responseStatusCode = response.StatusCode;
 			return (int)responseStatusCode;
 

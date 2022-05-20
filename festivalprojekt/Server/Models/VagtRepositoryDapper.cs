@@ -14,29 +14,29 @@ namespace festivalprojekt.Server.Models
 	public class VagtRepositoryDapper : IVagtRepositoryDapper
 	{
 
-		private string connString = "User ID=postgres;Password=1234;Host=localhost;Port=5432;Database=ProjMgr;";
+		private string connString = "User ID = postgres; Password=godtkodeord ;Host=localhost;Port=5432;Database=miliøguderne;";
 		private string sql = "";
 
-		public async Task<IEnumerable<VagtView>> HentAlleVagter(string a, int b)
+		public async Task<IEnumerable<VagtView>> HentAlleVagter(string streng, int id)
         {
-            if (a == "ALLE")
+            if (streng == "ALLE")
             {
 				sql = @"SELECT vagt_id AS VagtId, vagt_type_id AS VagtTypeId, start_tid AS StartTid, slut_tid AS SlutTid, person_id AS PersonId FROM fuld_vagt_view;";
 			}
-            else if (a == "LEDIGE")
+            else if (streng == "LEDIGE")
             {
 				sql = @"SELECT vagt_id AS VagtId, vagt_type_id AS VagtTypeId, start_tid AS StartTid, slut_tid AS SlutTid, person_id AS PersonId from fuld_vagt_view WHERE person_id IS NULL;";
             }
-            else if (a == "PERSONLIG")
+            else if (streng == "PERSONLIG")
             {
-                sql = $"SELECT vagt_id AS VagtId, vagt_type_id AS VagtTypeId, start_tid AS StartTid, slut_tid AS SlutTid, person_id AS PersonId FROM fuld_vagt_view WHERE person_id = {b};";
+                sql = $"SELECT vagt_id AS VagtId, vagt_type_id AS VagtTypeId, start_tid AS StartTid, slut_tid AS SlutTid, person_id AS PersonId FROM fuld_vagt_view WHERE person_id = {id};";
             }
             try
             {
                 using (var connection = new NpgsqlConnection(connString))
                 {
                     var VagtListe =  await connection.QueryAsync<VagtView>(sql);
-                    return VagtListe;
+                    return VagtListe.ToList();
                 }
             }
             catch (Exception)

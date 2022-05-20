@@ -6,11 +6,11 @@ namespace festivalprojekt.Client.Services
 {
 	public interface IVagtService
 	{
-		public Task<VagtDTO> HentAlleVagter();
+		Task<VagtView[]?> HentAlleVagter(string a, int b);
 
-		public async Task<int> SletVagt(int Vagtid)
+		Task<int> SletVagt(int Vagtid);
 
-			public async Task<int> OpretVagt(VagtDTO NyVagt)
+		Task<int> OpretVagt(VagtDTO NyVagt);
 
 	}
 }

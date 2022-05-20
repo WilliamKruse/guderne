@@ -11,19 +11,30 @@
                 <li>
                     <p>
                         @item.Fornavn
+                        
                     </p>
                 </li>
             }
-
+<button @onclick="() => SletVagt(1)">slet vagt 1</button>
+<p>@errorcode</p>
 
 @code {
     public List<PersonDTO> FuldListe = new List<PersonDTO>();
-
+    public int errorcode = 0;
     [Inject]
     public IPersonService Service { get; set; }
     protected override async Task OnInitializedAsync()
     {
         FuldListe = (await Service.HentAllePersoner()).ToList();
     }
+
+    [Inject]
+    public IVagtService service2 { get; set; }
+
+    public async void SletVagt(int id)
+    {
+        errorcode = await service2.SletVagt(id);
+    }
+
 }
 

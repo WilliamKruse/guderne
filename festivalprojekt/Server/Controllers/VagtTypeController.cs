@@ -26,7 +26,7 @@ namespace festivalprojekt.Server.Controllers
             }
         }
 
-        [HttpGet("getvagttyper")]
+        [HttpGet("hentallevagttyper")]
         public async Task<IEnumerable<VagtTypeDTO>> HentAlleVagtTyper()
         {
             return await repo.HentAlleVagtTyper();

@@ -9,6 +9,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 //her
 builder.Services.AddScoped<IPersonRepositoryDapper, PersonRepositoryDapper>();
+builder.Services.AddScoped<IVagtRepositoryDapper, VagtRepositoryDapper>();
+builder.Services.AddScoped<IVagtTypeReposityDapper, VagtTypeRepositoryDapper>();
 
 var app = builder.Build();
 

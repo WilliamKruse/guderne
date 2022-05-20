@@ -12,7 +12,7 @@ namespace festivalprojekt.Server.Models
 	public interface IVagtRepositoryDapper
 	{
 
-		Task<IEnumerable<VagtDTO>> HentAlleVagter();
+		Task<IEnumerable<VagtView>> HentAlleVagter(string a, int b);
 
 		void BookVagt(int VagtId, int PersonId);
 

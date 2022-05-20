@@ -13,7 +13,7 @@ namespace festivalprojekt.Server.Models
 	public class VagtTypeRepositoryDapper : IVagtTypeReposityDapper
 	{
         //definer en connection string som der er vores adgang til databasen(skal ikke være her når vi er færdige)
-        private string connString = "User ID=postgres;Password=1234;Host=localhost;Port=5432;Database=ProjMgr;";
+        private string connString = "User ID=postgres;Password=godtkodeord ;Host=localhost;Port=5432;Database=miliøguderne;";
 
         //tom string vi ændrer når en funktion bliver kaldt
         private string sql = "";

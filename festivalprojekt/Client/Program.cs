@@ -13,5 +13,10 @@ builder.Services.AddHttpClient<IPersonService, PersonService>(client =>
 {
     client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
 });
+builder.Services.AddHttpClient<IVagtService, VagtService>(client =>
+{
+    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+});
+
 await builder.Build().RunAsync();
 

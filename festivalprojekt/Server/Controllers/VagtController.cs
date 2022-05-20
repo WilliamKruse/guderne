@@ -25,10 +25,10 @@ namespace festivalprojekt.Server.Controllers
             }
 		}
 
-        [HttpGet("getvagter")]
-        public async Task<IEnumerable<VagtDTO>> HentAlleVagter()
+        [HttpGet("hentallevagter")]
+        public async Task<IEnumerable<VagtView>> HentAlleVagter(string streng, int id)
         {
-            return await repo.HentAlleVagter();
+            return await repo.HentAlleVagter(streng,id);
         }
 
         [HttpPut("bookvagt")]
@@ -38,10 +38,11 @@ namespace festivalprojekt.Server.Controllers
 
         }
 
-        [HttpDelete("sletvagt")]
-        public async void SletVagt(int VagtId)
+        [HttpDelete("{vagtid}")]
+        public IActionResult SletVagt(int vagtid)
         {
-            repo.SletVagt(VagtId);
+            repo.SletVagt(vagtid);
+            return Ok();
 
         }
 

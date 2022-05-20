@@ -26,20 +26,20 @@ namespace festivalprojekt.Server.Controllers
             }
         }
 
-        [HttpGet("getthat")]
+        [HttpGet("hentallepersoner")]
         public async Task<IEnumerable<PersonDTO>> HentAllePersoner()
         {
             return await repo.HentAllePersoner();
         }
 
-        [HttpPost()]
+        [HttpPost("opretperson")]
         public async void OpretPerson(PersonDTO NyPerson)
         {
             repo.OpretPerson(NyPerson);
 
         }
 
-        [HttpPut()]
+        [HttpPut("opdaterperson")]
         public async void OpdaterPerson(PersonDTO NyPerson)
         {
             repo.OpdaterPerson(NyPerson);

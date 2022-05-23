@@ -39,10 +39,11 @@ namespace festivalprojekt.Server.Controllers
         }
 
 
-        [HttpDelete("sletvagttype")]
-        public async void SletVagtType(int VagtTypeId)
+        [HttpDelete("{vagttypeid}")]
+        public IActionResult SletVagtType(int vagttypeid)
         {
-            repo.SletVagtType(VagtTypeId);
+            repo.SletVagtType(vagttypeid);
+            return Ok();
 
         }
 

@@ -47,7 +47,7 @@ namespace festivalprojekt.Server.Controllers
         }
 
         [HttpPost("opretvagt")]
-        public async void OpretVagt(VagtDTO NyVagt)
+        public void OpretVagt(VagtDTO NyVagt)
         {
             repo.OpretVagt(NyVagt);
         }

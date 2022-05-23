@@ -14,7 +14,7 @@ namespace festivalprojekt.Server.Models
 	public class VagtRepositoryDapper : IVagtRepositoryDapper
 	{
 
-		private string connString = "User ID = postgres; Password=godtkodeord ;Host=localhost;Port=5432;Database=miliøguderne;";
+		private string connString = "User ID = postgres; Password=nussi12345 ;Host=localhost;Port=5432;Database=miliøguderne;";
 		private string sql = "";
 
 		public async Task<IEnumerable<VagtView>> HentAlleVagter(string streng, int id)

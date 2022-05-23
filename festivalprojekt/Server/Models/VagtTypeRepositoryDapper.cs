@@ -13,7 +13,7 @@ namespace festivalprojekt.Server.Models
 	public class VagtTypeRepositoryDapper : IVagtTypeReposityDapper
 	{
         //definer en connection string som der er vores adgang til databasen(skal ikke være her når vi er færdige)
-        private string connString = "User ID=postgres;Password=godtkodeord ;Host=localhost;Port=5432;Database=miliøguderne;";
+        private string connString = "User ID=postgres;Password=nussi12345 ;Host=localhost;Port=5432;Database=miliøguderne;";
 
         //tom string vi ændrer når en funktion bliver kaldt
         private string sql = "";
@@ -48,7 +48,7 @@ namespace festivalprojekt.Server.Models
         public async void OpretVagtType(VagtTypeDTO NyVagtType)
         {
             //laver sql statement til query (postgres)
-            sql = $"INSERT INTO vagter (vagt_type_navn, vagt_type_beskrivelse, vagt_type_område) VALUES ({NyVagtType.VagtTypeNavn}, {NyVagtType.VagtTypeBeskrivelse}, {NyVagtType.VagtTypeOmråde});";
+            sql = $"INSERT INTO vagt_typer (vagt_type_navn, vagt_type_beskrivelse, vagt_type_område) VALUES ('{NyVagtType.VagtTypeNavn}', '{NyVagtType.VagtTypeBeskrivelse}', '{NyVagtType.VagtTypeOmråde}');";
 
             //try catch, hvis det ikke virker går den til catch
             try

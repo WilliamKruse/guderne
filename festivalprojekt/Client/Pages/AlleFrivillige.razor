@@ -1,0 +1,74 @@
+﻿@page "/allefrivillige"
+@using festivalprojekt.Client.Services;
+@using festivalprojekt.Shared.Models;
+@using System;
+
+
+<PageTitle>Alle frivllige</PageTitle>
+<div class="d-flex justify-content-center">
+    <h3>Alle frivillige</h3>
+</div>
+
+
+<div class="container">
+    <div class="row ">
+        <div class="col-sm-6 pt-4">
+            <ul style="list-style-type:none;">
+                <!--laver en liste med alle items i vores frivilligListe-->
+                @foreach (var person in frivilligListe)
+                    {
+
+                    <li class="shadow-sm p-3 mb-4 bg-light rounded">
+                        <p>
+                            
+                            <strong>Fornavn: </strong>@person.Fornavn <br />
+                            <strong>Efternavn: </strong>@person.Efternavn <br />
+                            <strong>Fødselsdag: </strong>@person.Fødselsdag <br />
+                            <strong>Email: </strong>@person.Email <br />
+                            <strong>Telefon: </strong>@person.Telefon <br />
+                            <strong>Kompetencer: </strong>
+                    @foreach (var kompetence in person.KompetenceNavn)
+                        {
+
+                            <ul>
+                                <li>
+                                    @kompetence
+                                </li>
+                            </ul>
+                        }
+                        </p>
+                        <!--Knap til at sende mail (virker dog ikke)-->
+                        <button type="button" class="btn btn-primary">Send mail</button>
+
+
+                    </li>
+                    }
+            </ul>
+
+        </div>
+    </div>
+
+</div>
+
+ 
+
+
+@code {
+
+
+    public List<PersonDTO> frivilligListe = new List<PersonDTO>();
+    public int ErrorCode { get; set; }
+    
+
+    [Inject]
+    public IPersonService Service { get; set; }
+
+    //Henter alle personer
+    protected override async Task OnInitializedAsync()
+    {
+        frivilligListe = (await Service.HentAllePersoner()).ToList();
+
+
+    }
+   
+}

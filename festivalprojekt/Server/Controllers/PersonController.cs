@@ -31,6 +31,11 @@ namespace festivalprojekt.Server.Controllers
         {
             return await repo.HentAllePersoner();
         }
+        [HttpGet("hentperson")]
+        public async Task<IEnumerable<PersonDTO>> HentPerson(int personid)
+        {
+            return await repo.HentPerson(personid);
+        }
 
         [HttpPost("opretperson")]
         public async void OpretPerson(PersonDTO NyPerson)

@@ -14,9 +14,13 @@ namespace festivalprojekt.Server.Models
     {
        Task<IEnumerable<PersonDTO>> HentAllePersoner();
 
-       void OpdaterPerson(PersonDTO NyPerson);
+        Task<IEnumerable<PersonDTO>> HentPerson(int PersonId);
+
+        void OpdaterPerson(PersonDTO NyPerson);
 
        void OpretPerson(PersonDTO NyPerson);
+
+
      
 
     }

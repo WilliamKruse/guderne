@@ -12,4 +12,3 @@ namespace festivalprojekt.Client.Services
 		Task<int> OpretVagtType(VagtTypeDTO NyVagtType);
 	}
 }
-

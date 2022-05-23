@@ -1,0 +1,76 @@
+﻿@page "/personligeoplysninger";
+@using festivalprojekt.Shared.Models;
+@using System;
+@using festivalprojekt.Client.Services;
+
+
+<EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
+    <DataAnnotationsValidator />
+
+    <div class="col-md-12 mb-3">
+        <label>Fornavn</label>
+        <InputText id="fornavn" @bind-Value="Person.Fornavn" class="form-control" />
+        <ValidationMessage For="@(() => Person.Fornavn)" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label>Efternavn</label>
+        <InputText id="efternavn" @bind-Value="Person.Efternavn" class="form-control" />
+        <ValidationMessage For="@(() => Person.Efternavn)" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label>Telefon</label>
+        <InputText id="telefon" @bind-Value="Person.Telefon" class="form-control" />
+        <ValidationMessage For="@(() => Person.Telefon)" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label>FødselsDato</label>
+        <InputDate id="føds"@bind-Value="Person.Fødselsdag" class="form-control" />
+        <ValidationMessage For="@(() => Person.Fødselsdag)" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label>Email</label>
+        <InputText id="email" @bind-Value="Person.Email" class="form-control" />
+        <ValidationMessage For="@(() => Person.Email)" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label>Kodeord</label>
+        <InputText id="kodeord" @bind-Value="Person.Kodeord" class="form-control" />
+        <ValidationMessage For="@(() => Person.Kodeord)" />
+    </div>
+    <div class="col-12 mb-6">
+        <button type="submit" class="btn btn-primary">Opdater</button>
+    </div>
+</EditForm>
+
+
+@code {
+    public PersonDTO Person = new PersonDTO();
+    public List<PersonDTO> TempList = new List<PersonDTO>();
+    public int localid = 9;
+    public int errorcode;
+    private EditContext editContext;
+
+    [Inject]
+    IPersonService Service { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        TempList = (await Service.HentPerson(localid)).ToList();
+        Person = TempList[0];
+    }
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(Person);
+    }
+
+    public async void OpdaterPersonHandler(PersonDTO person)
+    {
+        errorcode = await Service.OpdaterPerson(person);
+
+    }
+    public void InvalidSubmitHandler()
+    {
+        ;
+    }
+}
+

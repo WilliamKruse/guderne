@@ -8,6 +8,8 @@ namespace festivalprojekt.Client.Services
 	{
 		Task<PersonDTO[]?> HentAllePersoner();
 
+		Task<PersonDTO[]?> HentPerson(int personid);
+
 		Task<int> OpretPerson(PersonDTO NyPerson);
 
 		Task<int> OpdaterPerson(PersonDTO NyPerson);

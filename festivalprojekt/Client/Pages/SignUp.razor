@@ -1,0 +1,142 @@
+﻿@page "/signup"
+@using festivalprojekt.Shared.Models;
+@using festivalprojekt.Client.Services;
+@using System;
+
+<PageTitle>SignUp</PageTitle>
+<div class="d-flex justify-content-center">
+    <h3>SignUp</h3>
+</div>
+
+<div class="container">
+    <div class="row ">
+      
+
+        <div class="col-sm-6">
+            <!--sticky top gør at dens position forbliver på skærmen når man scroller-->
+            <div class="sticky-top">
+                <h3>Personlige Oplysninger</h3>
+                <!--editform er en del af blazor, edit context skal være med, da den prøver at følge formen på en objekt-->
+                <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="@OpretPerson" OnInvalidSubmit="@HandleInvalidSubmit">
+                    <DataAnnotationsValidator />
+
+                    <div class="col-md-12 mb-3">
+                        <label>Fornavn</label>
+                        <InputText id="navn" @bind-Value="NytSignUp.Fornavn" class="form-control" />
+                        <ValidationMessage For="@(() => NytSignUp.Fornavn)" />
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Efternavn</label>
+                        <InputText id="navn" @bind-Value="NytSignUp.Efternavn" class="form-control" />
+                        <ValidationMessage For="@(() => NytSignUp.Efternavn)" />
+                    </div>
+                     <div class="col-md-6 mb-3">
+                        <label>Fødselsdato</label>
+                        <InputDate id="fødselsdato" @bind-Value="NytSignUp.Fødselsdag" class="form-control" />
+                        <ValidationMessage For="@(() => NytSignUp.Fødselsdag)" />
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Email</label>
+                        <InputText id="email" @bind-Value="NytSignUp.Email" class="form-control" />
+                        <ValidationMessage For="@(() => NytSignUp.Email)" />
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label>Telefon</label>
+                        <InputText id="tlf" @bind-Value="NytSignUp.Telefon" class="form-control" />
+                        <ValidationMessage For="@(() => NytSignUp.Telefon)" />
+                    </div>
+                     <div class="col-md-12 mb-3">
+                        <label>Angiv dit kodeord</label>
+                        <InputText id="kodeord" @bind-Value="NytSignUp.Kodeord" class="form-control" />
+                        <ValidationMessage For="@(() => NytSignUp.Kodeord)" />
+                    </div>
+                   
+                    <div class="col-12 mb-6">
+                        <button type="submit" class="btn btn-primary">Opret</button>
+                    </div>
+                   
+                </EditForm>
+
+               
+        </div>
+        </div>
+        
+             <div class="col-sm-6 pt-4">
+                 <h3>kompetencer</h3>
+       <ul style="list-style-type:none;">
+                <!--laver en list med alle items i vores shelterlist-->
+                @foreach (var item in KompetenceList)
+                {
+
+                    <li class="shadow-sm p-3 mb-4 bg-light rounded">
+                        <p>
+                            <!--tilgår attributten kompetence navn i personDTO klassen -->
+                            <strong>Kompetence navn: </strong>@item.KompetenceNavn <br />
+                        </p>
+                        <!--On click listener med arrow function-->
+                        <!--
+                        <button type="button" class="btn btn-primary" @onclick="()=>VælgKompetencer(item)">vælg</button>-->
+                    </li>
+                }
+            </ul>
+        </div>
+        </div>
+
+    </div>
+
+
+
+
+@code {
+
+    private string? ValgtKompetence { get; set; }
+    private EditContext EditContext;
+    public PersonDTO NytSignUp = new PersonDTO(); 
+    public int ErrorCode { get; set; }
+
+    //Liste med kompetencer
+    public List<PersonDTO> KompetenceList = new List<PersonDTO>();
+
+
+    [Inject]
+    public IPersonService Service { get; set; }
+
+    //laver ny edit context objekt når siden starter, modelerer ud fra objektet CurrentBooking
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(NytSignUp);
+    }
+
+    //Sender OpretPerson videre til servicen og renser alt data så vi starter forfra.
+    public async Task OpretPerson()
+    {
+        ErrorCode = await Service.OpretPerson(NytSignUp);
+        NytSignUp = new PersonDTO();
+        EditContext = new EditContext(NytSignUp);
+        Console.WriteLine("SignUp added: return code: " + ErrorCode);
+    }
+
+    //metoder hvis bruger indtaster invalid data, kommer kun i console.
+    public void HandleInvalidSubmit()
+    {
+        Console.WriteLine("Hey det er invalid data");
+    }
+
+     //Henter alle shelters fra mongo med service(http)(så skal være async)
+    protected override async Task OnInitializedAsync()
+    {
+        ShelterList = (await Service.GetAllShelters()).ToList();
+    }
+
+
+    //når man trykker på knappen "vælg" kører denne: lambda funktion, sætter ID fra listen på objektet valgte kompetencer
+    //og sætte navn-værdien fra samme på den tomme string VælgKompetencer
+    /*public void VælgKompetencer(PersonDTO x)
+    {
+        NytSignUp.KompetenceId = x.KompetenceId;
+        ValgtKompetence = x.KompetenceNavn;
+    }*/
+
+}

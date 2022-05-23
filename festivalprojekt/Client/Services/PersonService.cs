@@ -20,6 +20,12 @@ namespace festivalprojekt.Client.Services
 			return result;
         }
 
+		public Task<PersonDTO[]?> HentPerson(int personid)
+		{
+			var result = httpClient.GetFromJsonAsync<PersonDTO[]>($"api/festivalapi/personer/hentperson?personid={personid}");
+			return result;
+		}
+
 		public async Task<int> OpretPerson(PersonDTO NyPerson)
         {
 

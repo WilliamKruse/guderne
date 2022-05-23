@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1700.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "festivalprojekt.Server", "festivalprojekt\Server\festivalprojekt.Server.csproj", "{BF16C418-5C5F-4161-9E91-4F69370629A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "festivalprojekt.Server", "festivalprojekt\Server\festivalprojekt.Server.csproj", "{BF16C418-5C5F-4161-9E91-4F69370629A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "festivalprojekt.Client", "festivalprojekt\Client\festivalprojekt.Client.csproj", "{E89B2B75-DA43-4E46-B4F5-3E5F9D99FB84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "festivalprojekt.Client", "festivalprojekt\Client\festivalprojekt.Client.csproj", "{E89B2B75-DA43-4E46-B4F5-3E5F9D99FB84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "festivalprojekt.Shared", "festivalprojekt\Shared\festivalprojekt.Shared.csproj", "{16D1F42B-57A4-411B-917A-AD49DF072E19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "festivalprojekt.Shared", "festivalprojekt\Shared\festivalprojekt.Shared.csproj", "{16D1F42B-57A4-411B-917A-AD49DF072E19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

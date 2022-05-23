@@ -99,6 +99,7 @@ namespace festivalprojekt.Server.Models
                 arr += "," + item;
                 tal++;
             }
+            Console.WriteLine("debug array: " + arr);
             sql = $"CALL opdater_person(ARRAY[{arr}], {NyPerson.PersonId} ,{NyPerson.RolleId}, '{NyPerson.Email}', '{NyPerson.Telefon}', '{NyPerson.Kodeord}', '{NyPerson.Fornavn}', '{NyPerson.Efternavn}', '{NyPerson.Fødselsdag.ToString("yyyy-MM-dd HH:mm:ss")}');";
             try
             {

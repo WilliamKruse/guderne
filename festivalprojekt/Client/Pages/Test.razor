@@ -11,7 +11,11 @@
                 <li>
                     <p>
                         @item.Fornavn
-                     
+                        @foreach (var k in item.KompetenceNavn)
+                            {
+                                <p>@k</p>;
+                            }
+                        
 
                     </p>
                 </li>
@@ -22,6 +26,7 @@
 @code {
     public List<PersonDTO> FuldListe = new List<PersonDTO>();
     public int errorcode = 0;
+    
    
     [Inject]
     public IPersonService Service { get; set; }

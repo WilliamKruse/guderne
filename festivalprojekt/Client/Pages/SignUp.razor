@@ -125,10 +125,10 @@
     }
 
      //Henter alle shelters fra mongo med service(http)(så skal være async)
-    protected override async Task OnInitializedAsync()
-    {
-        ShelterList = (await Service.GetAllShelters()).ToList();
-    }
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    ShelterList = (await Service.GetAllShelters()).ToList();
+   // }
 
 
     //når man trykker på knappen "vælg" kører denne: lambda funktion, sætter ID fra listen på objektet valgte kompetencer

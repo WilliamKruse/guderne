@@ -4,11 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace festivalprojekt.Shared.Models
 {
     public class PersonDTO
     {
+        public PersonDTO()
+        {
+        }
+
         public int[]? KompetenceId { get; set; }
         public string[]? KompetenceNavn { get; set; }
         public int? PersonId { get; set; }
@@ -27,7 +32,10 @@ namespace festivalprojekt.Shared.Models
 
         ////validering af fødselsdag
         //[Required(ErrorMessage = "Du skal udfylde dette felt")]
-        public DateTime Fødselsdag { get; set; }
+        public string Fødselsdag { get; set; }
+
+        public DateTime? RealF { get; set; }
+
 
 
         //Valedering af email 
@@ -43,6 +51,7 @@ namespace festivalprojekt.Shared.Models
 
 
         public string Kodeord { get; set; }
-         
+
+        
     }
 }

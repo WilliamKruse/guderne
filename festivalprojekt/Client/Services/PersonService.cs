@@ -28,8 +28,8 @@ namespace festivalprojekt.Client.Services
 
 		public async Task<int> OpretPerson(PersonDTO NyPerson)
         {
-
-			var response = await httpClient.PostAsJsonAsync("api/festivalapi/personer/opretperson", NyPerson);
+			Console.WriteLine("service siger hej");
+			var response = await httpClient.PostAsJsonAsync("api/festivalapi/personer/opret", NyPerson);
 			var responseStatusCode = response.StatusCode;
 			return (int)responseStatusCode;
 

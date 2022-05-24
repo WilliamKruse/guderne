@@ -2,6 +2,7 @@
 @using festivalprojekt.Shared.Models;
 @using System;
 @using festivalprojekt.Client.Services;
+@using System.Globalization;
 
 
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
@@ -24,8 +25,8 @@
     </div>
     <div class="col-md-6 mb-3">
         <label>FødselsDato</label>
-        <InputDate id="føds"@bind-Value="Person.Fødselsdag" class="form-control" />
-        <ValidationMessage For="@(() => Person.Fødselsdag)" />
+        <InputDate id="føds" @bind-Value="Person.RealF" class="form-control" />
+        <ValidationMessage For="@(() => Person.RealF)" />
     </div>
     <div class="col-md-6 mb-3">
         <label>Email</label>
@@ -46,7 +47,7 @@
 @code {
     public PersonDTO Person = new PersonDTO();
     public List<PersonDTO> TempList = new List<PersonDTO>();
-    public int localid = 9;
+    public int localid = 1;
     public int errorcode;
     private EditContext editContext;
 
@@ -57,6 +58,8 @@
     {
         TempList = (await Service.HentPerson(localid)).ToList();
         Person = TempList[0];
+       
+        Person.RealF = DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
     }
     protected override void OnInitialized()
     {

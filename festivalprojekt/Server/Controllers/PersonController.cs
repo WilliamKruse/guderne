@@ -37,9 +37,10 @@ namespace festivalprojekt.Server.Controllers
             return await repo.HentPerson(personid);
         }
 
-        [HttpPost("opretperson")]
+        [HttpPost("opret")]
         public async void OpretPerson(PersonDTO NyPerson)
         {
+            Console.WriteLine("controller fandt opret");
             repo.OpretPerson(NyPerson);
 
         }

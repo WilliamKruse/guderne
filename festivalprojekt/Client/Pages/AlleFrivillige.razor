@@ -2,6 +2,7 @@
 @using festivalprojekt.Client.Services;
 @using festivalprojekt.Shared.Models;
 @using System;
+@using System.Globalization;
 
 
 <PageTitle>Alle frivllige</PageTitle>
@@ -16,33 +17,33 @@
             <ul style="list-style-type:none;">
                 <!--laver en liste med alle items i vores frivilligListe-->
                 @foreach (var person in frivilligListe)
-                    {
+                {
 
                     <li class="shadow-sm p-3 mb-4 bg-light rounded">
                         <p>
-                            
+
                             <strong>Fornavn: </strong>@person.Fornavn <br />
                             <strong>Efternavn: </strong>@person.Efternavn <br />
-                            <strong>Fødselsdag: </strong>@person.Fødselsdag <br />
+                            <strong>Fødselsdag: </strong>@person.RealF <br />
                             <strong>Email: </strong>@person.Email <br />
                             <strong>Telefon: </strong>@person.Telefon <br />
                             <strong>Kompetencer: </strong>
-                    @foreach (var kompetence in person.KompetenceNavn)
-                        {
+                            @foreach (var kompetence in person.KompetenceNavn)
+                            {
 
-                            <ul>
-                                <li>
-                                    @kompetence
-                                </li>
-                            </ul>
-                        }
+                                <ul>
+                                    <li>
+                                        @kompetence
+                                    </li>
+                                </ul>
+                            }
                         </p>
                         <!--Knap til at sende mail (virker dog ikke)-->
                         <button type="button" class="btn btn-primary">Send mail</button>
 
 
                     </li>
-                    }
+                }
             </ul>
 
         </div>
@@ -50,7 +51,7 @@
 
 </div>
 
- 
+
 
 
 @code {
@@ -58,7 +59,7 @@
 
     public List<PersonDTO> frivilligListe = new List<PersonDTO>();
     public int ErrorCode { get; set; }
-    
+
 
     [Inject]
     public IPersonService Service { get; set; }
@@ -67,8 +68,11 @@
     protected override async Task OnInitializedAsync()
     {
         frivilligListe = (await Service.HentAllePersoner()).ToList();
-
+        foreach (var person in frivilligListe)
+        {
+            person.RealF = DateTime.ParseExact(person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
+        }
 
     }
-   
+
 }

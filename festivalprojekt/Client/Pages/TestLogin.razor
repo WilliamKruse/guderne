@@ -1,0 +1,60 @@
+﻿
+@page "/login"
+@using festivalprojekt.Shared.Models;
+@using festivalprojekt.Client.Services;
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+<h3>Login</h3>
+
+<EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => SubmitHandler(this.emailkode)" OnInvalidSubmit="@InvalidSubmitHandler">
+    <DataAnnotationsValidator />
+
+    <div class="col-md-12 mb-3">
+        <label>Fornavn</label>
+        <InputText id="fornavn" @bind-Value="emailkode.Email" class="form-control" />
+        <ValidationMessage For="@(() => emailkode.Email)" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label>Efternavn</label>
+        <InputText id="efternavn" @bind-Value="emailkode.Kode" class="form-control" />
+        <ValidationMessage For="@(() => emailkode.Kode)" />
+    </div>
+ 
+    <div class="col-12 mb-6">
+        <button type="submit" class="btn btn-primary">Opdater</button>
+    </div>
+</EditForm>
+
+<p>@testid</p>
+
+@code {
+    public PersonDTO person = new PersonDTO();
+    public LoginDTO emailkode = new LoginDTO();
+    public EditContext editContext;
+    public int testid = 0;
+    [Inject]
+    ILoginService Service { get; set; }
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(emailkode);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ;
+    }
+
+    public async void SubmitHandler(LoginDTO x)
+    {
+
+        person = ((await Service.HentLoginPerson(x)).ToList())[0];
+        await sessionStorage.SetItemAsync("PersonId", person.PersonId);
+        await sessionStorage.SetItemAsync("RolleId", person.RolleId);
+
+        testid = await sessionStorage.GetItemAsync<int>("PersonId");
+
+    }
+    public void InvalidSubmitHandler()
+    {
+        ;
+    }
+}

@@ -30,13 +30,7 @@
     public string e = "koordinator@test.dk";
     public string k = "kode";
    
-    [Inject]
-    public IPersonService Service { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-        testlist = (await Service.Login(e,k)).ToList();
-        FuldListe = (await Service.HentAllePersoner()).ToList();
-    }
+
 
     [Inject]
     public IVagtService service2 { get; set; }

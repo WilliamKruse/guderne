@@ -3,6 +3,7 @@
 @using System;
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
@@ -58,7 +59,7 @@
     public PersonDTO Person = new PersonDTO();
     public List<PersonDTO> TempList = new List<PersonDTO>();
     public List<Kompetencer> AlleKompetencer = new List<Kompetencer>();
-    public int localid = 1;
+    public int localid;
     public int errorcode;
     private EditContext editContext;
 
@@ -67,6 +68,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        localid = await sessionStorage.GetItemAsync<int>("PersonId");
         TempList = (await Service.HentPerson(localid)).ToList();
         Person = TempList[0];
 

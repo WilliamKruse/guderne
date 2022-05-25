@@ -16,8 +16,6 @@ namespace festivalprojekt.Client.Services
 		Task<int> OpretPerson(PersonDTO NyPerson);
 
 		Task<int> OpdaterPerson(PersonDTO NyPerson);
-
-		Task<PersonDTO[]?> Login(string email, string kode);
 	}
 }
 

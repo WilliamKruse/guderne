@@ -20,9 +20,10 @@ namespace festivalprojekt.Server.Models
         void OpdaterPerson(PersonDTO NyPerson);
 
        void OpretPerson(PersonDTO NyPerson);
+        Task<IEnumerable<PersonDTO>> Login(string email, string kode);
 
 
-     
+
 
     }
 }

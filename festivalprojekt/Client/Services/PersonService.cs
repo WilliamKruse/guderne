@@ -51,5 +51,13 @@ namespace festivalprojekt.Client.Services
 			return (int)responseStatusCode;
 
 		}
+
+		public Task<PersonDTO[]?> Login(string email, string kode)
+        {
+			Console.WriteLine("service ramt");
+			var result = httpClient.GetFromJsonAsync<PersonDTO[]>($"$api/festivalapi/personer/login?email={email}&kode={kode}");
+			Console.WriteLine("Json seri");
+				return result;
+        }
 	}
 }

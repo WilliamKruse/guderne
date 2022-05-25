@@ -26,12 +26,15 @@
 @code {
     public List<PersonDTO> FuldListe = new List<PersonDTO>();
     public int errorcode = 0;
-    
+    public List<PersonDTO> testlist = new List<PersonDTO>();
+    public string e = "koordinator@test.dk";
+    public string k = "kode";
    
     [Inject]
     public IPersonService Service { get; set; }
     protected override async Task OnInitializedAsync()
     {
+        testlist = (await Service.Login(e,k)).ToList();
         FuldListe = (await Service.HentAllePersoner()).ToList();
     }
 

@@ -1,0 +1,73 @@
+﻿@page "/login"
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@using festivalprojekt.Shared.Models;
+@using System;
+@using festivalprojekt.Client.Services;
+@using System.Globalization;
+<h3>Login</h3>
+
+<EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => LoginHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
+    <DataAnnotationsValidator />
+
+    <div class="col-md-12 mb-3">
+        <label>Email</label>
+        <InputText id="fornavn" @bind-Value="Email" class="form-control" />
+        <ValidationMessage For="@(() => Person.Email)" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label>Kode</label>
+        <InputText id="kode" @bind-Value="Kode" class="form-control" />
+        <ValidationMessage For="@(() => Person.Kodeord)" />
+    </div>
+    <div class="col-12 mb-6">
+        <button type="submit" class="btn btn-primary">Opdater</button>
+    </div>
+
+</EditForm>
+
+<p>
+    @foreach (var item in TempList)
+        {
+            <p>@item.Email</p>
+        }
+
+</p>
+
+
+@code {
+    public List<PersonDTO> TempList = new List<PersonDTO>();
+    public PersonDTO Person = new PersonDTO();
+    public string Email = "koordinator@test.dk";
+    public string Kode = "kode";
+    private EditContext editContext;
+
+
+    [Inject]
+    IPersonService Service { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(Person);
+    }
+
+    public async void LoginHandler(PersonDTO person)
+    {
+        TempList = (await Service.Login(person.Email, person.Kodeord)).ToList();
+        // if (TempList.Count == 1)
+        //{
+        //Person = TempList[0];
+        //await sessionStorage.SetItemAsync("PersonId", Person.PersonId);
+        //await sessionStorage.SetItemAsync("RolleId", Person.RolleId);
+
+        //personid = await sessionStorage.GetItemAsync<int>("PersonId");
+        //rolleid = await sessionStorage.GetItemAsync<int>("RolleId");
+        // }
+
+    }
+    public void InvalidSubmitHandler()
+    {
+        ;
+    }
+}
+

@@ -8,6 +8,7 @@ namespace festivalprojekt.Client.Services
 	{
 		Task<Roller[]?> HentAlleRoller();
 		Task<Kompetencer[]?> HentAlleKompetencer();
+
 		Task<PersonDTO[]?> HentAllePersoner();
 
 		Task<PersonDTO[]?> HentPerson(int personid);
@@ -15,6 +16,8 @@ namespace festivalprojekt.Client.Services
 		Task<int> OpretPerson(PersonDTO NyPerson);
 
 		Task<int> OpdaterPerson(PersonDTO NyPerson);
+
+		Task<PersonDTO[]?> Login(string email, string kode);
 	}
 }
 

@@ -22,6 +22,16 @@ namespace festivalprojekt.Server.Models
             this.Context = context;
         }
 
+        public async Task<IEnumerable<Roller>> HentAlleRoller()
+        {
+            sql = $"SELECT rolle_id AS \"RolleId\", rolle_navn AS \"RolleNavn\" FROM roller";
+
+            var RolleListe = await Context.Connection.QueryAsync<Roller>(sql);
+            return RolleListe.ToList();
+        }
+
+
+
         public async Task<IEnumerable<Kompetencer>> HentAlleKompetencer()
         {
             sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\" FROM kompetencer";

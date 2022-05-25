@@ -26,11 +26,20 @@ namespace festivalprojekt.Server.Controllers
             }
         }
 
+        [HttpGet("hentalleroller")]
+        public async Task<IEnumerable<Roller>> HentAlleRoller()
+        {
+            return await repo.HentAlleRoller();
+        }
+
+
         [HttpGet("hentallekompetencer")]
         public async Task<IEnumerable<Kompetencer>> HentAlleKompetencer()
         {
             return await repo.HentAlleKompetencer();
         }
+
+
         [HttpGet("hentallepersoner")]
         public async Task<IEnumerable<PersonDTO>> HentAllePersoner()
         {
@@ -41,6 +50,8 @@ namespace festivalprojekt.Server.Controllers
         {
             return await repo.HentPerson(personid);
         }
+
+        //api/festivalapi/personer/opret
 
         [HttpPost("opret")]
         public async void OpretPerson(PersonDTO NyPerson)

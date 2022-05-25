@@ -16,6 +16,16 @@ namespace festivalprojekt.Shared.Models
         public string VagtTypeNavn { get; set; }
         public string VagtTypeBeskrivelse { get; set; }
         public string VagtTypeOmråde { get; set; }
+
+        public override string ToString()
+        {
+            string status = "Taget";
+            if (PersonId == null)
+            {
+                status = "ledig";
+            }
+            return $" Start: d.{StartTid:dd MMMM H:mm} Slut d.{SlutTid:dd MMMM H:mm}, Område: {VagtTypeOmråde} Status: {status}";
+        }
     }
 }
 

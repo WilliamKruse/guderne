@@ -5,40 +5,9 @@
 
 
 
-<h3>Component1</h3>
-@foreach (var item in FuldListe)
-            {
-                <li>
-                    <p>
-                        @item.Fornavn
-                        @foreach (var k in item.KompetenceNavn)
-                            {
-                                <p>@k</p>;
-                            }
-                        
 
-                    </p>
-                </li>
-            }
-<button @onclick="() => SletVagt(1)">slet vagt 1</button>
-<p>@errorcode</p>
 
 @code {
-    public List<PersonDTO> FuldListe = new List<PersonDTO>();
-    public int errorcode = 0;
-    public List<PersonDTO> testlist = new List<PersonDTO>();
-    public string e = "koordinator@test.dk";
-    public string k = "kode";
-   
-
-
-    [Inject]
-    public IVagtService service2 { get; set; }
-
-    public async void SletVagt(int id)
-    {
-        errorcode = await service2.SletVagt(id);
-    }
     
 }
 

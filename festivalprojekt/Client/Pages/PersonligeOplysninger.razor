@@ -59,7 +59,8 @@
     public PersonDTO Person = new PersonDTO();
     public List<PersonDTO> TempList = new List<PersonDTO>();
     public List<Kompetencer> AlleKompetencer = new List<Kompetencer>();
-    public int localid;
+    public int p_id;
+    public int r_id;
     public int errorcode;
     private EditContext editContext;
 
@@ -68,8 +69,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        localid = await sessionStorage.GetItemAsync<int>("PersonId");
-        TempList = (await Service.HentPerson(localid)).ToList();
+        p_id = await sessionStorage.GetItemAsync<int>("PersonId");
+        p_id = await sessionStorage.GetItemAsync<int>("RolleId");
+        TempList = (await Service.HentPerson(p_id)).ToList();
         Person = TempList[0];
 
         Person.RealF = DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);

@@ -81,7 +81,8 @@ namespace festivalprojekt.Server.Models
         }
         public async void OpretVagt(VagtDTO NyVagt)
         {
-            sql = $"INSERT INTO vagter (vagt_type_id, start_tid, slut_tid, person_id) VALUES ({NyVagt.VagtTypeId}, '{NyVagt.StartTid}', '{NyVagt.SlutTid}', {NyVagt.PersonId});";
+         
+            sql = $"INSERT INTO vagter (vagt_type_id, start_tid, slut_tid, person_id) VALUES ({NyVagt.VagtTypeId}, '{NyVagt.StartTid/*.ToString("yyyy-MM-dd H:mm:ss")*/}', '{NyVagt.SlutTid/*.ToString("yyyy-MM-dd H:mm:ss")*/}', null);";
             try
             {
                 

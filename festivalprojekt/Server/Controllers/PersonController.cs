@@ -15,17 +15,22 @@ namespace festivalprojekt.Server.Controllers
 
     public class PersonController : ControllerBase
     {
-        private readonly IPersonRepositoryDapper repo = new PersonRepositoryDapper();
+        private readonly IPersonRepositoryDapper repo;
 
         public PersonController(IPersonRepositoryDapper personRepositoryDapper)
         {
-            if (repo == null && personRepositoryDapper != null)
+            if (personRepositoryDapper != null)
             {
                 repo = personRepositoryDapper;
                 Console.WriteLine("Repository Initialized");
             }
         }
 
+        [HttpGet("hentallekompetencer")]
+        public async Task<IEnumerable<Kompetencer>> HentAlleKompetencer()
+        {
+            return await repo.HentAlleKompetencer();
+        }
         [HttpGet("hentallepersoner")]
         public async Task<IEnumerable<PersonDTO>> HentAllePersoner()
         {

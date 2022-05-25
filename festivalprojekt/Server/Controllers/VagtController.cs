@@ -14,11 +14,11 @@ namespace festivalprojekt.Server.Controllers
 
     public class VagtController : ControllerBase
 	{
-        private readonly IVagtRepositoryDapper repo = new VagtRepositoryDapper();
+        private readonly IVagtRepositoryDapper repo;
 
 		public VagtController(IVagtRepositoryDapper vagtRepositoryDapper)
 		{
-            if (repo == null && vagtRepositoryDapper != null)
+            if ( vagtRepositoryDapper != null)
             {
                 repo = vagtRepositoryDapper;
                 Console.WriteLine("Repository Initialized");

@@ -6,6 +6,7 @@ namespace festivalprojekt.Client.Services
 {
 	public interface IPersonService
 	{
+		Task<Kompetencer[]?> HentAlleKompetencer();
 		Task<PersonDTO[]?> HentAllePersoner();
 
 		Task<PersonDTO[]?> HentPerson(int personid);

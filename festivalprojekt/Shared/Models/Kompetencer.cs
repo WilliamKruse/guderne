@@ -3,8 +3,11 @@ namespace festivalprojekt.Shared.Models
 {
 	public class Kompetencer
 	{
-		public List<bool>? BoolList { get; set; }
-		 public List<int>? IntList { get; set; }
+
+		public int KompetenceId { get; set; }
+		public string KompetenceNavn { get; set; }
+		public bool Checker { get; set; } = false;
+
 
 		public Kompetencer()
 		{

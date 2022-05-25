@@ -15,7 +15,7 @@ namespace festivalprojekt.Server.Controllers
     public class VagtTypeController : ControllerBase
 
 	{
-        private readonly IVagtTypeReposityDapper repo = new VagtTypeRepositoryDapper();
+        private readonly IVagtTypeReposityDapper repo;
 
 		public VagtTypeController(IVagtTypeReposityDapper vagtTypeRepositoryDapper)
 		{

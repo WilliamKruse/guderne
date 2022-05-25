@@ -18,7 +18,7 @@ namespace festivalprojekt.Client.Services
 
 		public Task<VagtView[]?> HentAlleVagter(string streng, int id)
         {
-			var result = httpClient.GetFromJsonAsync<VagtView[]>($"api/festivalapi/vagter/hentallevagter?streng={streng}&&id={id}");
+			var result = httpClient.GetFromJsonAsync<VagtView[]>($"api/festivalapi/vagter/hentallevagter?streng={streng}&id={id}");
 			return result;
 		}
 

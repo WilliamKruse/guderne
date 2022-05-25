@@ -43,10 +43,21 @@
     </div>
 </EditForm>
 
+<ul>
+    @foreach (var k in AlleKompetencer)
+        {
+            <div>
+                <input type="checkbox" id="@k.KompetenceNavn.ToLower()" name="@k.KompetenceNavn.ToLower()" @bind="k.Checker" />
+                <label for="@k.KompetenceNavn.ToLower()">@k.KompetenceNavn</label>
+            </div>
+        }
+</ul>
+
 
 @code {
     public PersonDTO Person = new PersonDTO();
     public List<PersonDTO> TempList = new List<PersonDTO>();
+    public List<Kompetencer> AlleKompetencer = new List<Kompetencer>();
     public int localid = 1;
     public int errorcode;
     private EditContext editContext;
@@ -58,8 +69,14 @@
     {
         TempList = (await Service.HentPerson(localid)).ToList();
         Person = TempList[0];
-       
+
         Person.RealF = DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
+
+        AlleKompetencer = (await Service.HentAlleKompetencer()).ToList();
+        foreach (var k in AlleKompetencer)
+        {
+            k.Checker = Array.Exists(Person.KompetenceNavn, x => x == k.KompetenceNavn);
+        }
     }
     protected override void OnInitialized()
     {
@@ -68,7 +85,26 @@
 
     public async void OpdaterPersonHandler(PersonDTO person)
     {
+        MatchBox();
         errorcode = await Service.OpdaterPerson(person);
+
+
+    }
+    public void MatchBox()
+    {
+        List<int> i = new List<int>();
+        List<string> s = new List<string>();
+
+        foreach (var k in AlleKompetencer)
+        {
+            if (k.Checker)
+            {
+                i.Add(k.KompetenceId);
+                s.Add(k.KompetenceNavn);
+            }
+        }
+        Person.KompetenceNavn = s.ToArray();
+        Person.KompetenceId = i.ToArray();
 
     }
     public void InvalidSubmitHandler()

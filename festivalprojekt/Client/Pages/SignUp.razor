@@ -17,7 +17,7 @@
             <div class="sticky-top">
                 <h3>Personlige Oplysninger</h3>
                 <!--editform er en del af blazor, edit context skal være med, da den prøver at følge formen på en objekt-->
-                <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="() => this.OpretPerson(NytSignUp)" OnInvalidSubmit="@HandleInvalidSubmit">
+                <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="() => this.OpretPerson(this.NytSignUp)" OnInvalidSubmit="@HandleInvalidSubmit">
                     <DataAnnotationsValidator />
 
                     <div class="col-md-12 mb-3">
@@ -126,6 +126,10 @@
     public async Task OpretPerson(PersonDTO nytSignUp)
     {
         nytSignUp.RolleId = 1;
+        nytSignUp.KompetenceId = new int[] { 1, 2 };
+        nytSignUp.KompetenceNavn = new string[] { "kørekort", "førstehjælp" };
+
+
         ErrorCode = await Service.OpretPerson(nytSignUp);
         NytSignUp = new PersonDTO();
         EditContext = new EditContext(nytSignUp);

@@ -12,7 +12,8 @@ namespace festivalprojekt.Server.Models
     //laver interfacet med metoder til klasserne
     public interface IPersonRepositoryDapper
     {
-       Task<IEnumerable<PersonDTO>> HentAllePersoner();
+        Task<IEnumerable<Kompetencer>> HentAlleKompetencer();
+        Task<IEnumerable<PersonDTO>> HentAllePersoner();
 
         Task<IEnumerable<PersonDTO>> HentPerson(int PersonId);
 

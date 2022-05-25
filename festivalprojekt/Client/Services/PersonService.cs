@@ -14,6 +14,14 @@ namespace festivalprojekt.Client.Services
 			this.httpClient = httpClient;
 		}
 
+
+		public Task<Kompetencer[]?> HentAlleKompetencer()
+		{
+			var result = httpClient.GetFromJsonAsync<Kompetencer[]>("api/festivalapi/personer/hentallekompetencer");
+			return result;
+		}
+
+
 		public Task<PersonDTO[]?> HentAllePersoner()
         {
 			var result = httpClient.GetFromJsonAsync<PersonDTO[]>("api/festivalapi/personer/hentallepersoner");

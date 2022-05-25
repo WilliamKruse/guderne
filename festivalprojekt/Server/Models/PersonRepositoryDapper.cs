@@ -7,35 +7,41 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using festivalprojekt.Shared.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace festivalprojekt.Server.Models
 {
     public class PersonRepositoryDapper : IPersonRepositoryDapper
     {
-        private string connString = "User ID = postgres; Password=godtkodeord ;Host=localhost;Port=5432;Database=Final;";
+       
         private string sql = "";
-     
+        private dBContext Context;
 
+        public PersonRepositoryDapper(dBContext context)
+        {
+            this.Context = context;
+        }
 
+        public async Task<IEnumerable<Kompetencer>> HentAlleKompetencer()
+        {
+            sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\" FROM kompetencer";
+
+            var KompetenceListe = await Context.Connection.QueryAsync<Kompetencer>(sql);
+            return KompetenceListe.ToList();
+        }
         public async Task<IEnumerable<PersonDTO>> HentAllePersoner()
         {
             //laver sql statement til query (postgres). Det er vigtigt med AS fordi eller kan dapper ikke matche til klassens navne automatisk.
-            sql = "SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\", person_id AS \"PersonId\", rolle_id AS \"RolleId\", email AS \"Email\", telefon AS \"Telefon\", kodeord AS \"Kodeord\", fornavn AS \"Fornavn\", efternavn AS \"Efternavn\", fødselsdag::text AS \"Fødselsdag\" FROM fuld_person_view_3;";
+            sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\", person_id AS \"PersonId\", rolle_id AS \"RolleId\", email AS \"Email\", telefon AS \"Telefon\", kodeord AS \"Kodeord\", fornavn AS \"Fornavn\", efternavn AS \"Efternavn\", fødselsdag::text AS \"Fødselsdag\" FROM fuld_person_view_3;";
 
             //try catch, hvis det ikke virker går den til catch
             try
             {
-                //dapper syntax for at lave en ny connection til databasen
-                using (var connection = new NpgsqlConnection(connString))
-                {
-                    //laver variabel og fylder data fra query ind i listen.
-                    //Vi specificerer hvilken type data der forventes(PersonDTO) og hvis navnene fra databasens kolonner
-                    //matcher navnene i klassens properties
-                    //laver den automatisk rigtige udfyldte objekter.
-                    var PersonListe = await connection.QueryAsync<PersonDTO>(sql);
+              
+                    var PersonListe = await Context.Connection.QueryAsync<PersonDTO>(sql);
 
                     return PersonListe.ToList();
-                }
+                
             }
             catch (NotImplementedException)
             {
@@ -52,20 +58,14 @@ namespace festivalprojekt.Server.Models
             //try catch, hvis det ikke virker går den til catch
             try
             {
-                //dapper syntax for at lave en ny connection til databasen
-                using (var connection = new NpgsqlConnection(connString))
-                {
-                    //laver variabel og fylder data fra query ind i listen.
-                    //Vi specificerer hvilken type data der forventes(PersonDTO) og hvis navnene fra databasens kolonner
-                    //matcher navnene i klassens properties
-                    //laver den automatisk rigtige udfyldte objekter.
+              
             
 
 
-                    var Person = await connection.QueryAsync<PersonDTO>(sql);
+                    var Person = await Context.Connection.QueryAsync<PersonDTO>(sql);
 
                     return Person.ToList();
-                }
+                
             }
             catch (NotImplementedException)
             {
@@ -109,10 +109,9 @@ namespace festivalprojekt.Server.Models
             sql = $"CALL opret_person(ARRAY[{arr}], {NyPerson.PersonId} ,{NyPerson.RolleId}, '{NyPerson.Email}', '{NyPerson.Telefon}', '{NyPerson.Kodeord}', '{NyPerson.Fornavn}', '{NyPerson.Efternavn}', '{NyPerson.RealF}';)";
             try
             {
-                using (var connection = new NpgsqlConnection(connString))
-                {
-                    await connection.ExecuteAsync(sql);
-                }
+             
+                    await Context.Connection.ExecuteAsync(sql);
+                
             }
             catch (NotImplementedException)
             {
@@ -143,10 +142,9 @@ namespace festivalprojekt.Server.Models
             sql = $"CALL opdater_person(ARRAY[{arr}], {NyPerson.PersonId} ,{NyPerson.RolleId}, '{NyPerson.Email}', '{NyPerson.Telefon}', '{NyPerson.Kodeord}', '{NyPerson.Fornavn}', '{NyPerson.Efternavn}', '{NyPerson.RealF/*ToString("yyyy-MM-dd HH:mm:ss")*/}');";
             try
             {
-                using (var connection = new NpgsqlConnection(connString))
-                {
-                    await connection.ExecuteAsync(sql);
-                }
+            
+                    await Context.Connection.ExecuteAsync(sql);
+                
             }
             catch (NotImplementedException)
             {

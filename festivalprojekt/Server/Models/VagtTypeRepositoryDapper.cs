@@ -4,39 +4,42 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
+using System.Web;
 using Microsoft.Extensions.DependencyInjection;
 using festivalprojekt.Shared.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
+
 
 //Using skal ændres, der er nogle af dem vi ikke bruger
 namespace festivalprojekt.Server.Models
 {
 	public class VagtTypeRepositoryDapper : IVagtTypeReposityDapper
 	{
-        //definer en connection string som der er vores adgang til databasen(skal ikke være her når vi er færdige)
-        private string connString = "User ID=postgres;Password=godtkodeord ;Host=localhost;Port=5432;Database=Final;";
 
-        //tom string vi ændrer når en funktion bliver kaldt
+   
         private string sql = "";
+        private dBContext Context;
+
+        public VagtTypeRepositoryDapper(dBContext context)
+        {
+            this.Context = context;
+        }
 
         public async Task<IEnumerable<VagtTypeDTO>> HentAlleVagtTyper()
         {
             //laver sql statement til query (postgres). Det er vigtigt med AS fordi eller kan dapper ikke matche til klassens navne automatisk.
-            sql = "SELECT vagt_type_id AS VagtTypeId, vagt_type_navn AS VagtTypeNavn, vagt_type_beskrivelse AS VagtTypeBeskrivelse, vagt_type_område AS VagtTypeOmråde FROM vagt_typer;";
+            sql = "SELECT vagt_type_id AS \"VagtTypeId\", vagt_type_navn AS \"VagtTypeNavn\", vagt_type_beskrivelse AS \"VagtTypeBeskrivelse\", vagt_type_område AS \"VagtTypeOmråde\" FROM vagt_typer;";
 
             //try catch, hvis det ikke virker går den til catch
             try
             {
-                //dapper syntax for at lave en ny connection til databasen
-                using (var connection = new NpgsqlConnection(connString))
-                {
-                    //laver variabel og fylder data fra query ind i listen.
-                    //Vi specificerer hvilken type data der forventes(VagtTypeDTO) og hvis navnene fra databasens kolonner
-                    //matcher navnene i klassens properties
-                    //laver den automatisk rigtige udfyldte objekter.
-                    var VagtTypeListe = await connection.QueryAsync<VagtTypeDTO>(sql);
+             
+              
+                    var VagtTypeListe = await Context.Connection.QueryAsync<VagtTypeDTO>(sql);
 
                     return VagtTypeListe;
-                }
+                
             }
             catch (NotImplementedException)
             {
@@ -53,12 +56,10 @@ namespace festivalprojekt.Server.Models
             //try catch, hvis det ikke virker går den til catch
             try
             {
-                //dapper syntax for at lave en ny connection til databasen
-                using (var connection = new NpgsqlConnection(connString))
-                {
+                
                     //Execute gør at SQL statementet bliver kørt i databasen (query bruges kun når man henter data, ellers bruges execute).
-                    await connection.ExecuteAsync(sql);
-                }
+                    await Context.Connection.ExecuteAsync(sql);
+               
             }
             catch (NotImplementedException)
             {
@@ -76,11 +77,10 @@ namespace festivalprojekt.Server.Models
             try
             {
                 //dapper syntax for at lave en ny connection til databasen
-                using (var connection = new NpgsqlConnection(connString))
-                {
+              
                     //Execute gør at SQL statementet bliver kørt i databasen (query bruges kun når man henter data, ellers bruges execute).
-                    await connection.ExecuteAsync(sql);
-                }
+                    await Context.Connection.ExecuteAsync(sql);
+                
             }
             catch (NotImplementedException)
             {

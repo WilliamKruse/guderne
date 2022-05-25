@@ -13,6 +13,8 @@ namespace festivalprojekt.Server.Models
     public interface IPersonRepositoryDapper
     {
         Task<IEnumerable<Kompetencer>> HentAlleKompetencer();
+
+        Task<IEnumerable<Roller>> HentAlleRoller();
         Task<IEnumerable<PersonDTO>> HentAllePersoner();
 
         Task<IEnumerable<PersonDTO>> HentPerson(int PersonId);

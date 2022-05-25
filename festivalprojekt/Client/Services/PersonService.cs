@@ -14,6 +14,12 @@ namespace festivalprojekt.Client.Services
 			this.httpClient = httpClient;
 		}
 
+		public Task<Roller[]?> HentAlleRoller()
+		{
+			var result = httpClient.GetFromJsonAsync<Roller[]>("api/festivalapi/personer/hentalleroller");
+			return result;
+		}
+
 
 		public Task<Kompetencer[]?> HentAlleKompetencer()
 		{
@@ -36,7 +42,7 @@ namespace festivalprojekt.Client.Services
 
 		public async Task<int> OpretPerson(PersonDTO NyPerson)
         {
-			Console.WriteLine("service siger hej");
+			Console.WriteLine("service siger hej - opret person");
 			var response = await httpClient.PostAsJsonAsync("api/festivalapi/personer/opret", NyPerson);
 			var responseStatusCode = response.StatusCode;
 			return (int)responseStatusCode;

@@ -4,21 +4,25 @@
 @using System;
 
 <PageTitle>SignUp</PageTitle>
-<div class="d-flex justify-content-center">
-    <h3>SignUp</h3>
-</div>
-
-<div class="container">
-    <div class="row ">
-
-
-        <div class="col-sm-6 pt-2">
-            <!--sticky top gør at dens position forbliver på skærmen når man scroller-->
-            <div class="sticky-top">
+<div class="d-flex justify-content-center"></div>
+            
                 <h3>Personlige Oplysninger</h3>
                 <!--editform er en del af blazor, edit context skal være med, da den prøver at følge formen på en objekt-->
-                <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="() => this.OpretPerson(this.NytSignUp)" OnInvalidSubmit="@HandleInvalidSubmit">
+                <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="@OpretPerson" OnInvalidSubmit="@HandleInvalidSubmit">
                     <DataAnnotationsValidator />
+
+                   
+
+                        <div class="radioButtons">
+                            @foreach (var rolle in RolleList)
+                           {
+                               <label for="@rolle.RolleNavn">@rolle.RolleNavn</label>
+                               <input type ="radio" id="@rolle.RolleNavn" checked="checked" name="radio" @bind-value="RolleValgt"/>
+                            
+                           }
+                        </div>
+                      
+                 
 
                     <div class="col-md-12 mb-3">
                         <label>Fornavn</label>
@@ -53,56 +57,53 @@
                         <ValidationMessage For="@(() => NytSignUp.Kodeord)" />
                     </div>
 
-                    <div class="col-12 mb-6">
-                        <button type="submit" class="btn btn-primary">Opret</button>
-                    </div>
-
-                </EditForm>
-
-
-            </div>
-        </div>
-
-        <div class="col-sm-6 pt-2">
-            <div class="sticky-top">
-                <h3>Kompetencer</h3>
-
+                      <h3>Kompetencer</h3>
                 <!--laver en list med alle items i vores shelterlist-->
-                @foreach (var person in KompetenceList)
+                @foreach (var item in KompetenceList)
                 {
-                    @foreach (var kompetence in person.KompetenceNavn)
-                    {
                         <ul>
                             <li>
                                 <p>
-
                                     <!--tilgår attributten kompetence navn i personDTO klassen -->
-                                    @kompetence
-
+                                    @item.KompetenceNavn
+                                    <input type ="checkbox" @bind="item.Checker" />
                                 </p>
-                              
                             </li>
                         </ul>
-                    }
+                    
                 }
-            </div>
-        </div>
+               
 
-    </div>
-</div>
+                    <div class="col-12 mb-6" style="text-align:right">
+                        <button type="submit" class="btn btn-primary">Opret</button>
+                </div>
+                </EditForm>
+       
+             
+
+        <!--Hvis errorcode er 200 kommer en valideringsbesked frem-->
+        @if (ErrorCode == 200)
+        {
+            <div class="alert alert-success" role="alert">
+                <strong>Succes!</strong> Den nye vagttype er registreret i systemet.
+            </div>
+        }
 
 
 
 
 @code {
 
-    private string? ValgtKompetence { get; set; }
     private EditContext EditContext;
     public PersonDTO NytSignUp = new PersonDTO();
     public int ErrorCode { get; set; }
+    public bool RolleValgt { get; set; }
 
     //Liste med kompetencer
-    public List<PersonDTO> KompetenceList = new List<PersonDTO>();
+    public List<Kompetencer> KompetenceList = new List<Kompetencer>();
+
+    //Liste med roller
+    public List<Roller> RolleList = new List<Roller>();
 
 
     [Inject]
@@ -111,8 +112,8 @@
     //Henter alle personer
     protected override async Task OnInitializedAsync()
     {
-        //KompetenceList = (await Service.HentAllePersoner()).ToList();
-
+        KompetenceList = (await Service.HentAlleKompetencer()).ToList();
+        RolleList = (await Service.HentAlleRoller()).ToList();
 
     }
 
@@ -123,16 +124,20 @@
     }
 
     //Sender OpretPerson videre til servicen og renser alt data så vi starter forfra.
-    public async Task OpretPerson(PersonDTO nytSignUp)
+    public async Task OpretPerson()
     {
-        nytSignUp.RolleId = 1;
-        nytSignUp.KompetenceId = new int[] { 1, 2 };
-        nytSignUp.KompetenceNavn = new string[] { "kørekort", "førstehjælp" };
+        Console.WriteLine("nu");
+        ValgteKompetencer();
+        Console.WriteLine("1");
+        ValgtRolle();
+        Console.WriteLine("2");
+        var personData = NytSignUp;
 
+        Console.WriteLine(personData.ToString());
 
-        ErrorCode = await Service.OpretPerson(nytSignUp);
-        NytSignUp = new PersonDTO();
-        EditContext = new EditContext(nytSignUp);
+        ErrorCode = await Service.OpretPerson(personData);
+       // NytSignUp = new PersonDTO();
+      //  EditContext = new EditContext(NytSignUp);
         Console.WriteLine("SignUp added: return code: " + ErrorCode);
     }
 
@@ -141,20 +146,42 @@
     {
         Console.WriteLine("Hey det er invalid data");
     }
-
-    //Henter alle shelters fra mongo med service(http)(så skal være async)
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    ShelterList = (await Service.GetAllShelters()).ToList();
-    // }
-
-
-    //når man trykker på knappen "vælg" kører denne: lambda funktion, sætter ID fra listen på objektet valgte kompetencer
-    //og sætte navn-værdien fra samme på den tomme string VælgKompetencer
-    /*public void VælgKompetencer(PersonDTO x)
+/*
+    public async void OpretPersonHandler(PersonDTO person)
     {
-        NytSignUp.KompetenceId = x.KompetenceId;
-        ValgtKompetence = x.KompetenceNavn;
-    }*/
+        ValgteKompetencer();
+        ValgtRolle();
+        ErrorCode = await Service.OpretPerson(person);
+    }
+*/
+    public void ValgteKompetencer ()
+    {
+        List<int> id = new List<int>();
+        List<string> navn = new List<string> (); 
 
+        foreach (var item in KompetenceList)
+        {
+            if (item.Checker)
+            {
+                id.Add(item.KompetenceId);
+                navn.Add(item.KompetenceNavn);
+            }
+        }
+        NytSignUp.KompetenceId = id.ToArray(); 
+        NytSignUp.KompetenceNavn = navn.ToArray(); 
+    }
+
+    public void ValgtRolle()
+    {
+        int RolleId = 0;
+        foreach (var rolle in RolleList)
+        {
+            if (RolleValgt)
+            {
+                RolleId = rolle.RolleId;
+            }
+        }
+
+        NytSignUp.RolleId = RolleId;
+    }
 }

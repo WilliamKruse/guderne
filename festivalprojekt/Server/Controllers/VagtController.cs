@@ -32,9 +32,9 @@ namespace festivalprojekt.Server.Controllers
         }
 
         [HttpPut("bookvagt")]
-        public async void BookVagt(int VagtId, int PersonId)
+        public async void BookVagt(BookVagtDTO Wrapper)
         {
-            repo.BookVagt(VagtId, PersonId);
+            repo.BookVagt(Wrapper.VagtId, Wrapper.PersonId);
 
         }
 

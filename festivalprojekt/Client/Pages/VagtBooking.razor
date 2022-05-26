@@ -1,0 +1,80 @@
+﻿@page "/ledigevagter"
+@using festivalprojekt.Client.Services;
+@using festivalprojekt.Shared.Models;
+@using System;
+@using System.Globalization;
+
+
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Vagttype</th>
+            <th>Start</th>
+            <th>Slut</th>
+            <th>Beskrivelse</th>
+            <th>Område</th>
+            <th>Book</th>
+        </tr>
+    </thead>
+
+    <!--går igennem ledigevagterliste og laver en tabel-->
+    <tbody>
+        @foreach (var vagt in LedigeVagterListe)
+            {
+            <tr>
+                <td>@vagt.VagtTypeNavn</td>
+                <td>@vagt.StartTid.ToString("dd. MMMM H:mm", new CultureInfo("da-DK"))</td>
+                <td>@vagt.SlutTid.ToString("dd. MMMM H:mm", new CultureInfo("da-DK"))</td>
+                <td>@vagt.VagtTypeBeskrivelse</td>
+                <td>@vagt.VagtTypeOmråde</td>
+                <td><button @onclick="() => BookVagt(vagt)" >Book</button></td>
+
+            </tr>
+
+            }
+    </tbody>
+</table>
+
+
+
+@code {
+
+    public List<VagtView> LedigeVagterListe = new List<VagtView>();
+    public PersonDTO Person = new PersonDTO();
+    public int localstorage = 1;
+    public int ErrorCode { get; set; }
+    public BookVagtDTO Wrapper = new BookVagtDTO();
+
+
+    [Inject]
+    public IVagtService Service { get; set; }
+
+    //Henter alle ledige vagter
+    protected override async Task OnInitializedAsync()
+    {
+        LedigeVagterListe = (await Service.HentAlleVagter("LEDIGE", 0)).ToList();
+
+    }
+
+
+    //første del af metoden (ved ErrorCode) sletter valgte vagt på vagtId
+    public async void BookVagt(VagtView Vagt)
+    {
+        Wrapper.PersonId = localstorage;
+        Wrapper.VagtId = Vagt.VagtId;
+        ErrorCode = await Service.BookVagt(Wrapper);
+        
+        LedigeVagterListe = null;
+        LedigeVagterListe = (await Service.HentAlleVagter("LEDIGE", 0)).ToList();
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+
+    }
+    
+

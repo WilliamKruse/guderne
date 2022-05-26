@@ -1,0 +1,76 @@
+﻿@page "/dinevagter"
+@using festivalprojekt.Client.Services;
+@using festivalprojekt.Shared.Models;
+@using System;
+@using System.Globalization;
+
+
+
+<h4>Antal vagter: @DineVagterListe.Count() </h4>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Vagttype</th>
+            <th>Start</th>
+            <th>Slut</th>
+            <th>Beskrivelse</th>
+            <th>Område</th>
+            <th>Slet</th>
+        </tr>
+    </thead>
+
+    <!--går igennem dinevagterliste og laver en tabel-->
+    <tbody>
+        @foreach (var vagt in DineVagterListe)
+        {
+            <tr>
+                <td>@vagt.VagtTypeNavn</td>
+                <td>@vagt.StartTid.ToString("dd. MMMM H:mm", new CultureInfo("da-DK"))</td>
+                <td>@vagt.SlutTid.ToString("dd. MMMM H:mm", new CultureInfo("da-DK"))</td>
+                <td>@vagt.VagtTypeBeskrivelse</td>
+                <td>@vagt.VagtTypeOmråde</td>
+                <td><button @onclick="() => SletVagt(vagt)" class="btn delete"><span class="oi oi-trash"></span></button></td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+
+
+@code {
+
+    public List<VagtView> DineVagterListe = new List<VagtView>();
+    public PersonDTO Person = new PersonDTO();
+
+    public int ErrorCode { get; set; }
+
+
+    [Inject]
+    public IVagtService Service { get; set; }
+
+    //Henter alle personlige vagter
+    protected override async Task OnInitializedAsync()
+    {
+        DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", 1)).ToList();
+
+    }
+
+
+    //første del af metoden (ved ErrorCode) sletter valgte vagt på vagtId
+    public async void SletVagt(VagtView Vagt)
+    {
+        ErrorCode = await Service.SletVagt(Vagt.VagtId);
+
+        DineVagterListe = null;
+        DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", 1)).ToList();
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+
+}

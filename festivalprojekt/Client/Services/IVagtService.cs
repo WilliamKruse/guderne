@@ -12,6 +12,8 @@ namespace festivalprojekt.Client.Services
 
 		Task<int> OpretVagt(VagtDTO NyVagt);
 
+		Task<int> BookVagt(BookVagtDTO Wrapper);
+
 	}
 }
 

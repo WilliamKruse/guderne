@@ -71,7 +71,9 @@ namespace festivalprojekt.Server.Controllers
         public async Task<IEnumerable<PersonDTO>> Login(string email, string kode)
         {
             Console.WriteLine($"login controller{email}{kode}");
-            return (await repo.Login(email, kode)).ToList();
+            
+            return await repo.Login(email, kode);
+          
         }
     }
 }

@@ -19,9 +19,9 @@ namespace festivalprojekt.Client.Services
 
         public async Task<IEnumerable<PersonDTO>> HentLoginPerson(LoginDTO login)
         {
-            var result = await httpClient.GetFromJsonAsync<PersonDTO[]?>($"api/festivalapi/personer/login?email={login.Email}&kode={login.Kode}");
-            return result.ToList();
-    }
+            return await httpClient.GetFromJsonAsync<IEnumerable<PersonDTO>>($"api/festivalapi/personer/login?email={login.Email}&kode={login.Kode}");
+            
+        }
     }
    
    

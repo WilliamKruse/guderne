@@ -9,28 +9,38 @@
     <DataAnnotationsValidator />
 
     <div class="col-md-12 mb-3">
-        <label>Fornavn</label>
+        <label>Email</label>
         <InputText id="fornavn" @bind-Value="emailkode.Email" class="form-control" />
         <ValidationMessage For="@(() => emailkode.Email)" />
     </div>
     <div class="col-md-12 mb-3">
-        <label>Efternavn</label>
-        <InputText id="efternavn" @bind-Value="emailkode.Kode" class="form-control" />
+        <label>Kodeord</label>
+        <InputText Type="password" id="efternavn" @bind-Value="emailkode.Kode" class="form-control" />
         <ValidationMessage For="@(() => emailkode.Kode)" />
     </div>
- 
+
     <div class="col-12 mb-6">
-        <button type="submit" class="btn btn-primary">Opdater</button>
+        <button type="submit" class="btn btn-primary">Login</button>
     </div>
 </EditForm>
-
-<p>@testid</p>
+<div>
+    <div class="text-muted">Ikke allerede tilmaldt?</div>
+    <a href="/signup" class="link-primary">Sign Up</a>
+</div>
+@if (loginejl)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Fejl..</strong> Dine oplysninger er tastet forkert ind, prøv igen.
+    </div>
+}
 
 @code {
     public PersonDTO person = new PersonDTO();
     public LoginDTO emailkode = new LoginDTO();
     public EditContext editContext;
-    public int testid = 0;
+    public bool loginejl = false;
+
+
     [Inject]
     ILoginService Service { get; set; }
     protected override void OnInitialized()
@@ -46,11 +56,21 @@
     public async void SubmitHandler(LoginDTO x)
     {
 
-        person = ((await Service.HentLoginPerson(x)).ToList())[0];
-        await sessionStorage.SetItemAsync("PersonId", person.PersonId);
-        await sessionStorage.SetItemAsync("RolleId", person.RolleId);
+        IEnumerable<PersonDTO> TempList = await Service.HentLoginPerson(x);
 
-        testid = await sessionStorage.GetItemAsync<int>("PersonId");
+        if (TempList.Count() > 0)
+        {
+            person = TempList.First();
+            await sessionStorage.SetItemAsync("PersonId", person.PersonId);
+            await sessionStorage.SetItemAsync("RolleId", person.RolleId);
+        }
+        else
+        {
+            loginejl = true;
+        }
+
+    
+
 
     }
     public void InvalidSubmitHandler()

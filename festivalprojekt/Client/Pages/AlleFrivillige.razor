@@ -35,8 +35,8 @@
             <tr>
                 <td>@frivillig.Fornavn</td>
                 <td>@frivillig.Efternavn</td>
-                <td>@frivillig.RealF.ToString("dd.MMMMM yyyyy")</td>
-                <td>@frivillig.Email</td>S
+                <td>@frivillig.RealF.Value.ToString("dd.MMMMM yyyyy")</td>
+                <td>@frivillig.Email</td>
                 <td>@frivillig.Telefon</td>
                 <td>
                     @foreach (var kompetence in frivillig.KompetenceNavn)

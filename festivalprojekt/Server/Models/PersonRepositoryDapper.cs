@@ -91,7 +91,7 @@ namespace festivalprojekt.Server.Models
             int tal = 0;
             if (NyPerson.KompetenceId.Length == 0)
             {
-                arr = "1,2";
+                arr = "1";
                 Console.WriteLine("ingen kompetencer");
             }
             else
@@ -102,21 +102,24 @@ namespace festivalprojekt.Server.Models
                 {
                     if (tal == 0)
                     {
-                        Console.WriteLine("debug tal 1: " + arr);
+                       
                         arr += item + "";
+                        Console.WriteLine("debug tal 1: " + arr);
+
                         tal++;
                     }
                     else
                     {
-                        Console.WriteLine("debug enter tal 2: " + arr);
+                        
                         arr += "," + item;
+                        Console.WriteLine("debug enter tal 2: " + arr);
                         tal++;
                     }
 
                 }
             }
             Console.WriteLine("repo ramt");
-            sql = $"CALL opret_person(ARRAY[{arr}], {NyPerson.PersonId} ,{NyPerson.RolleId}, '{NyPerson.Email}', '{NyPerson.Telefon}', '{NyPerson.Kodeord}', '{NyPerson.Fornavn}', '{NyPerson.Efternavn}', '{NyPerson.RealF}';)";
+            sql = $"CALL opret_person(ARRAY[{arr}],{NyPerson.PersonId},{NyPerson.RolleId},'{NyPerson.Email}','{NyPerson.Telefon}','{NyPerson.Kodeord}','{NyPerson.Fornavn}','{NyPerson.Efternavn}','{NyPerson.RealF}');";
             try
             {
 

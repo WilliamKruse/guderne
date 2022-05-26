@@ -1,0 +1,145 @@
+﻿@page "/po";
+@using festivalprojekt.Shared.Models;
+@using System;
+@using festivalprojekt.Client.Services;
+@using System.Globalization;
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject NavigationManager NavigationManager;
+
+
+
+<EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpretPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
+    <DataAnnotationsValidator />
+
+    <div class="col-md-12 mb-3">
+        <label>Rolle</label>
+        <InputSelect id="fornavn" @bind-Value="TempRolleId" class="form-control">
+            @foreach (var r in AlleRoller)
+            {
+                <option value="@r.RolleId"> @r.RolleNavn</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => Person.Fornavn)" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label>Fornavn</label>
+        <InputText id="fornavn" @bind-Value="Person.Fornavn" class="form-control" />
+        <ValidationMessage For="@(() => Person.Fornavn)" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label>Efternavn</label>
+        <InputText id="efternavn" @bind-Value="Person.Efternavn" class="form-control" />
+        <ValidationMessage For="@(() => Person.Efternavn)" />
+    </div>
+    <div class="col-md-12 mb-3">
+        <label>Telefon</label>
+        <InputText id="telefon" @bind-Value="Person.Telefon" class="form-control" />
+        <ValidationMessage For="@(() => Person.Telefon)" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label>FødselsDato</label>
+        <InputDate id="føds" @bind-Value="Person.RealF" class="form-control" />
+        <ValidationMessage For="@(() => Person.RealF)" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label>Email</label>
+        <InputText id="email" @bind-Value="Person.Email" class="form-control" />
+        <ValidationMessage For="@(() => Person.Email)" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label>Kodeord</label>
+        <InputText id="kodeord" @bind-Value="Person.Kodeord" class="form-control" />
+        <ValidationMessage For="@(() => Person.Kodeord)" />
+    </div>
+    <div class="col-12 mb-6">
+        <button type="submit" class="btn btn-primary">Opret</button>
+    </div>
+</EditForm>
+
+
+@foreach (var k in AlleKompetencer)
+{
+    <div>
+        <input type="checkbox" id="@k.KompetenceNavn.ToLower()" name="@k.KompetenceNavn.ToLower()" @bind="k.Checker" />
+        <label for="@k.KompetenceNavn.ToLower()">@k.KompetenceNavn</label>
+    </div>
+}
+@if (EmailFejl)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Ups</strong> Denne mail er allerede brugt..
+    </div>
+}
+
+
+
+@code {
+    public PersonDTO Person = new PersonDTO();
+        public List<Kompetencer> AlleKompetencer = new List<Kompetencer>();
+        public List<Roller> AlleRoller = new List<Roller>();
+        public List<PersonDTO> EmailCheckList = new List<PersonDTO>();
+        public int errorcode;
+        private EditContext editContext;
+        public int TempRolleId = 1;
+        public bool EmailFejl = false;
+
+        [Inject]
+        IPersonService Service { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            //DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
+            AlleRoller = (await Service.HentAlleRoller()).ToList();
+            AlleKompetencer = (await Service.HentAlleKompetencer()).ToList();
+            EmailCheckList = (await Service.HentAllePersoner()).ToList();
+
+        }
+        protected override void OnInitialized()
+        {
+            editContext = new EditContext(Person);
+        }
+
+        public async void OpretPersonHandler(PersonDTO person)
+        {
+            if (EmailCheckList.Exists(x => x.Email == person.Email))
+            {
+                EmailFejl = true;
+            }
+            else
+            {
+
+
+                MatchBox();
+                person.RolleId = TempRolleId;
+                person.Fødselsdag = person.RealF.Value.ToString("yyyy-MM-dd H:mm:ss");
+                person.PersonId = 1;
+                errorcode = await Service.OpretPerson(person);
+                NavigationManager.NavigateTo("/login");
+            }
+
+        }
+        public void MatchBox()
+        {
+            List<int> i = new List<int>();
+            List<string> s = new List<string>();
+
+            foreach (var k in AlleKompetencer)
+            {
+                if (k.Checker)
+                {
+                    i.Add(k.KompetenceId);
+                    s.Add(k.KompetenceNavn);
+                }
+            }
+            Person.KompetenceNavn = s.ToArray();
+            Person.KompetenceId = i.ToArray();
+
+        }
+
+
+        public void InvalidSubmitHandler()
+        {
+            ;
+        }
+    }
+

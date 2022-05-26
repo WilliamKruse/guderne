@@ -23,10 +23,10 @@ namespace festivalprojekt.Client.Services
 		}
 
 		
-		public async Task<int> BookVagt(int VagtId, int PersonId)
+		public async Task<int> BookVagt(BookVagtDTO Wrapper)
 		{
 
-			var response = await httpClient.PutAsJsonAsync("api/festivalapi/vagter/bookvagt", (VagtId, PersonId));
+			var response = await httpClient.PutAsJsonAsync($"api/festivalapi/vagter/bookvagt", Wrapper );
 			var responseStatusCode = response.StatusCode;
 			return (int)responseStatusCode;
 

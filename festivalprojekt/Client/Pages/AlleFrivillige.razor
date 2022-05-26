@@ -11,46 +11,99 @@
 </div>
 
 
-<div class="container">
-    <div class="row ">
-        <div class="col-sm-6 pt-4">
-            <ul style="list-style-type:none;">
-                <!--laver en liste med alle items i vores frivilligListe-->
-                @foreach (var person in frivilligListe)
-                {
+<div>
 
-                    <li class="shadow-sm p-3 mb-4 bg-light rounded">
-                        <p>
+    <h5> <br /> Frivillig </h5>
 
-                            <strong>Fornavn: </strong>@person.Fornavn <br />
-                            <strong>Efternavn: </strong>@person.Efternavn <br />
-                            <strong>Fødselsdag: </strong>@person.RealF <br />
-                            <strong>Email: </strong>@person.Email <br />
-                            <strong>Telefon: </strong>@person.Telefon <br />
-                            <strong>Kompetencer: </strong>
-                            @foreach (var kompetence in person.KompetenceNavn)
-                            {
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Fornavn</th>
+                <th>Efternavn</th>
+                <th>Fødselsdag</th>
+                <th>Email</th>
+                <th>Telefon</th>
+                <th>Kompetencer</th>
+                <th> </th>
+            </tr>
+        </thead>
 
-                                <ul>
-                                    <li>
-                                        @kompetence
-                                    </li>
-                                </ul>
-                            }
-                        </p>
-                        <!--Knap til at sende mail (virker dog ikke)-->
-                        <button type="button" class="btn btn-primary">Send mail</button>
+        <!--går igennem ledigevagterliste og laver en tabel-->
+        <tbody>
+            @foreach (var frivillig in frivilligListe)
+            {
+            <tr>
+                <td>@frivillig.Fornavn</td>
+                <td>@frivillig.Efternavn</td>
+                <td>@frivillig.RealF.ToString("dd.MMMMM yyyyy")</td>
+                <td>@frivillig.Email</td>S
+                <td>@frivillig.Telefon</td>
+                <td>
+                    @foreach (var kompetence in frivillig.KompetenceNavn)
+                    {
 
+                        <ul>
+                            <li>
+                                @kompetence
+                            </li>
+                        </ul>
+                    }
+                            </td>
+                <td><button type="button" class="btn btn-primary">Send mail</button></td>
+            </tr>
 
-                    </li>
-                }
-            </ul>
-
-        </div>
-    </div>
+            }
+        </tbody>
+    </table>
 
 </div>
 
+<div>
+
+    <h5> <br /> Frivillig koordinator </h5>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Fornavn</th>
+                <th>Efternavn</th>
+                <th>Fødselsdag</th>
+                <th>Email</th>
+                <th>Telefon</th>
+                <th>Kompetencer</th>
+                <th> </th>
+            </tr>
+        </thead>
+
+        <!--går igennem ledigevagterliste og laver en tabel-->
+        <tbody>
+            @foreach (var koordinator in frivilligKoordinatorListe)
+            {
+                <tr>
+                    <td>@koordinator.Fornavn</td>
+                    <td>@koordinator.Efternavn</td>
+                    <td>@koordinator.RealF</td>
+                    <td>@koordinator.Email</td>
+                    <td>@koordinator.Telefon</td>
+                    <td>
+                        @foreach (var kompetence in koordinator.KompetenceNavn)
+                        {
+
+                            <ul>
+                                <li>
+                                    @kompetence
+                                </li>
+                            </ul>
+                        }
+                    </td>
+                    <td><button type="button" class="btn btn-primary">Send mail</button></td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+
+</div>
 
 
 
@@ -58,20 +111,35 @@
 
 
     public List<PersonDTO> frivilligListe = new List<PersonDTO>();
+    public List<PersonDTO> frivilligKoordinatorListe = new List<PersonDTO>();
+    public List<PersonDTO> personListeUsorteret = new List<PersonDTO>();
+
     public int ErrorCode { get; set; }
 
 
     [Inject]
     public IPersonService Service { get; set; }
 
-    //Henter alle personer
+    //personListeUsorteret henter alle personer.
+    //derefter hentes alle frivillige (bliver sorteret på RolleId som er 1) og frivillige koordinatorer (bliver sorteret på RolleId som er 2)
     protected override async Task OnInitializedAsync()
     {
-        frivilligListe = (await Service.HentAllePersoner()).ToList();
-        foreach (var person in frivilligListe)
+        personListeUsorteret = (await Service.HentAllePersoner()).ToList();
+
+        frivilligListe = personListeUsorteret.FindAll(x => x.RolleId == 1);
+        foreach (var frivillig in frivilligListe)
         {
-            person.RealF = DateTime.ParseExact(person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
+            frivillig.RealF = DateTime.ParseExact(frivillig.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
         }
+
+
+        frivilligKoordinatorListe = personListeUsorteret.FindAll(x => x.RolleId == 2);
+        
+        foreach (var koordinator in frivilligKoordinatorListe)
+        {
+            koordinator.RealF = DateTime.ParseExact(koordinator.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
+        }
+        
 
     }
 

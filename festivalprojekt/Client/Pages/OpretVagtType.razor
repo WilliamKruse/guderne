@@ -3,6 +3,8 @@
 @using festivalprojekt.Shared.Models;
 @using System;
 
+@inject NavigationManager NavigationManager;
+
 <PageTitle>Opret vagttype</PageTitle>
 <div class="d-flex justify-content-center">
     <h3>Opret vagttype</h3>
@@ -83,6 +85,7 @@
         ErrorCode = await Service.OpretVagtType(NyVagtType);
         NyVagtType = new VagtTypeDTO();
         EditContext = new EditContext(NyVagtType);
+        OverblikPage();
         Console.WriteLine("Vagttype tilføjet: return code: " + ErrorCode);
     }
 
@@ -90,6 +93,11 @@
     public void HandleInvalidSubmit()
     {
         Console.WriteLine("Det er invalid data");
+    }
+
+    public void OverblikPage()
+    {
+        NavigationManager.NavigateTo("/overblikkoordinator");
     }
 
 }

@@ -1,154 +1,161 @@
 ﻿@page "/overblikkoordinator"
 @using festivalprojekt.Shared.Models;
 @using festivalprojekt.Client.Services;
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @using System.Globalization;
+
+@inject NavigationManager NavigationManager;
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
 <h3>Overblik</h3>
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
 
-          <ul class="list-unstyled">
-            @foreach (var vagttype in VagtTypeList)
-            {
-               <li class= "mt-4">
-                <div class="fw-bold" >@vagttype.VagtTypeNavn</div>
-               <ul class="list-group list-group-light">
-               @foreach (var vagt in VagterList)
-               {
-                   @if (vagt.VagtTypeId == vagttype.VagtTypeID)
-                  {
-                      <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <div class="fw-bold"> @vagt.VagtTypeOmråde</div>
-                      <div class="text-muted"> Fra: @vagt.StartTid.ToString("H:mm") Til: @vagt.SlutTid.ToString("H:mm") <br> Den: @vagt.StartTid.ToString("dd.MMMM")</div>
-                      <span><button type="button" class="btn btn-danger" @onclick="() => SletVagtHandler(vagt)">slet</button></span>
-                      </li>
-                      
-                  }
-               }
-               </ul>
-               </li>
-             
-            }
-           </ul>
+            <ul class="list-unstyled">
+                @foreach (var vagttype in VagtTypeList)
+                {
+                    
+                    <li class="mt-4">
+                        <div class="fw-bold">
+                            @vagttype.VagtTypeNavn
+                            <button type="button" class="btn delete" @onclick="() => SletVagtTypeHandler(vagttype)"> <span class="oi oi-trash"></span></button>
+                        </div>
+                        <ul class="list-group list-group-light">
+                            @foreach (var vagt in VagterList)
+                            {
+                                @if (vagt.VagtTypeId == vagttype.VagtTypeID)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div class="fw-bold"> @vagt.VagtTypeOmråde</div>
+                                        <div class="text-muted"> Fra: @vagt.StartTid.ToString("H:mm") Til: @vagt.SlutTid.ToString("H:mm") <br> Den: @vagt.StartTid.ToString("dd.MMMM")</div>
+                                        <button type="button" class="btn delete" @onclick="() => SletVagtHandler(vagt)"> <span class="oi oi-trash"></span></button>
+                                    </li>
+
+                                }
+                            }
+                        </ul>
+                    </li>
+
+                }
+            </ul>
         </div>
         <div class="col-sm-6 pt-4">
 
             <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
-    <DataAnnotationsValidator />
+                <DataAnnotationsValidator />
 
-    <div class="col-md-12 mb-3">
-        <label>Vagt Type</label>
-        <InputSelect id="vagttype" @bind-Value="NyVagt.VagtTypeId" class="form-control">
-            @foreach (var type in VagtTypeList)
-           {
-               <option value=@type.VagtTypeID>@type.VagtTypeNavn - @type.VagtTypeOmråde</option>
-           }
-            
-            </InputSelect>
-        <ValidationMessage For="@(() => NyVagt.VagtId)" />
-    </div>
-    <div class="col-md-6 mb-3">
-        <label>Start Dato</label>
-        <InputDate id="sluttid" @bind-Value="NyVagt.StartTid" class="form-control" />
-        <ValidationMessage For="@(() => NyVagt.StartTid)" />
-    </div>
-       <div class="col-md-3 mb-3">
-        <label>Start Tid</label>
-        <InputSelect id="sluttid" @bind-Value="StarttidTimer" class="form-control">
-            @for (var i = 1; i < 24; i++)
+                <div class="col-md-12 mb-3">
+                    <label>Vagt Type</label>
+                    <InputSelect id="vagttype" @bind-Value="NyVagt.VagtTypeId" class="form-control">
+                        @foreach (var type in VagtTypeList)
                         {
-                            if (i < 10)
-                            {
-                                string display = "0" + i;
-                                <option value=@display>@display</option>
-                            }
-                            else
-                            {
-                                <option value=@i>@i</option>
-                            }
+                            <option value=@type.VagtTypeID>@type.VagtTypeNavn - @type.VagtTypeOmråde</option>
                         }
-            </InputSelect>
-        <ValidationMessage For="@(() => NyVagt.SlutTid)" />
-    </div>
-    
-         <div class="col-md-3 mb-3 ">
-        <label></label>
-        <InputSelect id="sluttid" @bind-Value="StarttidMinutter" class="form-control">
-                 @for (var i = 0; i < 60; i=i+5)
-                        {
-                            if (i < 10)
-                            {
-                                string display = "0" + i;
-                                <option value=@display>@display</option>
-                            }
-                            else
-                            {
-                                <option value=@i>@i</option>
-                            }
-                        }
-          </InputSelect>
-        <ValidationMessage For="@(() => NyVagt.StartTid)" />
-    </div>
-      <div class="col-md-6 mb-3">
-        <label>Slut Dato</label>
-        <InputDate id="sluttid" @bind-Value="NyVagt.SlutTid" class="form-control" />
-        <ValidationMessage For="@(() => NyVagt.SlutTid)" />
-    </div>
-       <div class="col-md-3 mb-3">
-        <label>Slut tid</label>
-        <InputSelect id="sluttid" @bind-Value="SluttidTimer" class="form-control">
-            @for (var i = 1; i < 24; i++)
-                        {
-                            if (i < 10)
-                            {
-                                string display = "0" + i;
-                                <option value=@display>@display</option>
-                            }
-                               else
-                            {
-                                <option value=@i>@i</option>
-                            }
-           }
-            </InputSelect>
-        <ValidationMessage For="@(() => NyVagt.SlutTid)" />
-    </div>
-    
-           <div class="col-md-3 mb-3">
-        <label></label>
-        <InputSelect id="sluttid" @bind-Value="SluttidMinutter" class="form-control">
-                    @for (var i = 0; i < 60; i=i+10)
-                        {
-                            if (i < 10)
-                            {
-                                string display = "0" + i;
-                                <option value=@display>@display</option>
-                            }
-                            else
-                            {
-                                <option value=@i>@i</option>
-                            }
-                        }
-        </InputSelect>
-        <ValidationMessage For="@(() => NyVagt.SlutTid)" />
-    </div>
-    <div class="col-md-4 mb-3">
-        <label>Antal vagter ønsket</label>
-        <InputNumber id="telefon" @bind-Value="Antal" class="form-control" />
-        
-    </div>
 
-    <div class="col-12 mb-6">
-        <button type="submit" class="btn btn-primary">Opret Vagt</button>
-    </div>
-</EditForm>
-<button href="opretvagttype" type="button" class="btn btn-secondary">Opret ny vagttype</button>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => NyVagt.VagtId)" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Start Dato</label>
+                    <InputDate id="sluttid" @bind-Value="NyVagt.StartTid" class="form-control" />
+                    <ValidationMessage For="@(() => NyVagt.StartTid)" />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label>Start Tid</label>
+                    <InputSelect id="sluttid" @bind-Value="StarttidTimer" class="form-control">
+                        @for (var i = 1; i < 24; i++)
+                        {
+                            if (i < 10)
+                            {
+                                string display = "0" + i;
+                                <option value=@display>@display</option>
+                            }
+                            else
+                            {
+                                <option value=@i>@i</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => NyVagt.SlutTid)" />
+                </div>
+
+                <div class="col-md-3 mb-3 ">
+                    <label></label>
+                    <InputSelect id="sluttid" @bind-Value="StarttidMinutter" class="form-control">
+                        @for (var i = 0; i < 60; i = i + 5)
+                        {
+                            if (i < 10)
+                            {
+                                string display = "0" + i;
+                                <option value=@display>@display</option>
+                            }
+                            else
+                            {
+                                <option value=@i>@i</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => NyVagt.StartTid)" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Slut Dato</label>
+                    <InputDate id="sluttid" @bind-Value="NyVagt.SlutTid" class="form-control" />
+                    <ValidationMessage For="@(() => NyVagt.SlutTid)" />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label>Slut tid</label>
+                    <InputSelect id="sluttid" @bind-Value="SluttidTimer" class="form-control">
+                        @for (var i = 1; i < 24; i++)
+                        {
+                            if (i < 10)
+                            {
+                                string display = "0" + i;
+                                <option value=@display>@display</option>
+                            }
+                            else
+                            {
+                                <option value=@i>@i</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => NyVagt.SlutTid)" />
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label></label>
+                    <InputSelect id="sluttid" @bind-Value="SluttidMinutter" class="form-control">
+                        @for (var i = 0; i < 60; i = i + 10)
+                        {
+                            if (i < 10)
+                            {
+                                string display = "0" + i;
+                                <option value=@display>@display</option>
+                            }
+                            else
+                            {
+                                <option value=@i>@i</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => NyVagt.SlutTid)" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Antal vagter ønsket</label>
+                    <InputNumber id="telefon" @bind-Value="Antal" class="form-control" />
+
+                </div>
+
+                <div class="col-12 mb-6">
+                    <button type="submit" class="btn btn-primary">Opret Vagt</button>
+                </div>
+            </EditForm>
+            <button href="opretvagttype" type="button" class="btn btn-secondary" @onclick="@OpretVagtTypePage">Opret ny vagttype</button>
         </div>
     </div>
 </div>
 @code {
     //local storage ting
-    public int p_id=1;
+    public int p_id = 1;
     public int r_id;
     //bruges til listen
     public int errorcode;
@@ -166,7 +173,7 @@
 
 
     [Inject]
-    public IVagtTypeService TypeService {get;set;}
+    public IVagtTypeService TypeService { get; set; }
     [Inject]
     public IVagtService VagtService { get; set; }
 
@@ -192,39 +199,67 @@
         VagterList = null;
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
         await InvokeAsync(() =>
-          {
-              StateHasChanged();
-          });
+        {
+            StateHasChanged();
+        });
 
     }
+
+    public async Task SletVagtTypeHandler(VagtTypeDTO v)
+    {
+
+        foreach (var vagt in VagterList)
+        {
+            if (vagt.VagtTypeId == v.VagtTypeID.Value)
+            {
+                errorcode = await VagtService.SletVagt(vagt.VagtId);
+            }
+        }
+
+        errorcode = await TypeService.SletVagtType(v.VagtTypeID.Value);
+        VagtTypeList = null;
+        VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
+        VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+
+    }
+
     public void LavDato()
     {
 
-        NyVagt.StartTid= DateTime.ParseExact(NyVagt.StartTid.ToString("yyyy-MM-dd") + " " + StarttidTimer + ":" + StarttidMinutter, "yyyy-MM-dd H:mm", CultureInfo.InvariantCulture);
-        NyVagt.SlutTid= DateTime.ParseExact(NyVagt.SlutTid.ToString("yyyy-MM-dd") + " " + SluttidTimer + ":" + SluttidMinutter, "yyyy-MM-dd H:mm", CultureInfo.InvariantCulture);
+        NyVagt.StartTid = DateTime.ParseExact(NyVagt.StartTid.ToString("yyyy-MM-dd") + " " + StarttidTimer + ":" + StarttidMinutter, "yyyy-MM-dd H:mm", CultureInfo.InvariantCulture);
+        NyVagt.SlutTid = DateTime.ParseExact(NyVagt.SlutTid.ToString("yyyy-MM-dd") + " " + SluttidTimer + ":" + SluttidMinutter, "yyyy-MM-dd H:mm", CultureInfo.InvariantCulture);
     }
     public async Task OpretVagtHandler(VagtDTO NyVagt)
     {
         LavDato();
         for (var i = 0; i < Antal; i++)
         {
-            errorcode =  await VagtService.OpretVagt(NyVagt);
+            errorcode = await VagtService.OpretVagt(NyVagt);
         }
-        
+
         NyVagt = new VagtDTO();
         Antal = 1;
         editContext = new EditContext(NyVagt);
         VagterList = null;
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
-         await InvokeAsync(() =>
-          {
-              StateHasChanged();
-          });
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
 
     }
     public void InvalidSubmitHandler()
     {
         ;
+    }
+
+    public void OpretVagtTypePage()
+    {
+        NavigationManager.NavigateTo("/opretvagttype");
     }
 
 }

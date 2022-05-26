@@ -4,7 +4,7 @@
 @using System;
 @using System.Globalization;
 
-
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <h4>Antal vagter: @DineVagterListe.Count() </h4>
 
@@ -44,9 +44,10 @@
 
     public List<VagtView> DineVagterListe = new List<VagtView>();
     public PersonDTO Person = new PersonDTO();
-
     public int ErrorCode { get; set; }
 
+    public int r_id;
+    public int p_id;
 
     [Inject]
     public IVagtService Service { get; set; }
@@ -54,7 +55,10 @@
     //Henter alle personlige vagter
     protected override async Task OnInitializedAsync()
     {
-        DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", 1)).ToList();
+        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+        p_id = await sessionStorage.GetItemAsync<int>("PersonId");
+
+        DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", p_id)).ToList();
 
     }
 
@@ -65,7 +69,7 @@
         ErrorCode = await Service.SletVagt(Vagt.VagtId);
 
         DineVagterListe = null;
-        DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", 1)).ToList();
+        DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", p_id)).ToList();
         await InvokeAsync(() =>
         {
             StateHasChanged();

@@ -70,9 +70,9 @@
     protected override async Task OnInitializedAsync()
     {
         p_id = await sessionStorage.GetItemAsync<int>("PersonId");
-        p_id = await sessionStorage.GetItemAsync<int>("RolleId");
+        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
         TempList = (await Service.HentPerson(p_id)).ToList();
-        Person = TempList[0];
+        Person = TempList.First();
 
         Person.RealF = DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
 

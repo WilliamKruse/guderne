@@ -13,7 +13,7 @@ namespace festivalprojekt.Server.Models
 {
     public class PersonRepositoryDapper : IPersonRepositoryDapper
     {
-       
+
         private string sql = "";
         private dBContext Context;
 
@@ -47,11 +47,11 @@ namespace festivalprojekt.Server.Models
             //try catch, hvis det ikke virker går den til catch
             try
             {
-              
-                    var PersonListe = await Context.Connection.QueryAsync<PersonDTO>(sql);
 
-                    return PersonListe.ToList();
-                
+                var PersonListe = await Context.Connection.QueryAsync<PersonDTO>(sql);
+
+                return PersonListe.ToList();
+
             }
             catch (NotImplementedException)
             {
@@ -68,14 +68,14 @@ namespace festivalprojekt.Server.Models
             //try catch, hvis det ikke virker går den til catch
             try
             {
-              
-            
 
 
-                    var Person = await Context.Connection.QueryAsync<PersonDTO>(sql);
 
-                    return Person.ToList();
-                
+
+                var Person = await Context.Connection.QueryAsync<PersonDTO>(sql);
+
+                return Person.ToList();
+
             }
             catch (NotImplementedException)
             {
@@ -91,7 +91,7 @@ namespace festivalprojekt.Server.Models
             int tal = 0;
             if (NyPerson.KompetenceId.Length == 0)
             {
-                arr = "1,2";
+                arr = "1";
                 Console.WriteLine("ingen kompetencer");
             }
             else
@@ -102,39 +102,43 @@ namespace festivalprojekt.Server.Models
                 {
                     if (tal == 0)
                     {
-                        Console.WriteLine("debug tal 1: " + arr);
+                       
                         arr += item + "";
+                        Console.WriteLine("debug tal 1: " + arr);
+
                         tal++;
                     }
                     else
                     {
-                        Console.WriteLine("debug enter tal 2: " + arr);
+                        
                         arr += "," + item;
+                        Console.WriteLine("debug enter tal 2: " + arr);
                         tal++;
                     }
 
                 }
             }
             Console.WriteLine("repo ramt");
-            sql = $"CALL opret_person(ARRAY[{arr}], {NyPerson.PersonId} ,{NyPerson.RolleId}, '{NyPerson.Email}', '{NyPerson.Telefon}', '{NyPerson.Kodeord}', '{NyPerson.Fornavn}', '{NyPerson.Efternavn}', '{NyPerson.RealF}';)";
+            sql = $"CALL opret_person(ARRAY[{arr}],{NyPerson.PersonId},{NyPerson.RolleId},'{NyPerson.Email}','{NyPerson.Telefon}','{NyPerson.Kodeord}','{NyPerson.Fornavn}','{NyPerson.Efternavn}','{NyPerson.RealF}');";
             try
             {
-             
-                    await Context.Connection.ExecuteAsync(sql);
-                
+
+                await Context.Connection.ExecuteAsync(sql);
+
             }
             catch (NotImplementedException)
             {
                 ;
             }
         }
-        public async void OpdaterPerson(PersonDTO NyPerson) {
+        public async void OpdaterPerson(PersonDTO NyPerson)
+        {
 
             string arr = "";
             int tal = 0;
             foreach (var item in NyPerson.KompetenceId)
             {
-                if (tal==0)
+                if (tal == 0)
                 {
                     Console.WriteLine("debug tal 1: " + arr);
                     arr += item + "";
@@ -146,15 +150,15 @@ namespace festivalprojekt.Server.Models
                     arr += "," + item;
                     tal++;
                 }
-                
+
             }
             Console.WriteLine("debug array: " + arr);
             sql = $"CALL opdater_person(ARRAY[{arr}], {NyPerson.PersonId} ,{NyPerson.RolleId}, '{NyPerson.Email}', '{NyPerson.Telefon}', '{NyPerson.Kodeord}', '{NyPerson.Fornavn}', '{NyPerson.Efternavn}', '{NyPerson.RealF/*ToString("yyyy-MM-dd HH:mm:ss")*/}');";
             try
             {
-            
-                    await Context.Connection.ExecuteAsync(sql);
-                
+
+                await Context.Connection.ExecuteAsync(sql);
+
             }
             catch (NotImplementedException)
             {
@@ -164,11 +168,22 @@ namespace festivalprojekt.Server.Models
         public async Task<IEnumerable<PersonDTO>> Login(string email, string kode)
         {
             sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\", person_id AS \"PersonId\", rolle_id AS \"RolleId\", email AS \"Email\", telefon AS \"Telefon\", kodeord AS \"Kodeord\", fornavn AS \"Fornavn\", efternavn AS \"Efternavn\", fødselsdag::text AS \"Fødselsdag\" FROM fuld_person_view_3 WHERE email = '{email}' AND kodeord = '{kode}';";
-            var person = await Context.Connection.QueryAsync<PersonDTO>(sql);
-            return person.ToList();
+            try
+            {
+
+
+
+                var person = await Context.Connection.QueryAsync<PersonDTO>(sql);
+                return person;
+            }
+            catch (SystemException)
+            {
+                //hvis den ikke kan returne VagtTypeListe returnere den en tom liste
+                throw;
+            }
+
+
         }
-        
-         
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace festivalprojekt.Shared.Models
 {
 	public class BookVagtDTO

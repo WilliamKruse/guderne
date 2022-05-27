@@ -10,9 +10,18 @@ namespace festivalprojekt.Shared.Models
     {
         public int RolleId { get; set; }
         public string RolleNavn { get; set; }
+        public bool Checker { get; set; }
 
         public Roller() 
         {
+            if (this.RolleId == 1)
+            {
+                Checker = true;
+            }
+            else
+            {
+                Checker = false;
+            }
         }
 
     }

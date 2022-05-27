@@ -9,13 +9,13 @@
     <DataAnnotationsValidator />
 
     <div class="col-md-12 mb-3">
-        <label>Fornavn</label>
-        <InputText id="fornavn" @bind-Value="emailkode.Email" class="form-control" />
+        <label>Email</label>
+        <InputText id="email" @bind-Value="emailkode.Email" class="form-control" />
         <ValidationMessage For="@(() => emailkode.Email)" />
     </div>
     <div class="col-md-12 mb-3">
-        <label>Efternavn</label>
-        <InputText id="efternavn" @bind-Value="emailkode.Kode" class="form-control" />
+        <label>Kodeord</label>
+        <InputText id="kodeord" @bind-Value="emailkode.Kode" class="form-control" />
         <ValidationMessage For="@(() => emailkode.Kode)" />
     </div>
  

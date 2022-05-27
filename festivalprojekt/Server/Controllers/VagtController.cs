@@ -34,6 +34,7 @@ namespace festivalprojekt.Server.Controllers
         [HttpPut("bookvagt")]
         public async void BookVagt(BookVagtDTO Wrapper)
         {
+            Console.WriteLine("controller ramt");
             repo.BookVagt(Wrapper.VagtId, Wrapper.PersonId);
 
         }

@@ -4,12 +4,14 @@
 @using System;
 @using System.Globalization;
 
+@inject NavigationManager NavigationManager
 
 <PageTitle>Alle frivllige</PageTitle>
 <div class="d-flex justify-content-center">
     <h3>Alle frivillige</h3>
 </div>
 
+<button class="button" @onclick="@HomePage">Home</button>
 
 <div>
 
@@ -32,25 +34,25 @@
         <tbody>
             @foreach (var frivillig in frivilligListe)
             {
-            <tr>
-                <td>@frivillig.Fornavn</td>
-                <td>@frivillig.Efternavn</td>
-                <td>@frivillig.RealF.Value.ToString("dd.MMMMM yyyyy")</td>
-                <td>@frivillig.Email</td>
-                <td>@frivillig.Telefon</td>
-                <td>
-                    @foreach (var kompetence in frivillig.KompetenceNavn)
-                    {
+                <tr>
+                    <td>@frivillig.Fornavn</td>
+                    <td>@frivillig.Efternavn</td>
+                    <td>@frivillig.RealF.Value.ToString("dd.MMMMM yyyyy")</td>
+                    <td>@frivillig.Email</td>
+                    <td>@frivillig.Telefon</td>
+                    <td>
+                        @foreach (var kompetence in frivillig.KompetenceNavn)
+                        {
 
-                        <ul>
-                            <li>
-                                @kompetence
-                            </li>
-                        </ul>
-                    }
-                            </td>
-                <td><button type="button" class="btn btn-primary">Send mail</button></td>
-            </tr>
+                            <ul>
+                                <li>
+                                    @kompetence
+                                </li>
+                            </ul>
+                        }
+                    </td>
+                    <td><button type="button" class="btn btn-primary">Send mail</button></td>
+                </tr>
 
             }
         </tbody>
@@ -134,13 +136,18 @@
 
 
         frivilligKoordinatorListe = personListeUsorteret.FindAll(x => x.RolleId == 2);
-        
+
         foreach (var koordinator in frivilligKoordinatorListe)
         {
             koordinator.RealF = DateTime.ParseExact(koordinator.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
         }
-        
 
+
+    }
+
+    public void HomePage()
+    {
+        NavigationManager.NavigateTo("/home");
     }
 
 }

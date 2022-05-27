@@ -4,7 +4,12 @@
 @using System;
 @using System.Globalization;
 
+@inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<PageTitle>Vagtbooking</PageTitle>
+
+<button class="button" @onclick="@HomePage">Home</button>
 
 <table class="table table-striped">
     <thead>
@@ -77,6 +82,10 @@
         });
     }
 
+    public void HomePage()
+    {
+        NavigationManager.NavigateTo("/home");
+    }
 
 }
 

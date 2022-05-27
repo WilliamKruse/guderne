@@ -1,8 +1,13 @@
 ﻿
-@page "/login"
+@page "/"
 @using festivalprojekt.Shared.Models;
 @using festivalprojekt.Client.Services;
+
+@inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<PageTitle>Login</PageTitle>
+
 <h3>Login</h3>
 
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => SubmitHandler(this.emailkode)" OnInvalidSubmit="@InvalidSubmitHandler">
@@ -73,12 +78,17 @@
             loginejl = true;
         }
 
-    
 
+        HomePage();
 
     }
     public void InvalidSubmitHandler()
     {
         ;
+    }
+
+    public void HomePage()
+    {
+        NavigationManager.NavigateTo("/home");
     }
 }

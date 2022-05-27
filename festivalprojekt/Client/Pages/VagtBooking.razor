@@ -41,7 +41,7 @@
     </tbody>
 </table>
 
-
+@ErrorCode;
 
 @code {
 
@@ -49,8 +49,8 @@
     public BookVagtDTO Wrapper = new BookVagtDTO();
     public int ErrorCode { get; set; }
 
-    public int r_id;
-    public int p_id;
+    public int r_id =1;
+    public int p_id = 1;
 
 
     [Inject]
@@ -59,8 +59,8 @@
     //Henter alle ledige vagter
     protected override async Task OnInitializedAsync()
     {
-        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
-        p_id = await sessionStorage.GetItemAsync<int>("PersonId");
+        //r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+        //p_id = await sessionStorage.GetItemAsync<int>("PersonId");
 
         LedigeVagterListe = (await Service.HentAlleVagter("LEDIGE", 0)).ToList();
 

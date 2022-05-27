@@ -56,18 +56,22 @@
                                 <option value=@type.VagtTypeID>@type.VagtTypeNavn - @type.VagtTypeOmråde</option>
                             }
 
-                        </InputSelect>
-                        <ValidationMessage For="@(() => NyVagt.VagtId)" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label>Start Dato</label>
-                        <InputDate id="sluttid" @bind-Value="NyVagt.StartTid" class="form-control" />
-                        <ValidationMessage For="@(() => NyVagt.StartTid)" />
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label>Start Tid</label>
-                        <InputSelect id="sluttid" @bind-Value="StarttidTimer" class="form-control">
-                            @for (var i = 1; i < 24; i++)
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => NyVagt.StartTid)" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Slut Dato</label>
+                    <InputDate id="sluttid" @bind-Value="NyVagt.SlutTid" class="form-control" />
+                    <ValidationMessage For="@(() => NyVagt.SlutTid)" />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label>Slut Tid</label>
+                    <InputSelect id="sluttid" @bind-Value="SluttidTimer" class="form-control">
+                        @for (var i = 1; i < 24; i++)
+                        {
+                            if (i < 10)
+
                             {
                                 if (i < 10)
                                 {
@@ -140,22 +144,38 @@
                                     <option value=@i>@i</option>
                                 }
                             }
-                        </InputSelect>
-                        <ValidationMessage For="@(() => NyVagt.SlutTid)" />
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label>Antal vagter ønsket</label>
-                        <InputNumber id="telefon" @bind-Value="Antal" class="form-control" />
 
-                    </div>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => NyVagt.SlutTid)" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Antal vagter</label>
+                    <InputNumber id="telefon" @bind-Value="Antal" class="form-control" />
 
-                    <div class="col-12 mb-6">
-                        <button type="submit" class="btn btn-primary">Opret Vagt</button>
-                    </div>
-                </EditForm>
-                <button href="opretvagttype" type="button" class="btn btn-secondary" @onclick="@OpretVagtTypePage">Opret ny vagttype</button>
-            </div>
-        </div>
+                </div>
+
+                <div class="col-12 mb-6">
+                    <button type="submit" class="btn btn-primary">Opret Vagt</button>
+                    <button href="opretvagttype" type="button" class="btn btn-secondary" @onclick="@OpretVagtTypePage">Opret ny vagttype</button>
+                </div>
+            </EditForm>
+
+            @if (errorcodevagt == 200)
+            {
+                <div class="alert alert-success mt-4" role="alert">
+                    <strong>Succes!</strong> Den nye vagt er registreret i systemet.
+                </div>
+
+            }
+            @if (AntalNegativt == true)
+            {
+                <div class="alert alert-danger mt-4" role="alert">
+                    <strong>Fejl..</strong> Du skal oprette mindst én vagt!
+                </div>
+
+            }
+
         </div>
 </div>
 @code {
@@ -164,6 +184,7 @@
     public int r_id;
     //bruges til listen
     public int errorcode;
+    public int errorcodevagt;
     public List<VagtView> VagterList = new List<VagtView>();
     public List<VagtTypeDTO> VagtTypeList = new List<VagtTypeDTO>();
     //bruges til form
@@ -174,6 +195,7 @@
     public string StarttidMinutter = "00";
     public string SluttidTimer = "12";
     public string SluttidMinutter = "00";
+    public bool AntalNegativt = false;
 
 
 
@@ -240,9 +262,16 @@
     }
     public async Task OpretVagtHandler(VagtDTO NyVagt)
     {
+        if (Antal<1)
+        {
+            AntalNegativt = true;
+            return;
+        }
+        AntalNegativt = false;
         LavDato();
         for (var i = 0; i < Antal; i++)
         {
+
             if(NyVagt.StartTid >= NyVagt.SlutTid)
             {
                 Console.WriteLine("Fejl");
@@ -252,6 +281,7 @@
                 Console.WriteLine("Succes");
                 errorcode = await VagtService.OpretVagt(NyVagt);
             }
+
 
         }
 

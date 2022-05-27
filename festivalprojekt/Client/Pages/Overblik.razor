@@ -6,7 +6,11 @@
 @inject NavigationManager NavigationManager;
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
+<PageTitle>Overblik</PageTitle>
 <h3>Overblik</h3>
+
+<button class="button" @onclick="@HomePage">Home</button>
+
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
@@ -40,59 +44,18 @@
             </ul>
         </div>
         <div class="col-sm-6 pt-4">
+            <div class="sticky-top">
+                <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
+                    <DataAnnotationsValidator />
 
-            <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
-                <DataAnnotationsValidator />
+                    <div class="col-md-12 mb-3">
+                        <label>Vagt Type</label>
+                        <InputSelect id="vagttype" @bind-Value="NyVagt.VagtTypeId" class="form-control">
+                            @foreach (var type in VagtTypeList)
+                            {
+                                <option value=@type.VagtTypeID>@type.VagtTypeNavn - @type.VagtTypeOmråde</option>
+                            }
 
-                <div class="col-md-12 mb-3">
-                    <label>Vagt Type</label>
-                    <InputSelect id="vagttype" @bind-Value="NyVagt.VagtTypeId" class="form-control">
-                        @foreach (var type in VagtTypeList)
-                        {
-                            <option value=@type.VagtTypeID>@type.VagtTypeNavn - @type.VagtTypeOmråde</option>
-                        }
-
-                    </InputSelect>
-                    <ValidationMessage For="@(() => NyVagt.VagtId)" />
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label>Start Dato</label>
-                    <InputDate id="sluttid" @bind-Value="NyVagt.StartTid" class="form-control" />
-                    <ValidationMessage For="@(() => NyVagt.StartTid)" />
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label>Start Tid</label>
-                    <InputSelect id="sluttid" @bind-Value="StarttidTimer" class="form-control">
-                        @for (var i = 1; i < 24; i++)
-                        {
-                            if (i < 10)
-                            {
-                                string display = "0" + i;
-                                <option value=@display>@display</option>
-                            }
-                            else
-                            {
-                                <option value=@i>@i</option>
-                            }
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="@(() => NyVagt.SlutTid)" />
-                </div>
-
-                <div class="col-md-3 mb-3 ">
-                    <label></label>
-                    <InputSelect id="sluttid" @bind-Value="StarttidMinutter" class="form-control">
-                        @for (var i = 0; i < 60; i = i + 5)
-                        {
-                            if (i < 10)
-                            {
-                                string display = "0" + i;
-                                <option value=@display>@display</option>
-                            }
-                            else
-                            {
-                                <option value=@i>@i</option>
-                            }
                         }
                     </InputSelect>
                     <ValidationMessage For="@(() => NyVagt.StartTid)" />
@@ -108,33 +71,80 @@
                         @for (var i = 1; i < 24; i++)
                         {
                             if (i < 10)
-                            {
-                                string display = "0" + i;
-                                <option value=@display>@display</option>
-                            }
-                            else
-                            {
-                                <option value=@i>@i</option>
-                            }
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="@(() => NyVagt.SlutTid)" />
-                </div>
 
-                <div class="col-md-3 mb-3">
-                    <label></label>
-                    <InputSelect id="sluttid" @bind-Value="SluttidMinutter" class="form-control">
-                        @for (var i = 0; i < 60; i = i + 10)
-                        {
-                            if (i < 10)
                             {
-                                string display = "0" + i;
-                                <option value=@display>@display</option>
+                                if (i < 10)
+                                {
+                                    string display = "0" + i;
+                                    <option value=@display>@display</option>
+                                }
+                                else
+                                {
+                                    <option value=@i>@i</option>
+                                }
                             }
-                            else
+                        </InputSelect>
+                        <ValidationMessage For="@(() => NyVagt.SlutTid)" />
+                    </div>
+
+                    <div class="col-md-3 mb-3 ">
+                        <label></label>
+                        <InputSelect id="sluttid" @bind-Value="StarttidMinutter" class="form-control">
+                            @for (var i = 0; i < 60; i = i + 5)
                             {
-                                <option value=@i>@i</option>
+                                if (i < 10)
+                                {
+                                    string display = "0" + i;
+                                    <option value=@display>@display</option>
+                                }
+                                else
+                                {
+                                    <option value=@i>@i</option>
+                                }
                             }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => NyVagt.StartTid)" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Slut Dato</label>
+                        <InputDate id="sluttid" @bind-Value="NyVagt.SlutTid" class="form-control" />
+                        <ValidationMessage For="@(() => NyVagt.SlutTid)" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label>Slut tid</label>
+                        <InputSelect id="sluttid" @bind-Value="SluttidTimer" class="form-control">
+                            @for (var i = 1; i < 24; i++)
+                            {
+                                if (i < 10)
+                                {
+                                    string display = "0" + i;
+                                    <option value=@display>@display</option>
+                                }
+                                else
+                                {
+                                    <option value=@i>@i</option>
+                                }
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => NyVagt.SlutTid)" />
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label></label>
+                        <InputSelect id="sluttid" @bind-Value="SluttidMinutter" class="form-control">
+                            @for (var i = 0; i < 60; i = i + 10)
+                            {
+                                if (i < 10)
+                                {
+                                    string display = "0" + i;
+                                    <option value=@display>@display</option>
+                                }
+                                else
+                                {
+                                    <option value=@i>@i</option>
+                                }
+                            }
+
                         }
                     </InputSelect>
                     <ValidationMessage For="@(() => NyVagt.SlutTid)" />
@@ -165,8 +175,8 @@
                 </div>
 
             }
+
         </div>
-    </div>
 </div>
 @code {
     //local storage ting
@@ -261,7 +271,18 @@
         LavDato();
         for (var i = 0; i < Antal; i++)
         {
-            errorcodevagt = await VagtService.OpretVagt(NyVagt);
+
+            if(NyVagt.StartTid >= NyVagt.SlutTid)
+            {
+                Console.WriteLine("Fejl");
+            }
+            else
+            {
+                Console.WriteLine("Succes");
+                errorcode = await VagtService.OpretVagt(NyVagt);
+            }
+
+
         }
 
         NyVagt = new VagtDTO();
@@ -283,6 +304,11 @@
     public void OpretVagtTypePage()
     {
         NavigationManager.NavigateTo("/opretvagttype");
+    }
+
+    public void HomePage()
+    {
+        NavigationManager.NavigateTo("/home");
     }
 
 }

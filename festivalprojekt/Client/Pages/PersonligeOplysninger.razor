@@ -3,8 +3,12 @@
 @using System;
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
+
+@inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
+<PageTitle>Personlige oplysninger</PageTitle>
+<button class="button" @onclick="@HomePage">Home</button>
 
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
     <DataAnnotationsValidator />
@@ -39,20 +43,22 @@
         <InputText id="kodeord" @bind-Value="Person.Kodeord" class="form-control" />
         <ValidationMessage For="@(() => Person.Kodeord)" />
     </div>
-    <div class="col-12 mb-6">
-        <button type="submit" class="btn btn-primary">Opdater</button>
-    </div>
-</EditForm>
-
-<ul>
-    @foreach (var k in AlleKompetencer)
+    <h5>Dine kompetencer</h5>
+    <ul>
+        @foreach (var k in AlleKompetencer)
         {
             <div>
                 <input type="checkbox" id="@k.KompetenceNavn.ToLower()" name="@k.KompetenceNavn.ToLower()" @bind="k.Checker" />
                 <label for="@k.KompetenceNavn.ToLower()">@k.KompetenceNavn</label>
             </div>
         }
-</ul>
+    </ul>
+    <div class="col-12 mb-6">
+        <button type="submit" class="btn btn-primary">Opdater</button>
+    </div>
+</EditForm>
+
+
 
 
 @code {
@@ -114,6 +120,11 @@
     public void InvalidSubmitHandler()
     {
         ;
+    }
+
+    public void HomePage()
+    {
+        NavigationManager.NavigateTo("/home");
     }
 }
 

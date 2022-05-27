@@ -4,12 +4,14 @@
 @using System;
 @using System.Globalization;
 
+@inject NavigationManager NavigationManager
 
 <PageTitle>Alle frivllige</PageTitle>
 <div class="d-flex justify-content-center">
     <h3>Alle frivillige</h3>
 </div>
 
+<button class="button" @onclick="@HomePage">Home</button>
 
 <div>
 
@@ -32,6 +34,7 @@
         <tbody>
             @foreach (var frivillig in frivilligListe)
             {
+
             <tr>
                 <td>@frivillig.Fornavn</td>
                 <td>@frivillig.Efternavn</td>
@@ -51,6 +54,7 @@
                             </td>
                 <td><button type="button" class="btn btn-primary">Send mail</button></td>
             </tr>
+
 
             }
         </tbody>
@@ -154,6 +158,13 @@
         int født = int.Parse(x.RealF.Value.ToString("yyyyMMdd"));
         return (nu - født) / 10000;
 
+
+
+    }
+
+    public void HomePage()
+    {
+        NavigationManager.NavigateTo("/home");
     }
 
 }

@@ -4,10 +4,13 @@
 @using System;
 @using System.Globalization;
 
+@inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
+<PageTitle>Dine vagter</PageTitle>
 <h4>Antal vagter: @DineVagterListe.Count() </h4>
 
+<button class="button" @onclick="@HomePage">Home</button>
 
 <table class="table table-striped">
     <thead>
@@ -76,5 +79,8 @@
         });
     }
 
-
+    public void HomePage()
+    {
+        NavigationManager.NavigateTo("/home");
+    }
 }

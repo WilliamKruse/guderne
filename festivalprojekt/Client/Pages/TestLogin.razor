@@ -10,12 +10,16 @@
 
     <div class="col-md-12 mb-3">
         <label>Email</label>
-        <InputText id="fornavn" @bind-Value="emailkode.Email" class="form-control" />
+
+        <InputText id="email" @bind-Value="emailkode.Email" class="form-control" />
+
         <ValidationMessage For="@(() => emailkode.Email)" />
     </div>
     <div class="col-md-12 mb-3">
         <label>Kodeord</label>
-        <InputText Type="password" id="efternavn" @bind-Value="emailkode.Kode" class="form-control" />
+
+        <InputText id="kodeord" @bind-Value="emailkode.Kode" class="form-control" />
+
         <ValidationMessage For="@(() => emailkode.Kode)" />
     </div>
 

@@ -3,7 +3,8 @@
 @using festivalprojekt.Shared.Models;
 @using System;
 
-@inject NavigationManager NavigationManager;
+@inject NavigationManager NavigationManager
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <PageTitle>Opret vagttype</PageTitle>
 <div class="d-flex justify-content-center">
@@ -47,7 +48,7 @@
             </div>
         </EditForm>
 
-   
+
 
     </div>
 </div>
@@ -59,12 +60,21 @@
     public VagtTypeDTO NyVagtType = new VagtTypeDTO();
 
     public int ErrorCode { get; set; }
-
+    public int r_id;
 
     //Injecter Service så vi kan bruge metoderne derfra.
     [Inject]
     public IVagtTypeService Service { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+
+        if (r_id == 0)
+        {
+            LoginPage();
+        }
+    }
 
     //laver ny edit context objekt når siden starter, modelerer ud fra objektet NyVagtType
     protected override void OnInitialized()
@@ -91,6 +101,11 @@
     public void OverblikPage()
     {
         NavigationManager.NavigateTo("/overblikkoordinator");
+    }
+
+    public void LoginPage()
+    {
+        NavigationManager.NavigateTo("/");
     }
 
 }

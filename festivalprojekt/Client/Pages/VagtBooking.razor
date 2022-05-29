@@ -59,8 +59,13 @@
     //Henter alle ledige vagter
     protected override async Task OnInitializedAsync()
     {
-        //r_id = await sessionStorage.GetItemAsync<int>("RolleId");
-        //p_id = await sessionStorage.GetItemAsync<int>("PersonId");
+        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+        p_id = await sessionStorage.GetItemAsync<int>("PersonId");
+
+        if(r_id == 0)
+        {
+            LoginPage();
+        }
 
         LedigeVagterListe = (await Service.HentAlleVagter("LEDIGE", 0)).ToList();
 
@@ -85,6 +90,11 @@
     public void HomePage()
     {
         NavigationManager.NavigateTo("/home");
+    }
+
+    public void LoginPage()
+    {
+        NavigationManager.NavigateTo("/");
     }
 
 }

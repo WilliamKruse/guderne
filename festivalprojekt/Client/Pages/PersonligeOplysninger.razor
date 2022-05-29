@@ -77,6 +77,12 @@
     {
         p_id = await sessionStorage.GetItemAsync<int>("PersonId");
         r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+
+        if(r_id == 0)
+        {
+            LoginPage();
+        }
+
         TempList = (await Service.HentPerson(p_id)).ToList();
         Person = TempList.First();
 
@@ -125,6 +131,11 @@
     public void HomePage()
     {
         NavigationManager.NavigateTo("/home");
+    }
+
+    public void LoginPage()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }
 

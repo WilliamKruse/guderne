@@ -190,8 +190,6 @@
     public string SluttidMinutter = "00";
     public bool AntalNegativt = false;
 
-
-
     [Inject]
     public IVagtTypeService TypeService { get; set; }
     [Inject]
@@ -199,6 +197,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+
+        if (r_id == 0)
+        {
+            LoginPage();
+        }
 
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
@@ -302,6 +306,11 @@
     public void HomePage()
     {
         NavigationManager.NavigateTo("/home");
+    }
+
+    public void LoginPage()
+    {
+        NavigationManager.NavigateTo("/");
     }
 
 }

@@ -257,9 +257,10 @@
 
     }
 
-    public void OpdaterVagtTypeHandler(VagtTypeDTO vagtType)
+    public async Task OpdaterVagtTypeHandler(VagtTypeDTO vagtType)
     {
-        OpdaterVagtTypePage(vagtType);
+        await sessionStorage.SetItemAsync("VagtTypeId", vagtType.VagtTypeID);
+        OpdaterVagtTypePage();
     }
 
     public void LavDato()
@@ -324,9 +325,9 @@
         NavigationManager.NavigateTo("/");
     }
 
-    public void OpdaterVagtTypePage(VagtTypeDTO vagtType)
+    public void OpdaterVagtTypePage()
     {
-        NavigationManager.NavigateTo("/opretvagttype");
+        NavigationManager.NavigateTo("/opdatervagttype");
     }
 
 }

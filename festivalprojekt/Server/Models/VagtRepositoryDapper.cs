@@ -74,12 +74,18 @@ namespace festivalprojekt.Server.Models
         }
         public async void OpretVagt(VagtDTO NyVagt)
         {
-         
-            sql = $"INSERT INTO vagter (vagt_type_id, start_tid, slut_tid, person_id) VALUES ({NyVagt.VagtTypeId}, '{NyVagt.StartTid/*.ToString("yyyy-MM-dd H:mm:ss")*/}', '{NyVagt.SlutTid/*.ToString("yyyy-MM-dd H:mm:ss")*/}', null);";
+            DynamicParameters dp = new DynamicParameters();
+            dp.Add("StartTid", NyVagt.StartTid);
+            dp.Add("SlutTid", NyVagt.SlutTid);
+            dp.Add("VagtType", NyVagt.VagtTypeId);
+            dp.Add("PersonId", NyVagt.PersonId);
+
+            sql = $"INSERT INTO vagter (vagt_type_id, start_tid, slut_tid, person_id) VALUES (@VagtType, @StartTid, @SlutTid, @Personid)";
+           // sql = $"INSERT INTO vagter (vagt_type_id, start_tid, slut_tid, person_id) VALUES ({NyVagt.VagtTypeId}, '{NyVagt.StartTid/*.ToString("yyyy-MM-dd H:mm:ss")*/}', '{NyVagt.SlutTid/*.ToString("yyyy-MM-dd H:mm:ss")*/}', null);";
             try
             {
                 
-                    await Context.Connection.ExecuteAsync(sql);
+                    await Context.Connection.ExecuteAsync(sql, dp);
                 
             }
             catch (NotImplementedException)

@@ -19,23 +19,23 @@ namespace festivalprojekt.Shared.Models
         public int? PersonId { get; set; }
         public int RolleId { get; set; }
 
-        //validering af fornavn
-        //[Required(ErrorMessage = "Du skal udfylde dette felt")]
+        //Validering af fornavn
         [StringLength(40, ErrorMessage = "Navnet er for langt")]
+        [MinLength(1, ErrorMessage = "Udfyld fornavn")]
         public string Fornavn { get; set; }
 
 
-        //validering af efternavn
-        //[Required(ErrorMessage = "Du skal udfylde dette felt")]
+        //Validering af efternavn
         [StringLength(40, ErrorMessage = "Navnet er for langt")]
+        [MinLength(1, ErrorMessage = "Udfyld efternavn")]
         public string Efternavn { get; set; }
 
-        //validering af fødselsdag
-       // [Required(ErrorMessage = "Du skal udfylde dette felt")]
-        public string Fødselsdag { get; set; }
-
+        //Validering af fødselsdag
+        [Required(ErrorMessage = "Vælg fødselsdato")]
         public DateTime? RealF { get; set; }
-
+        
+        
+        public string Fødselsdag { get; set; }
 
 
         //Valedering af email 
@@ -44,12 +44,13 @@ namespace festivalprojekt.Shared.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        //Valerdering af telefoner 
+        //Valerdering af telefonnummer
         //[Required(ErrorMessage = "Du skal udfylde dette felt")]
         [StringLength(8, MinimumLength = 8, ErrorMessage = "skriv dit 8-cifrede telefonnummer tak")]
         public string Telefon { get; set; }
 
-
+        //Valerdering af kodeord
+        [MinLength(8, ErrorMessage = "Dit kodeord skal mindst være på 8-cifre")]
         public string Kodeord { get; set; }
 
         public override string ToString()

@@ -39,13 +39,10 @@ namespace festivalprojekt.Shared.Models
 
 
         //Valedering af email 
-        //[Required(ErrorMessage = "Du skal udfylde dette felt")]
-        //[DataType(DataType.EmailAddress)]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Indtast en valid email")]
         public string Email { get; set; }
 
         //Valerdering af telefonnummer
-        //[Required(ErrorMessage = "Du skal udfylde dette felt")]
         [StringLength(8, MinimumLength = 8, ErrorMessage = "skriv dit 8-cifrede telefonnummer tak")]
         public string Telefon { get; set; }
 

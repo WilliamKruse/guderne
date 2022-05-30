@@ -75,13 +75,8 @@
     public async void SletVagt(VagtView Vagt)
     {
         ErrorCode = await Service.SletVagt(Vagt.VagtId);
-
-        DineVagterListe = null;
         DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", p_id)).ToList();
-        await InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
+        this.StateHasChanged();
     }
 
     public void HomePage()

@@ -39,7 +39,7 @@
         <ValidationMessage For="@(() => Person.Email)" />
     </div>
     <div class="col-md-6 mb-3">
-        <label>Kodeord</label>
+        <label>Nyt Kodeord</label>
         <InputText id="kodeord" @bind-Value="Person.Kodeord" class="form-control" />
         <ValidationMessage For="@(() => Person.Kodeord)" />
     </div>
@@ -93,6 +93,7 @@
         {
             k.Checker = Array.Exists(Person.KompetenceNavn, x => x == k.KompetenceNavn);
         }
+        Person.Kodeord = "";
     }
     protected override void OnInitialized()
     {
@@ -103,6 +104,7 @@
     {
         MatchBox();
         errorcode = await Service.OpdaterPerson(person);
+        NavigationManager.NavigateTo("/home");
 
 
     }

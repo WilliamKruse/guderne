@@ -31,7 +31,7 @@ namespace festivalprojekt.Shared.Models
         public string Efternavn { get; set; }
 
         //Validering af fødselsdag
-        [Required(ErrorMessage = "Vælg fødselsdato")]
+        //[Required(ErrorMessage = "Vælg fødselsdato")]
         public DateTime? RealF { get; set; }
         
         

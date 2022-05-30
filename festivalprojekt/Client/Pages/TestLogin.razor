@@ -85,14 +85,12 @@
             person = TempList.First();
             await sessionStorage.SetItemAsync("PersonId", person.PersonId);
             await sessionStorage.SetItemAsync("RolleId", person.RolleId);
+            HomePage();
         }
         else
         {
             loginejl = true;
         }
-
-
-        HomePage();
 
     }
     public void InvalidSubmitHandler()

@@ -121,16 +121,16 @@ namespace festivalprojekt.Server.Models
             Console.WriteLine("repo ramt");
 
             DynamicParameters dp = new DynamicParameters();
-            dp.Add("StartTid", NyPerson.PersonId);
-            dp.Add("SlutTid", NyPerson.RolleId);
-            dp.Add("VagtType", NyPerson.Email);
-            dp.Add("PersonId", NyPerson.Telefon);
-            dp.Add("PersonId", NyPerson.Kodeord);
-            dp.Add("PersonId", NyPerson.Fornavn);
-            dp.Add("PersonId", NyPerson.Efternavn);
-            dp.Add("PersonId", NyPerson.RealF);
+            dp.Add("PersonId", NyPerson.PersonId);
+            dp.Add("RolleId", NyPerson.RolleId);
+            dp.Add("Email", NyPerson.Email);
+            dp.Add("Telefon", NyPerson.Telefon);
+            dp.Add("Kodeord", NyPerson.Kodeord);
+            dp.Add("Fornavn", NyPerson.Fornavn);
+            dp.Add("Efternavn", NyPerson.Efternavn);
+            dp.Add("RealF", NyPerson.RealF);
 
-            sql = $"CALL opret_person(ARRAY[{arr}],(@Personid, @RolleId, @Email, @Telefon, @Kodeord, @Fornavn, @Efternavn, @RealF)";
+            sql = $"CALL opret_person(ARRAY[{arr}], @PersonId, @RolleId, @Email, @Telefon, @Kodeord, @Fornavn, @Efternavn, @RealF);";
 
            // sql = $"CALL opret_person(ARRAY[{arr}],{NyPerson.PersonId},{NyPerson.RolleId},'{NyPerson.Email}','{NyPerson.Telefon}','{NyPerson.Kodeord}','{NyPerson.Fornavn}','{NyPerson.Efternavn}','{NyPerson.RealF}');";
             try
@@ -168,16 +168,16 @@ namespace festivalprojekt.Server.Models
             Console.WriteLine("debug array: " + arr);
 
             DynamicParameters dp = new DynamicParameters();
-            dp.Add("StartTid", NyPerson.PersonId);
-            dp.Add("SlutTid", NyPerson.RolleId);
-            dp.Add("VagtType", NyPerson.Email);
-            dp.Add("PersonId", NyPerson.Telefon);
-            dp.Add("PersonId", NyPerson.Kodeord);
-            dp.Add("PersonId", NyPerson.Fornavn);
-            dp.Add("PersonId", NyPerson.Efternavn);
-            dp.Add("PersonId", NyPerson.RealF);
+            dp.Add("PersonId", NyPerson.PersonId);
+            dp.Add("RolleId", NyPerson.RolleId);
+            dp.Add("Email", NyPerson.Email);
+            dp.Add("Telefon", NyPerson.Telefon);
+            dp.Add("Kodeord", NyPerson.Kodeord);
+            dp.Add("Fornavn", NyPerson.Fornavn);
+            dp.Add("Efternavn", NyPerson.Efternavn);
+            dp.Add("RealF", NyPerson.RealF);
 
-            sql = $"CALL opret_person(ARRAY[{arr}],(@Personid, @RolleId, @Email, @Telefon, @Kodeord, @Fornavn, @Efternavn, @RealF)";
+            sql = $"CALL opdater_person(ARRAY[{arr}], @PersonId, @RolleId, @Email, @Telefon, @Kodeord, @Fornavn, @Efternavn, @RealF);";
 
           //  sql = $"CALL opdater_person(ARRAY[{arr}], {NyPerson.PersonId} ,{NyPerson.RolleId}, '{NyPerson.Email}', '{NyPerson.Telefon}', '{NyPerson.Kodeord}', '{NyPerson.Fornavn}', '{NyPerson.Efternavn}', '{NyPerson.RealF/*ToString("yyyy-MM-dd HH:mm:ss")*/}');";
             try

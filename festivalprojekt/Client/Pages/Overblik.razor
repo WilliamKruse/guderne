@@ -207,7 +207,7 @@
         }
 
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
-
+        VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
 
     }
     protected override void OnInitialized()

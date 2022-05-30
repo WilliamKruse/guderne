@@ -1,0 +1,107 @@
+﻿@page "/opdatervagttype"
+@using festivalprojekt.Client.Services;
+@using festivalprojekt.Shared.Models;
+@using System;
+
+@inject NavigationManager NavigationManager
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<PageTitle>Opdater vagttype</PageTitle>
+<div class="d-flex justify-content-center">
+    <h3>Opret vagttype</h3>
+
+</div>
+
+<button class="button" @onclick="@OverblikPage">Tilbage</button>
+
+<div class="col-sm-6">
+    <!--sticky top gør at dens position forbliver på skærmen når man scroller-->
+    <div class="sticky-top">
+        <!--editform er en del af blazor, edit context skal være med, da den prøver at følge formen på et objekt-->
+        <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="() => OpdaterVagtTypeHandler(this.NyVagtType)" OnInvalidSubmit="@HandleInvalidSubmit">
+            <DataAnnotationsValidator />
+
+            <!--Opretter et tomt felt til vagttype navn og binder den til det object man er ved at oprette(NyVagtType) på VagtTypeNavn-property fra VagtTypeDTO-->
+            <div class="col-md-12 mb-3">
+                <label>Vagttype navn</label>
+                <InputText id="vagttypenavn" @bind-Value="NyVagtType.VagtTypeNavn" class="form-control" />
+                <ValidationMessage For="@(() => NyVagtType.VagtTypeNavn)" />
+            </div>
+
+            <!--Opretter et tomt felt til beskrivelse og binder den til det object man er ved at oprette(NyVagtType) på VagtTypeBeskrivelse-property fra VagtTypeDTO-->
+            <div class="col-md-12 mb-3">
+                <label>Beskrivelse</label>
+                <InputText id="vagttypebeskrivelse" @bind-Value="NyVagtType.VagtTypeBeskrivelse" class="form-control" />
+                <ValidationMessage For="@(() => NyVagtType.VagtTypeBeskrivelse)" />
+            </div>
+
+            <!--Opretter et tomt felt til område og binder den til det object man er ved at oprette(NyVagtType) på VagtTypeOmråde-property fra VagtTypeDTO-->
+            <div class="col-md-12 mb-3">
+                <label>Område</label>
+                <InputText id="tlf" @bind-Value="NyVagtType.VagtTypeOmråde" class="form-control" />
+                <ValidationMessage For="@(() => NyVagtType.VagtTypeOmråde)" />
+            </div>
+
+            <!--Knap til at oprette vagttype-->
+            <div class="col-12 mb-6">
+                <button type="submit" class="btn btn-primary">Opret vagttype</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+    private EditContext EditContext;
+
+    public VagtTypeDTO NyVagtType = new VagtTypeDTO();
+    public Overblik overblik;
+
+    public int ErrorCode { get; set; }
+    public int r_id;
+
+    //Injecter Service så vi kan bruge metoderne derfra.
+    [Inject]
+    public IVagtTypeService Service { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+
+        if (r_id == 0)
+        {
+            LoginPage();
+        }
+
+        overblik.OpdaterVagtTypeHandler(NyVagtType);
+    }
+
+    //laver ny edit context objekt når siden starter, modelerer ud fra objektet NyVagtType
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(NyVagtType);
+    }
+
+    public async void OpdaterVagtTypeHandler(VagtTypeDTO NyVagtType)
+    {
+        ErrorCode = await Service.OpdaterVagtType(NyVagtType);
+    }
+
+    //metoder hvis bruger indtaster invalid data, kommer kun i console.
+    public void HandleInvalidSubmit()
+    {
+        Console.WriteLine("Det er invalid data");
+    }
+
+    public void OverblikPage()
+    {
+        NavigationManager.NavigateTo("/overblikkoordinator");
+    }
+
+    public void LoginPage()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+}
+

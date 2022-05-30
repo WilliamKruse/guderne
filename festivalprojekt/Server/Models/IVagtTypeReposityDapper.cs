@@ -17,7 +17,7 @@ namespace festivalprojekt.Server.Models
 
 		void SletVagtType(int VagtTypeId);
 
-
+		void OpdaterVagtType(VagtTypeDTO NyVagtType);
 	}
 }
 

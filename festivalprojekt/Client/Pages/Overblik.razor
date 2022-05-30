@@ -21,6 +21,7 @@
                         <div class="fw-bold">
                             @vagttype.VagtTypeNavn
                             <button type="button" class="btn delete" @onclick="() => SletVagtTypeHandler(vagttype)"> <span class="oi oi-trash"></span></button>
+                            <button type="button" class="btn update" @onclick="() => OpdaterVagtTypeHandler(vagttype)"> <span class="oi oi-pencil"></span></button>
                         </div>
                         <ul class="list-group list-group-light">
                             @foreach (var vagt in VagterList)
@@ -229,9 +230,9 @@
         //StateHasChanged();
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
 
-       // await InvokeAsync(() =>
+        // await InvokeAsync(() =>
         //{
-          //  StateHasChanged();
+        //  StateHasChanged();
         //});
 
     }
@@ -254,6 +255,11 @@
         this.StateHasChanged();
 
 
+    }
+
+    public void OpdaterVagtTypeHandler(VagtTypeDTO vagtType)
+    {
+        OpdaterVagtTypePage(vagtType);
     }
 
     public void LavDato()
@@ -294,7 +300,7 @@
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
         //await InvokeAsync(() =>
         //{
-          //  StateHasChanged();
+        //  StateHasChanged();
         //});
 
     }
@@ -316,6 +322,11 @@
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
+    }
+
+    public void OpdaterVagtTypePage(VagtTypeDTO vagtType)
+    {
+        NavigationManager.NavigateTo("/opretvagttype");
     }
 
 }

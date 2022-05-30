@@ -11,13 +11,13 @@ namespace festivalprojekt.Shared.Models
     {
         public int? VagtTypeID { get; set; }
 
-        [Required(ErrorMessage = "Tilføj vagttype navn")]
+       // [Required(ErrorMessage = "Tilføj vagttype navn")]
         public string VagtTypeNavn { get; set; }
 
-        [Required(ErrorMessage = "Tilføj vagttype beskrivelse")]
+       // [Required(ErrorMessage = "Tilføj vagttype beskrivelse")]
         public string? VagtTypeBeskrivelse { get; set; }
 
-        [Required(ErrorMessage = "Tilføjvagt type område")]
+       // [Required(ErrorMessage = "Tilføjvagt type område")]
         public string VagtTypeOmråde { get; set; }
     }
 }

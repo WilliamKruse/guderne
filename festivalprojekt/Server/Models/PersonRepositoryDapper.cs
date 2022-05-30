@@ -119,11 +119,24 @@ namespace festivalprojekt.Server.Models
                 }
             }
             Console.WriteLine("repo ramt");
-            sql = $"CALL opret_person(ARRAY[{arr}],{NyPerson.PersonId},{NyPerson.RolleId},'{NyPerson.Email}','{NyPerson.Telefon}','{NyPerson.Kodeord}','{NyPerson.Fornavn}','{NyPerson.Efternavn}','{NyPerson.RealF}');";
+
+            DynamicParameters dp = new DynamicParameters();
+            dp.Add("StartTid", NyPerson.PersonId);
+            dp.Add("SlutTid", NyPerson.RolleId);
+            dp.Add("VagtType", NyPerson.Email);
+            dp.Add("PersonId", NyPerson.Telefon);
+            dp.Add("PersonId", NyPerson.Kodeord);
+            dp.Add("PersonId", NyPerson.Fornavn);
+            dp.Add("PersonId", NyPerson.Efternavn);
+            dp.Add("PersonId", NyPerson.RealF);
+
+            sql = $"CALL opret_person(ARRAY[{arr}],(@Personid, @RolleId, @Email, @Telefon, @Kodeord, @Fornavn, @Efternavn, @RealF)";
+
+           // sql = $"CALL opret_person(ARRAY[{arr}],{NyPerson.PersonId},{NyPerson.RolleId},'{NyPerson.Email}','{NyPerson.Telefon}','{NyPerson.Kodeord}','{NyPerson.Fornavn}','{NyPerson.Efternavn}','{NyPerson.RealF}');";
             try
             {
 
-                await Context.Connection.ExecuteAsync(sql);
+                await Context.Connection.ExecuteAsync(sql, dp);
 
             }
             catch (NotImplementedException)
@@ -153,11 +166,24 @@ namespace festivalprojekt.Server.Models
 
             }
             Console.WriteLine("debug array: " + arr);
-            sql = $"CALL opdater_person(ARRAY[{arr}], {NyPerson.PersonId} ,{NyPerson.RolleId}, '{NyPerson.Email}', '{NyPerson.Telefon}', '{NyPerson.Kodeord}', '{NyPerson.Fornavn}', '{NyPerson.Efternavn}', '{NyPerson.RealF/*ToString("yyyy-MM-dd HH:mm:ss")*/}');";
+
+            DynamicParameters dp = new DynamicParameters();
+            dp.Add("StartTid", NyPerson.PersonId);
+            dp.Add("SlutTid", NyPerson.RolleId);
+            dp.Add("VagtType", NyPerson.Email);
+            dp.Add("PersonId", NyPerson.Telefon);
+            dp.Add("PersonId", NyPerson.Kodeord);
+            dp.Add("PersonId", NyPerson.Fornavn);
+            dp.Add("PersonId", NyPerson.Efternavn);
+            dp.Add("PersonId", NyPerson.RealF);
+
+            sql = $"CALL opret_person(ARRAY[{arr}],(@Personid, @RolleId, @Email, @Telefon, @Kodeord, @Fornavn, @Efternavn, @RealF)";
+
+          //  sql = $"CALL opdater_person(ARRAY[{arr}], {NyPerson.PersonId} ,{NyPerson.RolleId}, '{NyPerson.Email}', '{NyPerson.Telefon}', '{NyPerson.Kodeord}', '{NyPerson.Fornavn}', '{NyPerson.Efternavn}', '{NyPerson.RealF/*ToString("yyyy-MM-dd HH:mm:ss")*/}');";
             try
             {
 
-                await Context.Connection.ExecuteAsync(sql);
+                await Context.Connection.ExecuteAsync(sql, dp);
 
             }
             catch (NotImplementedException)

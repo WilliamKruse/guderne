@@ -49,6 +49,7 @@
                     <div class="col-md-12 mb-3">
                         <label>Vagt Type</label>
                         <InputSelect id="vagttype" @bind-Value="NyVagt.VagtTypeId" class="form-control">
+                            <option value="0">Vælg Vagttype</option>
                             @foreach (var type in VagtTypeList)
                             {
                                 <option value=@type.VagtTypeID>@type.VagtTypeNavn - @type.VagtTypeOmråde</option>
@@ -185,9 +186,9 @@
     public VagtDTO NyVagt = new VagtDTO();
     public int Antal = 1;
     public string StarttidTimer = "12";
-    public string StarttidMinutter = "00";
+    public string StarttidMinutter = "30";
     public string SluttidTimer = "12";
-    public string SluttidMinutter = "00";
+    public string SluttidMinutter = "30";
     public bool AntalNegativt = false;
 
     [Inject]
@@ -197,6 +198,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+
         r_id = await sessionStorage.GetItemAsync<int>("RolleId");
 
         if (r_id == 0)
@@ -205,7 +207,7 @@
         }
 
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
-        VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
+
 
     }
     protected override void OnInitialized()
@@ -213,19 +215,24 @@
         editContext = new EditContext(NyVagt);
         NyVagt.StartTid = DateTime.Now;
         NyVagt.SlutTid = DateTime.Now;
+        LavDato();
         NyVagt.VagtTypeId = 1;
 
     }
 
     public async Task SletVagtHandler(VagtView v)
     {
+
         errorcode = await VagtService.SletVagt(v.VagtId);
-        VagterList = null;
+        //VagterList = null;
+
+        //StateHasChanged();
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
-        await InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
+
+       // await InvokeAsync(() =>
+        //{
+          //  StateHasChanged();
+        //});
 
     }
 
@@ -244,10 +251,8 @@
         VagtTypeList = null;
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
-        await InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
+        this.StateHasChanged();
+
 
     }
 
@@ -287,10 +292,10 @@
         editContext = new EditContext(NyVagt);
         VagterList = null;
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
-        await InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
+        //await InvokeAsync(() =>
+        //{
+          //  StateHasChanged();
+        //});
 
     }
     public void InvalidSubmitHandler()

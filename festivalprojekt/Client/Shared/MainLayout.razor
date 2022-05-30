@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -11,7 +11,7 @@
                 <button class="dropbtn"><span class="oi oi-person"></span></button>
                 <div class="dropdown-content">
                     <a href="/personligeoplysninger">Dine oplysninger</a>
-                    <a href="#">Log ud</a>
+                    <a href="/" @onclick="() => ClearStorage()">Log ud</a>
                 </div>
             </div>
         </div>
@@ -21,4 +21,10 @@
         </article>
     </main>
 </div>
+@code{
+    public void ClearStorage()
+    {
+        sessionStorage.ClearAsync();
+    }
+}
 

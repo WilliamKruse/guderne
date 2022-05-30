@@ -10,13 +10,6 @@
 <PageTitle>Home</PageTitle>
 <h1>Velkommen!</h1>
 
-@if (r_id == 0)
-{
-    <div class="alert alert-warning" role="alert">
-        <strong>Hov!</strong><br />Du mangler at logge ind.<Button class="btn-default" @onclick="@TestLoginPage">Login</Button>  
-    </div>
-}
-
 @if (r_id == 1)
 {
     <div class="center">
@@ -43,9 +36,13 @@
         r_id = await sessionStorage.GetItemAsync<int>("RolleId");
         p_id = await sessionStorage.GetItemAsync<int>("PersonId");
 
+        if (r_id == 0)
+        {
+            LoginPage();
+        }
     }
 
-    public void TestLoginPage()
+    public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
     }

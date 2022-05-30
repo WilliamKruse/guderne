@@ -9,6 +9,7 @@
 @inject NavigationManager NavigationManager;
 
 <PageTitle>Sign up</PageTitle>
+<button class="button" @onclick="@LoginPage">Tilbage</button>
 <div class="d-flex justify-content-center">
     <h3>Sign up</h3>
 </div>
@@ -92,8 +93,10 @@
     private EditContext editContext;
     public int TempRolleId = 1;
     public bool EmailFejl = false;
-
     public bool loginejl = false;
+
+    public int r_id;
+
 
 
     [Inject]
@@ -103,6 +106,13 @@
 
     protected override async Task OnInitializedAsync()
     {
+        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+
+        if (r_id == 0)
+        {
+            LoginPage();
+        }
+
         //DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
         AlleRoller = (await Service.HentAlleRoller()).ToList();
         AlleKompetencer = (await Service.HentAlleKompetencer()).ToList();
@@ -166,6 +176,11 @@
     public void InvalidSubmitHandler()
     {
         ;
+    }
+
+    public void LoginPage()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }
 

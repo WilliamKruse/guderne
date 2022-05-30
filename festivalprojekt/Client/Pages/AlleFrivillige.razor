@@ -5,6 +5,8 @@
 @using System.Globalization;
 
 @inject NavigationManager NavigationManager
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
 
 <PageTitle>Alle frivllige</PageTitle>
 <div class="d-flex justify-content-center">
@@ -35,25 +37,25 @@
             @foreach (var frivillig in frivilligListe)
             {
 
-            <tr>
-                <td>@frivillig.Fornavn</td>
-                <td>@frivillig.Efternavn</td>
-                <td>@frivillig.RealF.Value.ToString("dd.MMMMM yyyy")</td>
-                <td>@frivillig.Email</td>
-                <td>@frivillig.Telefon</td>
-                <td>
-                    @foreach (var kompetence in frivillig.KompetenceNavn)
-                    {
+                <tr>
+                    <td>@frivillig.Fornavn</td>
+                    <td>@frivillig.Efternavn</td>
+                    <td>@frivillig.RealF.Value.ToString("dd.MMMMM yyyy")</td>
+                    <td>@frivillig.Email</td>
+                    <td>@frivillig.Telefon</td>
+                    <td>
+                        @foreach (var kompetence in frivillig.KompetenceNavn)
+                        {
 
-                        <ul>
-                            <li>
-                                @kompetence
-                            </li>
-                        </ul>
-                    }
-                            </td>
-                <td><button type="button" class="btn btn-primary">Send mail</button></td>
-            </tr>
+                            <ul>
+                                <li>
+                                    @kompetence
+                                </li>
+                            </ul>
+                        }
+                    </td>
+                    <td><button type="button" class="btn btn-primary">Send mail</button></td>
+                </tr>
 
 
             }
@@ -120,9 +122,8 @@
     public List<PersonDTO> frivilligListe = new List<PersonDTO>();
     public List<PersonDTO> frivilligKoordinatorListe = new List<PersonDTO>();
     public List<PersonDTO> personListeUsorteret = new List<PersonDTO>();
-    
 
-
+    public int r_id;
     public int ErrorCode { get; set; }
 
 
@@ -133,6 +134,13 @@
     //derefter hentes alle frivillige (bliver sorteret på RolleId som er 1) og frivillige koordinatorer (bliver sorteret på RolleId som er 2)
     protected override async Task OnInitializedAsync()
     {
+        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+
+        if (r_id == 0)
+        {
+            LoginPage();
+        }
+
         personListeUsorteret = (await Service.HentAllePersoner()).ToList();
 
         frivilligListe = personListeUsorteret.FindAll(x => x.RolleId == 1);
@@ -165,6 +173,11 @@
     public void HomePage()
     {
         NavigationManager.NavigateTo("/home");
+    }
+
+    public void LoginPage()
+    {
+        NavigationManager.NavigateTo("/");
     }
 
 }

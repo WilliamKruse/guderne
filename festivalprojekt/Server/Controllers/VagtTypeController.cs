@@ -47,6 +47,12 @@ namespace festivalprojekt.Server.Controllers
 
         }
 
+        [HttpPut("opdatervagttype")]
+        public async void OpdaterVagtType(VagtTypeDTO NyVagtType)
+        {
+            repo.OpdaterVagtType(NyVagtType);
+
+        }
 
     }
 }

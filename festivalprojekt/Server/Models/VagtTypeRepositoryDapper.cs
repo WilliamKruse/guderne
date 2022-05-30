@@ -88,6 +88,24 @@ namespace festivalprojekt.Server.Models
             }
         }
 
+        public async void OpdaterVagtType(VagtTypeDTO NyVagtType)
+        {
+            sql = $"UPDATE vagt_typer SET vagt_type_navn = {NyVagtType.VagtTypeNavn}, " +
+                    $"vagt_type_beskrivelse = {NyVagtType.VagtTypeBeskrivelse}, " +
+                    $"vagt_type_område = {NyVagtType.VagtTypeOmråde} " +
+                    $"WHERE vagt_type_id = {NyVagtType.VagtTypeID}";
+            try
+            {
+
+                await Context.Connection.ExecuteAsync(sql);
+
+            }
+            catch (NotImplementedException)
+            {
+                ;
+            }
+        }
+
     }
 }
 

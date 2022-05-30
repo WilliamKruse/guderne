@@ -35,6 +35,14 @@ namespace festivalprojekt.Client.Services
 			return (int)responseStatusCode;
 		}
 
+		public async Task<int> OpdaterVagtType(VagtTypeDTO NyVagtType)
+		{
+
+			var response = await httpClient.PutAsJsonAsync("api/festivalapi/vagttyper/opdatervagttype", NyVagtType);
+			var responseStatusCode = response.StatusCode;
+			return (int)responseStatusCode;
+
+		}
 	}
 }
 

@@ -52,11 +52,17 @@ namespace festivalprojekt.Server.Models
         }
         public async void BookVagt(int VagtId, int PersonId)
         {
-            sql = $"UPDATE vagter SET person_id = {PersonId} WHERE vagt_id = {VagtId};";
-          
-               
+            int p_id = PersonId;
+            if (p_id == 0)
+            {
+                sql = $"UPDATE vagter SET person_id = NULL WHERE vagt_id = {VagtId};";
+            }
+            else
+            {
+                sql = $"UPDATE vagter SET person_id = {PersonId} WHERE vagt_id = {VagtId};";
+            }
+
                     await Context.Connection.ExecuteAsync(sql);
-                
         }
         public async void SletVagt(int VagtId)
         {

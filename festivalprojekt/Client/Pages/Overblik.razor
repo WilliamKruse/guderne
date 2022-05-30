@@ -6,13 +6,14 @@
 @inject NavigationManager NavigationManager;
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
-<PageTitle>Overblik</PageTitle>
+<PageTitle>Vagt Overblik</PageTitle>
 <h3>Overblik</h3>
 <button class="button" @onclick="@HomePage">Home</button>
+<!-- vi bruger bootstraps collonne system, hvor hver div kan tildeles en værdi fra 1 til 12 og dermed vide hvor meget det fylder på skærmen-->
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
-
+            <!-- Vi har to lister med objekter, for hvert item i den ydre liste bliver items der matcher på vagt_type fra den indre liste indsat -->
             <ul class="list-unstyled">
                 @foreach (var vagttype in VagtTypeList)
                 {
@@ -20,20 +21,24 @@
                     <li class="mt-4">
                         <div class="fw-bold">
                             @vagttype.VagtTypeNavn
-                            <button type="button" class="btn delete" @onclick="() => SletVagtTypeHandler(vagttype)"> <span class="oi oi-trash"></span></button>
-                            <button type="button" class="btn update" @onclick="() => OpdaterVagtTypeHandler(vagttype)"> <span class="oi oi-pencil"></span></button>
+                            <button type="button" class="btn delete" @onclick="() =>
+                                SletVagtTypeHandler(vagttype)"> <span class="oi oi-trash"></span></button>
+                            <button type="button" class="btn update" @onclick="() =>
+                                OpdaterVagtTypeHandler(vagttype)"> <span class="oi oi-pencil"></span></button>
                         </div>
                         <ul class="list-group list-group-light">
+                            <!-- for hver vagttype bliver der nu kørt et foreach på alle vagter der sortere efter vagttype-->
                             @foreach (var vagt in VagterList)
                             {
                                 @if (vagt.VagtTypeId == vagttype.VagtTypeID)
                                 {
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <div class="fw-bold"> @vagt.VagtTypeOmråde</div>
-                                        <div class="text-muted"> Fra: @vagt.StartTid.ToString("H:mm") Til: @vagt.SlutTid.ToString("H:mm") <br> Den: @vagt.StartTid.ToString("dd.MMMM")</div>
-                                        <button type="button" class="btn delete" @onclick="() => SletVagtHandler(vagt)"> <span class="oi oi-trash"></span></button>
+                                        <div class="text-muted"> Fra: @vagt.StartTid.ToString("H:mm")
+                                            Til: @vagt.SlutTid.ToString("H:mm") <br> Den: @vagt.StartTid.ToString("dd.MMMM")</div>
+                                        <button type="button" class="btn delete"
+                                        @onclick="() => SletVagtHandler(vagt)"> <span class="oi oi-trash"></span></button>
                                     </li>
-
                                 }
                             }
                         </ul>
@@ -42,11 +47,14 @@
                 }
             </ul>
         </div>
+        <!-- Her starter EDIT FORM til oprettelse af vagter, en unik måde at udfylde forms i Blazor-->
         <div class="col-sm-6 pt-4">
             <div class="sticky-top">
-                <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
+                <!-- Vi bruger VagtDTO som context og kalder vores opret metode onvalidsubmit -->
+                <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="()
+                        => OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
                     <DataAnnotationsValidator />
-
+                    <!-- Laver en drop down menu hvor man kan valge alle vagttyper vi har hentet on initialized-->
                     <div class="col-md-12 mb-3">
                         <label>Vagt Type</label>
                         <InputSelect id="vagttype" @bind-Value="NyVagt.VagtTypeId" class="form-control">
@@ -58,11 +66,14 @@
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.VagtId)" />
                     </div>
+                    <!-- EditForm har kun input date, så her binder vi til DateTime, men bruger kun date-->
                     <div class="col-md-6 mb-3">
                         <label>Start Dato</label>
                         <InputDate id="sluttid" @bind-Value="NyVagt.StartTid" class="form-control" />
                         <ValidationMessage For="@(() => NyVagt.StartTid)" />
                     </div>
+                    <!-- Laver drop down med alle dagens timer som strings, 
+                    bliver senere parse'et-->
                     <div class="col-md-3 mb-3">
                         <label>Start Tid</label>
                         <InputSelect id="sluttid" @bind-Value="StarttidTimer" class="form-control">
@@ -81,7 +92,8 @@
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.SlutTid)" />
                     </div>
-
+                    <!-- Laver dropdown med minutter med at 5 minutters
+                    interval(string), bliver senere parse'et-->
                     <div class="col-md-3 mb-3 ">
                         <label></label>
                         <InputSelect id="sluttid" @bind-Value="StarttidMinutter" class="form-control">
@@ -100,11 +112,13 @@
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.StartTid)" />
                     </div>
+                     <!-- EditForm har kun input date, så her binder vi til DateTime, men bruger kun date-->
                     <div class="col-md-6 mb-3">
                         <label>Slut Dato</label>
                         <InputDate id="sluttid" @bind-Value="NyVagt.SlutTid" class="form-control" />
                         <ValidationMessage For="@(() => NyVagt.SlutTid)" />
                     </div>
+                    <!-- Laver drop down med alle dagens timer som strings, bliver senere parse'et-->
                     <div class="col-md-3 mb-3">
                         <label>Slut Tid</label>
                         <InputSelect id="sluttid" @bind-Value="SluttidTimer" class="form-control">
@@ -123,7 +137,8 @@
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.SlutTid)" />
                     </div>
-
+                     <!-- Laver dropdown med minutter med at 5 minutters 
+                     interval(string), bliver senere parse'et-->
                     <div class="col-md-3 mb-3">
                         <label></label>
                         <InputSelect id="sluttid" @bind-Value="SluttidMinutter" class="form-control">
@@ -142,169 +157,196 @@
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.SlutTid)" />
                     </div>
+                    <!-- Her kan vi vælge et vilkårligt int og den binder til den
+                    lokale atribut "Antal", bruges i loop ved submit -->
                     <div class="col-md-4 mb-3">
                         <label>Antal vagter</label>
                         <InputNumber id="telefon" @bind-Value="Antal" class="form-control" />
 
                     </div>
-
+                    <!-- En knap med typen submit kører validation og hvis alt er i orden bliver
+                        onvalidsubmit kaldt -->
                     <div class="col-12 mb-6">
                         <button type="submit" class="btn btn-primary">Opret Vagt</button>
-                        <button href="opretvagttype" type="button" class="btn btn-secondary" @onclick="@OpretVagtTypePage">Opret ny vagttype</button>
+                        <!-- En ekstra knap der tager dig til siden, opretvagttype -->
+                        <button href="opretvagttype" type="button" class="btn btn-secondary"
+                            @onclick="@OpretVagtTypePage">Opret ny vagttype</button>
                     </div>
                 </EditForm>
-
+                <!-- Vores Service returnere en Errorcode og hvis den er 200 er der sket en fejl
+                    Det ville vise denne fejl meddelese til brugeren -->
                 @if (errorcodevagt == 200)
                 {
                     <div class="alert alert-success mt-4" role="alert">
                         <strong>Succes!</strong> Den nye vagt er registreret i systemet.
                     </div>
-
                 }
-                @if (AntalNegativt == true)
+                <!-- Hvis man prøver at kalde opret metode men med et netaivt antal vagter ønsket
+                    vil denne fejlmeddelser blive vist.
+                -->
+                @if (AntalNegativt)
                 {
                     <div class="alert alert-danger mt-4" role="alert">
                         <strong>Fejl..</strong> Du skal oprette mindst én vagt!
                     </div>
-
+                }
+                 @if (TidForkert)
+                {
+                    <div class="alert alert-danger mt-4" role="alert">
+                        <strong>Fejl..</strong> Vagten skal være over 4 minutter lang...
+                    </div>
                 }
             </div>
         </div>
     </div>
 </div>
 @code {
-    //local storage ting
+    //Local storage
     public int p_id = 1;
     public int r_id;
-    //bruges til listen
+    //bruges til listen, første del, vestre side
     public int errorcode;
     public int errorcodevagt;
     public List<VagtView>? VagterList = new List<VagtView>();
     public List<VagtTypeDTO>? VagtTypeList = new List<VagtTypeDTO>();
-    //bruges til form
+    //Bruges til Editform
     public EditContext editContext;
     public VagtDTO NyVagt = new VagtDTO();
     public int Antal = 1;
+    //Sætter default values på options felter
     public string StarttidTimer = "12";
     public string StarttidMinutter = "30";
-    public string SluttidTimer = "12";
+    public string SluttidTimer = "16";
     public string SluttidMinutter = "30";
+    //bliver true hvis noget får galt
     public bool AntalNegativt = false;
+    public bool TidForkert = false;
 
+    //Vi injecter to forskellige services på denne side, giver dem relevante navne.
     [Inject]
     public IVagtTypeService TypeService { get; set; }
     [Inject]
     public IVagtService VagtService { get; set; }
 
+
+    //Denne metode bliver altid kørt når siden bliver gået initializeret.
     protected override async Task OnInitializedAsync()
     {
-
+        //henter data fra Local Storage for at vide hvem der bruger siden
         r_id = await sessionStorage.GetItemAsync<int>("RolleId");
-
-        if (r_id == 0)
+        //Hvis man ikke er logget som koordinator kan man ikke bruge siden og bliver sendt til login
+        if (r_id == 0 && r_id == 1)
         {
             LoginPage();
         }
-
-        VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
+        //Henter lister med alle vagter og alle vagttyper.
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
-
+        VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
     }
+    //Denne bliver også kørt ved hver reload, men kan ikke bruge asynkrone funktioner.
     protected override void OnInitialized()
     {
+        //Beder EditForm bruge NyVagt som context.
         editContext = new EditContext(NyVagt);
+        //sætter defalut values for tiden og vagttypen i editform.
         NyVagt.StartTid = DateTime.Now;
         NyVagt.SlutTid = DateTime.Now;
-        LavDato();
         NyVagt.VagtTypeId = 1;
-
     }
 
-    public async Task SletVagtHandler(VagtView v)
+    //Metode der sletter en enkelt vagt på VagtId
+    public async Task SletVagtHandler(VagtView Vagt)
     {
-        errorcode = await VagtService.SletVagt(v.VagtId);
-
+        //sletter vagt og taget statuskode fra HTTP request og gemmer den i errorcode
+        errorcode = await VagtService.SletVagt(Vagt.VagtId);
+        //opdatere UI
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
+        //Beder Blzor re-render UI fordi noget har ændret sig
         StateHasChanged();
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
         StateHasChanged();
     }
 
-
+    //metode der sletter en vagttype og alle tilhørende vagter
     public async Task SletVagtTypeHandler(VagtTypeDTO v)
     {
-
+        //sletter først alle vagter knyttet til typer, ungår dermed contraints i DB
         foreach (var vagt in VagterList)
         {
             if (vagt.VagtTypeId == v.VagtTypeID.Value)
             {
-                errorcode = await VagtService.SletVagt(vagt.VagtId);
+                errorcodevagt = await VagtService.SletVagt(vagt.VagtId);
             }
         }
-
-        errorcode = await TypeService.SletVagtType(v.VagtTypeID.Value);
-
+        //sletter så selve vagttypen
+        errorcodevagt = await TypeService.SletVagtType(v.VagtTypeID.Value);
+        //opdatere UI
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
+        //Beder Blzor re-render UI fordi noget har ændret sig
         StateHasChanged();
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
         StateHasChanged();
-
-
-
-
     }
 
+    //Metode der gemmer vagttypen man klikker på i Local Storage og sender en videre til opdatering af denne.
     public async Task OpdaterVagtTypeHandler(VagtTypeDTO vagtType)
     {
         await sessionStorage.SetItemAsync("VagtTypeId", vagtType.VagtTypeID);
         OpdaterVagtTypePage();
     }
 
-    public void LavDato()
-    {
+ 
 
-        NyVagt.StartTid = DateTime.ParseExact(NyVagt.StartTid.ToString("yyyy-MM-dd") + " " + StarttidTimer + ":" + StarttidMinutter, "yyyy-MM-dd H:mm", CultureInfo.InvariantCulture);
-        NyVagt.SlutTid = DateTime.ParseExact(NyVagt.SlutTid.ToString("yyyy-MM-dd") + " " + SluttidTimer + ":" + SluttidMinutter, "yyyy-MM-dd H:mm", CultureInfo.InvariantCulture);
-    }
+    //metode der først opretter "Antal" mængde vagter og derefter opdatere lister i UI.
+    //Tjekker også de ting Validation i klasserne ikke kunne, Tid og Antal
     public async Task OpretVagtHandler(VagtDTO NyVagt)
     {
         if (Antal < 1)
         {
             AntalNegativt = true;
+            StateHasChanged();
             return;
         }
-        AntalNegativt = false;
         LavDato();
+        AntalNegativt = false;
+        if (NyVagt.StartTid >= NyVagt.SlutTid)
+        {
+            TidForkert = true;
+            StateHasChanged();
+            return;
+        }
         for (var i = 0; i < Antal; i++)
         {
-
-            if (NyVagt.StartTid >= NyVagt.SlutTid)
-            {
-                Console.WriteLine("Fejl");
-            }
-            else
-            {
-                Console.WriteLine("Succes");
-                errorcode = await VagtService.OpretVagt(NyVagt);
-            }
-
-
+            errorcode = await VagtService.OpretVagt(NyVagt);
         }
-
+        StateHasChanged();
         NyVagt = new VagtDTO();
         Antal = 1;
         editContext = new EditContext(NyVagt);
+        TidForkert = false;
+        //henter lister igen efter oprettelse er fuldført
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
         StateHasChanged();
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
         StateHasChanged();
-
     }
+
+      //Metode hvis formål er at tage strenge fra editform og Parse til DateTime
+    public void LavDato()
+    {
+        NyVagt.StartTid = DateTime.ParseExact(NyVagt.StartTid.ToString("yyyy-MM-dd") +
+        " " + StarttidTimer + ":" + StarttidMinutter, "yyyy-MM-dd H:mm", CultureInfo.InvariantCulture);
+
+        NyVagt.SlutTid = DateTime.ParseExact(NyVagt.SlutTid.ToString("yyyy-MM-dd") +
+        " " + SluttidTimer + ":" + SluttidMinutter, "yyyy-MM-dd H:mm", CultureInfo.InvariantCulture);
+    }
+
+    //Burde ikke kunne blive ramt grundet validering men printer i consol for fremtidig development
     public void InvalidSubmitHandler()
     {
-        ;
+        Console.WriteLine("Invalid Submit er blevet kaldt");
     }
-
+    //metoder der navigere til andre sider via Blazors Navigation Manager:
     public void OpretVagtTypePage()
     {
         NavigationManager.NavigateTo("/opretvagttype");

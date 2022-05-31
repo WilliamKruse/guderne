@@ -78,8 +78,10 @@
         wrapper.PersonId = 0;
         wrapper.VagtId = Vagt.VagtId;
         ErrorCode = await Service.BookVagt(wrapper);
-        DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", p_id)).ToList();
-
+        DineVagterListe.RemoveAll(x => x == Vagt);
+        //DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", p_id)).ToList();
+        StateHasChanged();
+        
     }
 
     public void HomePage()

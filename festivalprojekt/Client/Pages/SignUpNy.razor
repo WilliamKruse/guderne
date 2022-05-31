@@ -5,75 +5,97 @@
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
 
+
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager;
 
 <PageTitle>Sign up</PageTitle>
+
+<!--Knap til at komme tilbage til Login.razor-->
 <button class="button" @onclick="@LoginPage">Tilbage</button>
+
 <div class="d-flex justify-content-center">
     <h3>Sign up</h3>
 </div>
 
+<!--edit context skal være med, da den prøver at følge formen på et objekt(person)-->
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpretPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
     <DataAnnotationsValidator />
 
+    <!--Opretter et tomt felt til rolle og binder den til det object man er ved at oprette(rolle) på fra Rolle klassen-->
     <div class="col-md-12 mb-3">
         <label>Vælg rolle</label>
-        <InputSelect id="fornavn" @bind-Value="TempRolleId" class="form-control">
-            @foreach (var r in AlleRoller)
+        <!--Looper igennem alle rollerne og binder den ny valgte rolle til personen med id og rollenavn-->
+        <InputSelect id="rolle" @bind-Value="ValgtRolleId" class="form-control">
+            @foreach (var rolle in AlleRoller)
             {
-                <option value="@r.RolleId"> @r.RolleNavn</option>
+                <option value="@rolle.RolleId"> @rolle.RolleNavn</option>
             }
         </InputSelect>
 
     </div>
+
+    <!--Opretter et tomt felt til fornavn og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-12 mb-3">
         <label>Fornavn</label>
         <InputText id="fornavn" @bind-Value="Person.Fornavn" class="form-control" />
         <ValidationMessage For="@(() => Person.Fornavn)" />
     </div>
+
+    <!--Opretter et tomt felt til Efternavn og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-12 mb-3">
         <label>Efternavn</label>
         <InputText id="efternavn" @bind-Value="Person.Efternavn" class="form-control" />
         <ValidationMessage For="@(() => Person.Efternavn)" />
     </div>
+
+    <!--Opretter et tomt felt til telefon og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-12 mb-3">
         <label>Telefon</label>
         <InputText id="telefon" @bind-Value="Person.Telefon" class="form-control" />
         <ValidationMessage For="@(() => Person.Telefon)" />
     </div>
+
+    <!--Opretter et tomt felt til Fødselsdato og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-6 mb-3">
         <label>FødselsDato</label>
         <InputDate id="føds" @bind-Value="Person.RealF" class="form-control" />
         <ValidationMessage For="@(() => Person.RealF)" />
     </div>
+
+    <!--Opretter et tomt felt til email og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-6 mb-3">
         <label>Email</label>
         <InputText id="email" @bind-Value="Person.Email" class="form-control" />
         <ValidationMessage For="@(() => Person.Email)" />
     </div>
+
+    <!--Opretter et tomt felt til Kodeord og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-6 mb-3">
         <label>Kodeord</label>
         <InputText id="kodeord" @bind-Value="Person.Kodeord" class="form-control" />
         <ValidationMessage For="@(() => Person.Kodeord)" />
     </div>
+
+    <!--Alle komptencer bliver vist og man markere hvilke kompetencer personen har. -->
     <h5>Vælg kompetencer</h5>
     <ul>
-        @foreach (var k in AlleKompetencer)
+        @foreach (var kompetence in AlleKompetencer)
         {
             <div>
-                <input type="checkbox" id="@k.KompetenceNavn.ToLower()" name="@k.KompetenceNavn.ToLower()" @bind="k.Checker" />
-                <label for="@k.KompetenceNavn.ToLower()">@k.KompetenceNavn</label>
+                <input type="checkbox" id="@kompetence.KompetenceNavn.ToLower()" name="@kompetence.KompetenceNavn.ToLower()" @bind="kompetence.Checker" />
+                <label for="@kompetence.KompetenceNavn.ToLower()">@kompetence.KompetenceNavn</label>
             </div>
         }
     </ul>
+
+    <!--Knap til opret person-->
     <div class="col-12 mb-6">
         <button type="submit" class="btn btn-primary">Opret</button>
     </div>
 </EditForm>
 
-
-
+<!--Valedering til hvis man prøver at oprette sig med en allerede eksisterende mail-->
 @if (EmailFejl)
 {
     <div class="alert alert-danger" role="alert">
@@ -82,43 +104,43 @@
 }
 
 
-
 @code {
+    // Variabler
     public PersonDTO Person = new PersonDTO();
     public LoginDTO loginDTO = new LoginDTO();
-    public List<Kompetencer> AlleKompetencer = new List<Kompetencer>();
-    public List<Roller> AlleRoller = new List<Roller>();
-    public List<PersonDTO> EmailCheckList = new List<PersonDTO>();
     public int errorcode;
     private EditContext editContext;
-    public int TempRolleId = 1;
+    public int ValgtRolleId = 1;
     public bool EmailFejl = false;
-    public bool loginejl = false;
+    public bool loginfejl = false;
 
+    //Lister
+    public List<Roller> AlleRoller = new List<Roller>();
+    public List<Kompetencer> AlleKompetencer = new List<Kompetencer>();
+    public List<PersonDTO> EmailCheckList = new List<PersonDTO>();
 
-
-
-
+    // Services
     [Inject]
     ILoginService LoginService { get; set; }
     [Inject]
     IPersonService Service { get; set; }
 
+    //Protect async metode som henter alle rolle, kompetencer og personer fra databasen og initialiserer listerne.
     protected override async Task OnInitializedAsync()
     {
-
-
-        //DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
         AlleRoller = (await Service.HentAlleRoller()).ToList();
         AlleKompetencer = (await Service.HentAlleKompetencer()).ToList();
         EmailCheckList = (await Service.HentAllePersoner()).ToList();
 
     }
+
+    //Laver nyt edit context objekt når siden starter, modelerer ud fra objektet Person.
     protected override void OnInitialized()
     {
         editContext = new EditContext(Person);
     }
 
+    //Async metode som først checker om emailen allerede eksister. Hvis ikke oprettes personen og logges ind
     public async void OpretPersonHandler(PersonDTO person)
     {
         if (EmailCheckList.Exists(x => x.Email == person.Email))
@@ -127,55 +149,66 @@
         }
         else
         {
-            MatchBox();
-            person.RolleId = TempRolleId;
+            // Kalder ValgteKompetencer() metoden
+            ValgteKompetencer();
+
+            person.RolleId = ValgtRolleId;
             person.Fødselsdag = person.RealF.Value.ToString("yyyy-MM-dd H:mm:ss");
             person.PersonId = 1;
             errorcode = await Service.OpretPerson(person);
 
-            loginDTO.Email = person.Email;
-            loginDTO.Kode = person.Kodeord;
+            person.Email = loginDTO.Email;
+            person.Kodeord = loginDTO.Kode;
             IEnumerable<PersonDTO> TempList = await LoginService.HentLoginPerson(loginDTO);
             if (TempList.Count() > 0)
             {
                 person = TempList.First();
                 await localStorage.SetItemAsync("PersonId", person.PersonId);
                 await localStorage.SetItemAsync("RolleId", person.RolleId);
-                NavigationManager.NavigateTo("/home");
+                HomePage();
             }
             else
             {
-                loginejl = true;
+                loginfejl = true;
             }
         }
     }
-    public void MatchBox()
+
+    // Tilføjer de valgte komtencer til personen
+    public void ValgteKompetencer()
     {
-        List<int> i = new List<int>();
-        List<string> s = new List<string>();
+        List<int> KompetenceId = new List<int>();
+        List<string> KompetenceNavn = new List<string>();
 
-        foreach (var k in AlleKompetencer)
+        foreach (var kompetence in AlleKompetencer)
         {
-            if (k.Checker)
+            if (kompetence.Checker)
             {
-                i.Add(k.KompetenceId);
-                s.Add(k.KompetenceNavn);
+                KompetenceId.Add(kompetence.KompetenceId);
+                KompetenceNavn.Add(kompetence.KompetenceNavn);
             }
         }
-        Person.KompetenceNavn = s.ToArray();
-        Person.KompetenceId = i.ToArray();
-
+        Person.KompetenceId = KompetenceId.ToArray();
+        Person.KompetenceNavn = KompetenceNavn.ToArray();
     }
 
-
+    //Hvis der indtastes indvalid data
     public void InvalidSubmitHandler()
     {
-        ;
+        Console.WriteLine("Invalid data");
     }
 
+    //Metode der navigerer hent til Login.razor
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
     }
+
+    //Metode der navigerer hent til Home.razor
+    public void HomePage()
+    {
+        NavigationManager.NavigateTo("/home");
+    }
+
 }
 

@@ -16,10 +16,12 @@
             <!-- Vi har to lister med objekter, for hvert item i den ydre liste bliver items der matcher på vagt_type fra den indre liste indsat -->
             <ul class="list-unstyled">
                 @foreach (var vagttype in VagtTypeList)
+
                 {
+
                     <li class="mt-4">
                         <div class="fw-bold">
-                            @vagttype.VagtTypeNavn
+                            @vagttype.VagtTypeNavn - @foreach(var status in AlleStatus) { if (status.StatusId == vagttype.StatusId) { @status.StatusNavn; } }
                             <button type="button" class="btn delete" @onclick="() =>
                                 SletVagtTypeHandler(vagttype)">
                                 <span class="oi oi-trash"></span>
@@ -46,12 +48,12 @@
                                             <span class="oi oi-trash"></span>
                                         </button>
                                     </li>
+                                    }
                                 }
-                            }
                         </ul>
                     </li>
-
-                }
+                        
+                    }
             </ul>
         </div>
         <!-- Her starter EDIT FORM til oprettelse af vagter, en unik måde at udfylde forms i Blazor-->
@@ -213,11 +215,12 @@
     //Local storage
     public int p_id = 1;
     public int r_id;
-    //bruges til listen, første del, vestre side
+    //bruges til listen, første del, venstre side
     public int errorcode;
     public int errorcodevagt;
     public List<VagtView>? VagterList = new List<VagtView>();
     public List<VagtTypeDTO>? VagtTypeList = new List<VagtTypeDTO>();
+    public List<Status> AlleStatus = new List<Status>();
     //Bruges til Editform
     public EditContext editContext;
     public VagtDTO NyVagt = new VagtDTO();
@@ -248,7 +251,8 @@
         {
             LoginPage();
         }
-        //Henter lister med alle vagter og alle vagttyper.
+        //Henter lister med alle status, alle vagter og alle vagttyper.
+        AlleStatus = (await TypeService.HentAlleStatus()).ToList();
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
         //her laver vi lige default value på editform så man ikke kommer til at sende en null value

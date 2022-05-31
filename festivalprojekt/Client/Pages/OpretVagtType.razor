@@ -1,4 +1,5 @@
 ﻿@page "/opretvagttype"
+
 @using festivalprojekt.Client.Services;
 @using festivalprojekt.Shared.Models;
 @using System;
@@ -7,9 +8,9 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Opret vagttype</PageTitle>
+
 <div class="d-flex justify-content-center">
     <h3>Opret vagttype</h3>
-
 </div>
 
 <button class="button" @onclick="@OverblikPage">Tilbage</button>
@@ -17,25 +18,36 @@
 <div class="col-sm-6">
     <!--sticky top gør at dens position forbliver på skærmen når man scroller-->
     <div class="sticky-top">
-        <!--editform er en del af blazor, edit context skal være med, da den prøver at følge formen på et objekt-->
-        <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="@TilføjVagtTypeHandler" OnInvalidSubmit="@HandleInvalidSubmit">
+        <!--edit context skal være med, da den prøver at følge formen på et objekt-->
+        <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="() => TilføjVagtTypeHandler(NyVagtType)" OnInvalidSubmit="@HandleInvalidSubmit">
             <DataAnnotationsValidator />
 
-            <!--Opretter et tomt felt til vagttype navn og binder den til det object man er ved at oprette(NyVagtType) på VagtTypeNavn-property fra VagtTypeDTO-->
+            <!--Fylder InputSelect ud med de status der er i databasen-->
+            <div class="col-md-12 mb-3">
+                <label>Vælg status</label>
+                <InputSelect id="status" @bind-Value="ValgtStatusId" class="form-control">
+                    @foreach (var status in AlleStatus)
+                    {
+                        <option value="@status.StatusId"> @status.StatusNavn</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <!--Opretter et tomt felt til vagttype navn og binder den til det object man er ved at oprette(vagttype) på fra VagtTypeDTO-->
             <div class="col-md-12 mb-3">
                 <label>Vagttype navn</label>
                 <InputText id="vagttypenavn" @bind-Value="NyVagtType.VagtTypeNavn" class="form-control" />
                 <ValidationMessage For="@(() => NyVagtType.VagtTypeNavn)" />
             </div>
 
-            <!--Opretter et tomt felt til beskrivelse og binder den til det object man er ved at oprette(NyVagtType) på VagtTypeBeskrivelse-property fra VagtTypeDTO-->
+            <!--Opretter et tomt felt til vagttype beskrivelse og binder den til det object man er ved at oprette(vagttype) på fra VagtTypeDTO-->
             <div class="col-md-12 mb-3">
                 <label>Beskrivelse</label>
                 <InputText id="vagttypebeskrivelse" @bind-Value="NyVagtType.VagtTypeBeskrivelse" class="form-control" />
                 <ValidationMessage For="@(() => NyVagtType.VagtTypeBeskrivelse)" />
             </div>
 
-            <!--Opretter et tomt felt til område og binder den til det object man er ved at oprette(NyVagtType) på VagtTypeOmråde-property fra VagtTypeDTO-->
+            <!--Opretter et tomt felt til vagttype område og binder den til det object man er ved at oprette(vagttype) på fra VagtTypeDTO-->
             <div class="col-md-12 mb-3">
                 <label>Område</label>
                 <InputText id="tlf" @bind-Value="NyVagtType.VagtTypeOmråde" class="form-control" />
@@ -47,49 +59,53 @@
                 <button type="submit" class="btn btn-primary">Opret vagttype</button>
             </div>
         </EditForm>
-
-
-
     </div>
 </div>
 
-
 @code {
+    //Variabler
     private EditContext EditContext;
-
     public VagtTypeDTO NyVagtType = new VagtTypeDTO();
-
+    public int ValgtStatusId = 1;
     public int ErrorCode { get; set; }
-    public int r_id;
+    public int rolle_id;
+
+    //Lister
+    public List<Status> AlleStatus = new List<Status>();
 
     //Injecter Service så vi kan bruge metoderne derfra.
     [Inject]
     public IVagtTypeService Service { get; set; }
 
+    //Liste med status bliver fyldt ud. Hvis man ikke er logget ind, bliver man sendt til Login.Razor
     protected override async Task OnInitializedAsync()
     {
+
         r_id = await localStorage.GetItemAsync<int>("RolleId");
 
-        if (r_id == 0)
+
+        if (rolle_id == 0)
         {
             LoginPage();
         }
+
+        AlleStatus = (await Service.HentAlleStatus()).ToList();
     }
 
-    //laver ny edit context objekt når siden starter, modelerer ud fra objektet NyVagtType
+    //Laver ny edit context objekt når siden starter, modelerer ud fra objektet NyVagtType
     protected override void OnInitialized()
     {
         EditContext = new EditContext(NyVagtType);
     }
 
-    //Sender NyVagtType videre til servicen og renser alt data så felterne bliver fri for tekst igen.
-    public async Task TilføjVagtTypeHandler()
+    //Opretter ny vagttype gennem servicen, clearer felterne og sender tilbage til Overblik.razor
+    public async Task TilføjVagtTypeHandler(VagtTypeDTO NyVagtType)
     {
+        NyVagtType.StatusId = ValgtStatusId;
         ErrorCode = await Service.OpretVagtType(NyVagtType);
         NyVagtType = new VagtTypeDTO();
         EditContext = new EditContext(NyVagtType);
         OverblikPage();
-        Console.WriteLine("Vagttype tilføjet: return code: " + ErrorCode);
     }
 
     //metoder hvis bruger indtaster invalid data, kommer kun i console.
@@ -98,11 +114,13 @@
         Console.WriteLine("Det er invalid data");
     }
 
+    //Metode til at blive sendt tilbage til Overblik.razor
     public void OverblikPage()
     {
         NavigationManager.NavigateTo("/overblikkoordinator");
     }
 
+    //Metode til at blive sendt tilbage til Login.razor
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");

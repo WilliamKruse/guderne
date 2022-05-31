@@ -5,6 +5,8 @@ namespace festivalprojekt.Client.Services
 {
 	public interface IVagtTypeService
 	{
+		Task<Status[]?> HentAlleStatus();
+
 		Task<VagtTypeDTO[]?> HentAlleVagtTyper();
 
 		Task<int> SletVagtType(int VagtTypeId);

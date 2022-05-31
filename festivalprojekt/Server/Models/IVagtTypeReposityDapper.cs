@@ -11,6 +11,8 @@ namespace festivalprojekt.Server.Models
 {
 	public interface IVagtTypeReposityDapper
 	{
+		Task<IEnumerable<Status>> HentAlleStatus();
+
 		Task<IEnumerable<VagtTypeDTO>> HentAlleVagtTyper();
 
 		void OpretVagtType(VagtTypeDTO NyVagtType);

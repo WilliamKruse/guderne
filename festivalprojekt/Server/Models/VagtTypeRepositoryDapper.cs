@@ -26,10 +26,19 @@ namespace festivalprojekt.Server.Models
             this.Context = context;
         }
 
+        public async Task<IEnumerable<Status>> HentAlleStatus()
+        {
+            sql = $"SELECT status_id AS \"StatusId\", status_navn AS \"StatusNavn\" FROM status";
+
+            var StatusListe = await Context.Connection.QueryAsync<Status>(sql);
+            return StatusListe.ToList();
+        }
+
         public async Task<IEnumerable<VagtTypeDTO>> HentAlleVagtTyper()
         {
+            Console.WriteLine("Repo");
             //laver sql statement til query (postgres). Det er vigtigt med AS fordi eller kan dapper ikke matche til klassens navne automatisk.
-            sql = "SELECT vagt_type_id AS \"VagtTypeId\", vagt_type_navn AS \"VagtTypeNavn\", vagt_type_beskrivelse AS \"VagtTypeBeskrivelse\", vagt_type_område AS \"VagtTypeOmråde\" FROM vagt_typer;";
+            sql = $"SELECT vagt_type_id AS \"VagtTypeId\", vagt_type_navn AS \"VagtTypeNavn\", vagt_type_beskrivelse AS \"VagtTypeBeskrivelse\", vagt_type_område AS \"VagtTypeOmråde\", status_id AS \"StatusId\" FROM vagt_typer;";
 
             //try catch, hvis det ikke virker går den til catch
             try
@@ -51,7 +60,9 @@ namespace festivalprojekt.Server.Models
         public async void OpretVagtType(VagtTypeDTO NyVagtType)
         {
             //laver sql statement til query (postgres)
-            sql = $"INSERT INTO vagt_typer (vagt_type_navn, vagt_type_beskrivelse, vagt_type_område) VALUES ('{NyVagtType.VagtTypeNavn}', '{NyVagtType.VagtTypeBeskrivelse}', '{NyVagtType.VagtTypeOmråde}');";
+            sql = $"INSERT INTO vagt_typer (vagt_type_navn, vagt_type_beskrivelse, vagt_type_område, status_id) " +
+                    $"VALUES ('{NyVagtType.VagtTypeNavn}', '{NyVagtType.VagtTypeBeskrivelse}', '{NyVagtType.VagtTypeOmråde}', " +
+                    $"'{NyVagtType.StatusId}');";
 
             //try catch, hvis det ikke virker går den til catch
             try
@@ -92,7 +103,8 @@ namespace festivalprojekt.Server.Models
         {
             sql = $"UPDATE vagt_typer SET vagt_type_navn = '{NyVagtType.VagtTypeNavn}', " +
                     $"vagt_type_beskrivelse = '{NyVagtType.VagtTypeBeskrivelse}', " +
-                    $"vagt_type_område = '{NyVagtType.VagtTypeOmråde}' " +
+                    $"vagt_type_område = '{NyVagtType.VagtTypeOmråde}'," +
+                    $"status_id = '{NyVagtType.StatusId}'" +
                     $"WHERE vagt_type_id = {NyVagtType.VagtTypeID}";
             try
             {

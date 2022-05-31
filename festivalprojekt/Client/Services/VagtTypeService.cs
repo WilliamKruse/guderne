@@ -14,8 +14,15 @@ namespace festivalprojekt.Client.Services
 			this.httpClient = httpClient;
 		}
 
+		public Task<Status[]?> HentAlleStatus()
+		{
+			var result = httpClient.GetFromJsonAsync<Status[]>("api/festivalapi/vagttyper/hentallestatus");
+			return result;
+		}
+
 		public Task<VagtTypeDTO[]?> HentAlleVagtTyper()
 		{
+			Console.WriteLine("Service");
 			var result = httpClient.GetFromJsonAsync<VagtTypeDTO[]>("api/festivalapi/vagttyper/hentallevagttyper");
 			return result;
 		}

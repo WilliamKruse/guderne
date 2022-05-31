@@ -22,6 +22,16 @@
             <DataAnnotationsValidator />
 
             <div class="col-md-12 mb-3">
+                <label>Vælg staus</label>
+                <InputSelect id="status" @bind-Value="TempStatusId" class="form-control">
+                    @foreach (var status in AlleStatus)
+                    {
+                        <option value="@status.StatusId"> @status.StatusNavn</option>
+                    }
+                </InputSelect>
+
+            </div>
+            <div class="col-md-12 mb-3">
                 <label>Vagttype navn</label>
                 <InputText id="vagttypenavn" @bind-Value="NyVagtType.VagtTypeNavn" class="form-control" />
                 <ValidationMessage For="@(() => NyVagtType.VagtTypeNavn)" />
@@ -52,6 +62,8 @@
     public int ErrorCode { get; set; }
     public int rolle_id;
     public int vagtType_id;
+    public List<Status> AlleStatus = new List<Status>();
+    public int TempStatusId = 1;
 
     //Injecter Service så vi kan bruge metoderne derfra.
     [Inject]
@@ -65,6 +77,8 @@
         {
             LoginPage();
         }
+
+        AlleStatus = (await Service.HentAlleStatus()).ToList();
 
         vagtType_id = await sessionStorage.GetItemAsync<int>("VagtTypeId");
         vagtTypeListe = (await Service.HentAlleVagtTyper()).ToList();

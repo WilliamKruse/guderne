@@ -36,4 +36,8 @@
     <None Remove="Blazored.SessionStorage" />
     <None Remove="Blazored.LocalStorage" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\fonts\" />
+  </ItemGroup>
 </Project>

@@ -1,7 +1,19 @@
-﻿.alert {
+﻿<link rel="preconnect" href="https://fonts.googleapis.com" >
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin >
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300&display=swap" rel="stylesheet" >
+
+.alert {
     width: 280px;
 }
 
 .btn-default {
     margin-left: 10px;
+}
+
+
+
+.card-img-top{
+    width: 100%;
+    height :10vw;
+    object-fit: cover;
 }

@@ -17,7 +17,6 @@
             <ul class="list-unstyled">
                 @foreach (var vagttype in VagtTypeList)
                 {
-
                     <li class="mt-4">
                         <div class="fw-bold">
                             @vagttype.VagtTypeNavn
@@ -185,7 +184,7 @@
                 </EditForm>
                 <!-- Vores Service returnere en Errorcode og hvis den er 200 er der sket en fejl
                     Det ville vise denne fejl meddelese til brugeren -->
-                @if (errorcodevagt == 200)
+                @if (errorcode == 200)
                 {
                     <div class="alert alert-success mt-4" role="alert">
                         <strong>Succes!</strong> Den nye vagt er registreret i systemet.
@@ -252,6 +251,8 @@
         //Henter lister med alle vagter og alle vagttyper.
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
         VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
+        //her laver vi lige default value på editform så man ikke kommer til at sende en null value
+        NyVagt.VagtTypeId = VagtTypeList.First().VagtTypeID.Value;
     }
     //Denne bliver også kørt ved hver reload, men kan ikke bruge asynkrone funktioner.
     protected override void OnInitialized()
@@ -261,14 +262,13 @@
         //sætter defalut values for tiden og vagttypen i editform.
         NyVagt.StartTid = DateTime.Now;
         NyVagt.SlutTid = DateTime.Now;
-        NyVagt.VagtTypeId = 1;
     }
 
     //Metode der sletter en enkelt vagt på VagtId
     public async Task SletVagtHandler(VagtView Vagt)
     {
         //sletter vagt og taget statuskode fra HTTP request og gemmer den i errorcode
-        errorcode = await VagtService.SletVagt(Vagt.VagtId);
+        errorcodevagt = await VagtService.SletVagt(Vagt.VagtId);
         //opdatere UI
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
         //Beder Blzor re-render UI fordi noget har ændret sig

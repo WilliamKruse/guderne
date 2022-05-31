@@ -3,13 +3,14 @@
 @using System;
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
-
+<!-- Injecter Blazors navigation manager og Nuget pakket LocalStorage -->
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Personlige oplysninger</PageTitle>
+<!-- Home knap der altid går til /home-->
 <button class="button" @onclick="@HomePage">Home</button>
-
+<!-- Edit form der binder til context(persoDTO) -->
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
     <DataAnnotationsValidator />
 
@@ -35,12 +36,12 @@
     </div>
     <div class="col-md-6 mb-3">
         <label>Email</label>
-        <InputText id="email" @bind-Value="Person.Email" class="form-control" />
+        <InputText id="email" @bind-Value="Person.Email" class="form-control" readonly="readonly" />
         <ValidationMessage For="@(() => Person.Email)" />
     </div>
     <div class="col-md-6 mb-3">
         <label>Nyt Kodeord</label>
-        <InputText id="kodeord" @bind-Value="Person.Kodeord" class="form-control" />
+        <InputText type="password" id="kodeord" @bind-Value="Person.Kodeord" class="form-control" />
         <ValidationMessage For="@(() => Person.Kodeord)" />
     </div>
     <h5>Dine kompetencer</h5>
@@ -57,8 +58,6 @@
         <button type="submit" class="btn btn-primary">Opdater</button>
     </div>
 </EditForm>
-
-
 
 
 @code {

@@ -43,6 +43,12 @@
                                             Fra: @vagt.StartTid.ToString("H:mm")
                                             Til: @vagt.SlutTid.ToString("H:mm") <br> Den: @vagt.StartTid.ToString("dd.MMMM")
                                         </div>
+                                        <div class="text-muted">
+                                            @if (vagt.PersonId == null)
+                                            {<p>Ledig</p> }
+                                            else
+                                            { <p>Taget</p>}
+                                        </div>
                                         <button type="button" class="btn delete"
                                                 @onclick="() => SletVagtHandler(vagt)">
                                             <span class="oi oi-trash"></span>

@@ -4,7 +4,7 @@
 @using System.Globalization;
 
 @inject NavigationManager NavigationManager;
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Vagt Overblik</PageTitle>
 <h3>Overblik</h3>
@@ -22,9 +22,13 @@
                         <div class="fw-bold">
                             @vagttype.VagtTypeNavn
                             <button type="button" class="btn delete" @onclick="() =>
-                                SletVagtTypeHandler(vagttype)"> <span class="oi oi-trash"></span></button>
+                                SletVagtTypeHandler(vagttype)">
+                                <span class="oi oi-trash"></span>
+                            </button>
                             <button type="button" class="btn update" @onclick="() =>
-                                OpdaterVagtTypeHandler(vagttype)"> <span class="oi oi-pencil"></span></button>
+                                OpdaterVagtTypeHandler(vagttype)">
+                                <span class="oi oi-pencil"></span>
+                            </button>
                         </div>
                         <ul class="list-group list-group-light">
                             <!-- for hver vagttype bliver der nu kørt et foreach på alle vagter der sortere efter vagttype-->
@@ -34,10 +38,14 @@
                                 {
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <div class="fw-bold"> @vagt.VagtTypeOmråde</div>
-                                        <div class="text-muted"> Fra: @vagt.StartTid.ToString("H:mm")
-                                            Til: @vagt.SlutTid.ToString("H:mm") <br> Den: @vagt.StartTid.ToString("dd.MMMM")</div>
+                                        <div class="text-muted">
+                                            Fra: @vagt.StartTid.ToString("H:mm")
+                                            Til: @vagt.SlutTid.ToString("H:mm") <br> Den: @vagt.StartTid.ToString("dd.MMMM")
+                                        </div>
                                         <button type="button" class="btn delete"
-                                        @onclick="() => SletVagtHandler(vagt)"> <span class="oi oi-trash"></span></button>
+                                                @onclick="() => SletVagtHandler(vagt)">
+                                            <span class="oi oi-trash"></span>
+                                        </button>
                                     </li>
                                 }
                             }
@@ -72,7 +80,7 @@
                         <InputDate id="sluttid" @bind-Value="NyVagt.StartTid" class="form-control" />
                         <ValidationMessage For="@(() => NyVagt.StartTid)" />
                     </div>
-                    <!-- Laver drop down med alle dagens timer som strings, 
+                    <!-- Laver drop down med alle dagens timer som strings,
                     bliver senere parse'et-->
                     <div class="col-md-3 mb-3">
                         <label>Start Tid</label>
@@ -112,7 +120,7 @@
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.StartTid)" />
                     </div>
-                     <!-- EditForm har kun input date, så her binder vi til DateTime, men bruger kun date-->
+                    <!-- EditForm har kun input date, så her binder vi til DateTime, men bruger kun date-->
                     <div class="col-md-6 mb-3">
                         <label>Slut Dato</label>
                         <InputDate id="sluttid" @bind-Value="NyVagt.SlutTid" class="form-control" />
@@ -137,8 +145,8 @@
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.SlutTid)" />
                     </div>
-                     <!-- Laver dropdown med minutter med at 5 minutters 
-                     interval(string), bliver senere parse'et-->
+                    <!-- Laver dropdown med minutter med at 5 minutters
+                    interval(string), bliver senere parse'et-->
                     <div class="col-md-3 mb-3">
                         <label></label>
                         <InputSelect id="sluttid" @bind-Value="SluttidMinutter" class="form-control">
@@ -170,7 +178,9 @@
                         <button type="submit" class="btn btn-primary">Opret Vagt</button>
                         <!-- En ekstra knap der tager dig til siden, opretvagttype -->
                         <button href="opretvagttype" type="button" class="btn btn-secondary"
-                            @onclick="@OpretVagtTypePage">Opret ny vagttype</button>
+                                @onclick="@OpretVagtTypePage">
+                            Opret ny vagttype
+                        </button>
                     </div>
                 </EditForm>
                 <!-- Vores Service returnere en Errorcode og hvis den er 200 er der sket en fejl
@@ -190,7 +200,7 @@
                         <strong>Fejl..</strong> Du skal oprette mindst én vagt!
                     </div>
                 }
-                 @if (TidForkert)
+                @if (TidForkert)
                 {
                     <div class="alert alert-danger mt-4" role="alert">
                         <strong>Fejl..</strong> Vagten skal være over 4 minutter lang...
@@ -233,7 +243,7 @@
     protected override async Task OnInitializedAsync()
     {
         //henter data fra Local Storage for at vide hvem der bruger siden
-        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+        r_id = await localStorage.GetItemAsync<int>("RolleId");
         //Hvis man ikke er logget som koordinator kan man ikke bruge siden og bliver sendt til login
         if (r_id == 0 && r_id == 1)
         {
@@ -291,11 +301,11 @@
     //Metode der gemmer vagttypen man klikker på i Local Storage og sender en videre til opdatering af denne.
     public async Task OpdaterVagtTypeHandler(VagtTypeDTO vagtType)
     {
-        await sessionStorage.SetItemAsync("VagtTypeId", vagtType.VagtTypeID);
+        await localStorage.SetItemAsync("VagtTypeId", vagtType.VagtTypeID);
         OpdaterVagtTypePage();
     }
 
- 
+
 
     //metode der først opretter "Antal" mængde vagter og derefter opdatere lister i UI.
     //Tjekker også de ting Validation i klasserne ikke kunne, Tid og Antal
@@ -331,7 +341,7 @@
         StateHasChanged();
     }
 
-      //Metode hvis formål er at tage strenge fra editform og Parse til DateTime
+    //Metode hvis formål er at tage strenge fra editform og Parse til DateTime
     public void LavDato()
     {
         NyVagt.StartTid = DateTime.ParseExact(NyVagt.StartTid.ToString("yyyy-MM-dd") +

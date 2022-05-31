@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.5" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.2.0" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,5 +34,6 @@
     <None Remove="Services\" />
     <None Remove="Microsoft.Extensions.Http" />
     <None Remove="Blazored.SessionStorage" />
+    <None Remove="Blazored.LocalStorage" />
   </ItemGroup>
 </Project>

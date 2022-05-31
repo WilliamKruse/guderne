@@ -4,7 +4,7 @@
 @using System;
 
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Opdater vagttype</PageTitle>
 <div class="d-flex justify-content-center">
@@ -59,18 +59,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        rolle_id = await sessionStorage.GetItemAsync<int>("RolleId");
+        rolle_id = await localStorage.GetItemAsync<int>("RolleId");
 
         if (rolle_id == 0)
         {
             LoginPage();
         }
 
-        vagtType_id = await sessionStorage.GetItemAsync<int>("VagtTypeId");
+        vagtType_id = await localStorage.GetItemAsync<int>("VagtTypeId");
         vagtTypeListe = (await Service.HentAlleVagtTyper()).ToList();
         foreach (var item in vagtTypeListe)
         {
-            if(item.VagtTypeID.Value == vagtType_id)
+            if (item.VagtTypeID.Value == vagtType_id)
             {
                 NyVagtType = item;
                 break;

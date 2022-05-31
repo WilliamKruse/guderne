@@ -5,7 +5,7 @@
 @using System.Globalization;
 
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Home</PageTitle>
 <h1>Velkommen!</h1>
@@ -20,10 +20,10 @@
 
 @if (r_id == 2)
 {
-        <button class="button" @onclick="@BookVagtPage">Book vagt</button>
-        <button class="button" @onclick="@DineVagterPage">Se dine vagter</button>
-        <button class="button" @onclick="@AlleFrivilligePage">Se frivillige</button>
-        <button class="button" @onclick="@OverblikPage">Overblik</button>
+    <button class="button" @onclick="@BookVagtPage">Book vagt</button>
+    <button class="button" @onclick="@DineVagterPage">Se dine vagter</button>
+    <button class="button" @onclick="@AlleFrivilligePage">Se frivillige</button>
+    <button class="button" @onclick="@OverblikPage">Overblik</button>
 }
 
 
@@ -33,8 +33,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
-        p_id = await sessionStorage.GetItemAsync<int>("PersonId");
+        r_id = await localStorage.GetItemAsync<int>("RolleId");
+        p_id = await localStorage.GetItemAsync<int>("PersonId");
 
         if (r_id == 0)
         {

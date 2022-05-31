@@ -5,7 +5,7 @@
 @using System.Globalization;
 
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Vagtbooking</PageTitle>
 
@@ -47,7 +47,7 @@
     public BookVagtDTO Wrapper = new BookVagtDTO();
     public int ErrorCode { get; set; }
 
-    public int r_id =1;
+    public int r_id = 1;
     public int p_id = 1;
 
 
@@ -57,10 +57,10 @@
     //Henter alle ledige vagter
     protected override async Task OnInitializedAsync()
     {
-        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
-        p_id = await sessionStorage.GetItemAsync<int>("PersonId");
+        r_id = await localStorage.GetItemAsync<int>("RolleId");
+        p_id = await localStorage.GetItemAsync<int>("PersonId");
 
-        if(r_id == 0)
+        if (r_id == 0)
         {
             LoginPage();
         }

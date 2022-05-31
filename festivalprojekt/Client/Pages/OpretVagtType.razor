@@ -4,7 +4,7 @@
 @using System;
 
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Opret vagttype</PageTitle>
 <div class="d-flex justify-content-center">
@@ -68,7 +68,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+        r_id = await localStorage.GetItemAsync<int>("RolleId");
 
         if (r_id == 0)
         {

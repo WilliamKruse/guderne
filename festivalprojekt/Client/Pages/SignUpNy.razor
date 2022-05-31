@@ -5,7 +5,7 @@
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
 
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager;
 
 <PageTitle>Sign up</PageTitle>
@@ -25,7 +25,7 @@
                 <option value="@r.RolleId"> @r.RolleNavn</option>
             }
         </InputSelect>
-        
+
     </div>
     <div class="col-md-12 mb-3">
         <label>Fornavn</label>
@@ -106,7 +106,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        
+
 
         //DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
         AlleRoller = (await Service.HentAlleRoller()).ToList();
@@ -139,8 +139,8 @@
             if (TempList.Count() > 0)
             {
                 person = TempList.First();
-                await sessionStorage.SetItemAsync("PersonId", person.PersonId);
-                await sessionStorage.SetItemAsync("RolleId", person.RolleId);
+                await localStorage.SetItemAsync("PersonId", person.PersonId);
+                await localStorage.SetItemAsync("RolleId", person.RolleId);
                 NavigationManager.NavigateTo("/home");
             }
             else

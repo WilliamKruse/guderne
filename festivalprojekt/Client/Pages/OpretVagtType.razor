@@ -81,7 +81,7 @@
     protected override async Task OnInitializedAsync()
     {
 
-        r_id = await localStorage.GetItemAsync<int>("RolleId");
+        rolle_id = await localStorage.GetItemAsync<int>("RolleId");
 
 
         if (rolle_id == 0)

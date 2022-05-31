@@ -5,8 +5,8 @@
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
 
-<!--Gør at man kan bruge local stoage og NavigationManager-->
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager;
 
 <PageTitle>Sign up</PageTitle>
@@ -32,6 +32,7 @@
                 <option value="@rolle.RolleId"> @rolle.RolleNavn</option>
             }
         </InputSelect>
+
     </div>
 
     <!--Opretter et tomt felt til fornavn og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
@@ -162,8 +163,8 @@
             if (TempList.Count() > 0)
             {
                 person = TempList.First();
-                await sessionStorage.SetItemAsync("PersonId", person.PersonId);
-                await sessionStorage.SetItemAsync("RolleId", person.RolleId);
+                await localStorage.SetItemAsync("PersonId", person.PersonId);
+                await localStorage.SetItemAsync("RolleId", person.RolleId);
                 HomePage();
             }
             else

@@ -4,9 +4,9 @@
 @using festivalprojekt.Client.Services;
 
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<PageTitle >LOGIN</PageTitle>
+<PageTitle>LOGIN</PageTitle>
 
 <h3 class="d-flex justify-content-center">Login</h3>
 <div class="container">
@@ -40,8 +40,8 @@
 
             </div>
             <div class="d-flex justify-content-center">
-            <a href="/signup" class="link-primary">Sign Up</a>
-        </div>
+                <a href="/signup" class="link-primary">Sign Up</a>
+            </div>
             @if (loginejl)
             {
                 <div class="alert alert-danger" role="alert">
@@ -74,7 +74,7 @@
 
     public async void SubmitHandler(LoginDTO x)
     {
-        if (emailkode.Email.Length<1)
+        if (emailkode.Email.Length < 1)
         {
             return;
         }
@@ -83,8 +83,8 @@
         if (TempList.Count() > 0)
         {
             person = TempList.First();
-            await sessionStorage.SetItemAsync("PersonId", person.PersonId);
-            await sessionStorage.SetItemAsync("RolleId", person.RolleId);
+            await localStorage.SetItemAsync("PersonId", person.PersonId);
+            await localStorage.SetItemAsync("RolleId", person.RolleId);
             HomePage();
         }
         else

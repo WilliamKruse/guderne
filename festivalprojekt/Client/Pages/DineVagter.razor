@@ -5,7 +5,7 @@
 @using System.Globalization;
 
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Dine vagter</PageTitle>
 <h4>Antal vagter: @DineVagterListe.Count() </h4>
@@ -59,8 +59,8 @@
     //Henter alle personlige vagter
     protected override async Task OnInitializedAsync()
     {
-        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
-        p_id = await sessionStorage.GetItemAsync<int>("PersonId");
+        r_id = await localStorage.GetItemAsync<int>("RolleId");
+        p_id = await localStorage.GetItemAsync<int>("PersonId");
 
         if (r_id == 0)
         {
@@ -78,7 +78,9 @@
         wrapper.PersonId = 0;
         wrapper.VagtId = Vagt.VagtId;
         ErrorCode = await Service.BookVagt(wrapper);
-        DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", p_id)).ToList();
+        DineVagterListe.RemoveAll(x => x == Vagt);
+        //DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", p_id)).ToList();
+        StateHasChanged();
 
     }
 

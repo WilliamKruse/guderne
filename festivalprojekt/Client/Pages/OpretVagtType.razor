@@ -5,7 +5,7 @@
 @using System;
 
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Opret vagttype</PageTitle>
 
@@ -80,7 +80,9 @@
     //Liste med status bliver fyldt ud. Hvis man ikke er logget ind, bliver man sendt til Login.Razor
     protected override async Task OnInitializedAsync()
     {
-        rolle_id = await sessionStorage.GetItemAsync<int>("RolleId");
+
+        r_id = await localStorage.GetItemAsync<int>("RolleId");
+
 
         if (rolle_id == 0)
         {
@@ -99,7 +101,7 @@
     //Opretter ny vagttype gennem servicen, clearer felterne og sender tilbage til Overblik.razor
     public async Task TilføjVagtTypeHandler(VagtTypeDTO NyVagtType)
     {
-        NyVagtType.StatusId = TempStatusId;
+        NyVagtType.StatusId = ValgtStatusId;
         ErrorCode = await Service.OpretVagtType(NyVagtType);
         NyVagtType = new VagtTypeDTO();
         EditContext = new EditContext(NyVagtType);

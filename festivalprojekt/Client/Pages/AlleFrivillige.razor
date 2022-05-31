@@ -5,7 +5,7 @@
 @using System.Globalization;
 
 @inject NavigationManager NavigationManager
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 
 <PageTitle>Alle frivllige</PageTitle>
@@ -134,7 +134,7 @@
     //derefter hentes alle frivillige (bliver sorteret på RolleId som er 1) og frivillige koordinatorer (bliver sorteret på RolleId som er 2)
     protected override async Task OnInitializedAsync()
     {
-        r_id = await sessionStorage.GetItemAsync<int>("RolleId");
+        r_id = await localStorage.GetItemAsync<int>("RolleId");
 
         if (r_id == 0)
         {

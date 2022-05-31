@@ -91,7 +91,7 @@ namespace festivalprojekt.Server.Models
             int tal = 0;
             if (NyPerson.KompetenceId.Length == 0)
             {
-                arr = "1";
+                arr = "5";
                 Console.WriteLine("ingen kompetencer");
             }
             else
@@ -149,23 +149,33 @@ namespace festivalprojekt.Server.Models
 
             string arr = "";
             int tal = 0;
-            foreach (var item in NyPerson.KompetenceId)
+            if (NyPerson.KompetenceId.Length == 0)
             {
-                if (tal == 0)
-                {
-                    Console.WriteLine("debug tal 1: " + arr);
-                    arr += item + "";
-                    tal++;
-                }
-                else
-                {
-                    Console.WriteLine("debug enter tal 2: " + arr);
-                    arr += "," + item;
-                    tal++;
-                }
-
+                arr = "5";
+                Console.WriteLine("ingen kompetencer");
             }
-            Console.WriteLine("debug array: " + arr);
+            else
+            {
+
+
+                foreach (var item in NyPerson.KompetenceId)
+                {
+                    if (tal == 0)
+                    {
+
+                        arr += item + "";
+                        tal++;
+                    }
+                    else
+                    {
+
+                        arr += "," + item;
+                        tal++;
+                    }
+
+                }
+            }
+           
 
             DynamicParameters dp = new DynamicParameters();
             dp.Add("PersonId", NyPerson.PersonId);

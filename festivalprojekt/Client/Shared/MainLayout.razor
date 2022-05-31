@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -24,7 +24,7 @@
 @code{
     public void ClearStorage()
     {
-        sessionStorage.ClearAsync();
+        localStorage.ClearAsync();
     }
 }
 

@@ -9,7 +9,7 @@
 
 <PageTitle>Personlige oplysninger</PageTitle>
 <!-- Home knap der altid går til /home-->
-<button class="button" @onclick="@HomePage">Home</button>
+<button class="btn btn-primary btn-sm" @onclick="@HomePage">Home</button>
 <!-- Edit form der binder til context(persoDTO) -->
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
     <DataAnnotationsValidator />

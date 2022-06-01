@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using festivalprojekt.Client;
 using festivalprojekt.Client.Services;
 using Blazored.LocalStorage;
+using festivalprojekt.Shared.Models;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -27,6 +28,8 @@ builder.Services.AddHttpClient<ILoginService, LoginService>(client =>
     client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
 });
 builder.Services.AddBlazoredLocalStorage();
+
+builder.Services.AddSingleton<AppStatus>();
 
 await builder.Build().RunAsync();
 

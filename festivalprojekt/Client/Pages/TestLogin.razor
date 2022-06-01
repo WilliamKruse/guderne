@@ -1,10 +1,11 @@
-﻿
-@page "/"
+﻿@page "/"
 @using festivalprojekt.Shared.Models;
 @using festivalprojekt.Client.Services;
 
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject AppStatus AppState
+@implements IDisposable
 
 <PageTitle>LOGIN</PageTitle>
 
@@ -31,6 +32,7 @@
                     <ValidationMessage For="@(() => emailkode.Kode)" />
                 </div>
 
+
  
                     @if (loginLoading == false)
                     {
@@ -49,6 +51,7 @@
             </div>
                     }
                 
+
             </EditForm>
 
             <div class="d-flex justify-content-center">
@@ -105,6 +108,9 @@
             person = TempList.First();
             await localStorage.SetItemAsync("PersonId", person.PersonId);
             await localStorage.SetItemAsync("RolleId", person.RolleId);
+            AppState.OnChange += StateHasChanged;
+            AppState.Log(true);
+
             HomePage();
         }
 
@@ -118,6 +124,11 @@
     {
         ;
     }
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
+    }
+
 
     public void HomePage()
     {

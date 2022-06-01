@@ -6,42 +6,42 @@
 
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject AppStatus AppState
+@implements IDisposable
 
 <PageTitle>Home</PageTitle>
 
-<style>
-    body {
-        background-image:
-    }
-</style>
-    <div class="container">
-        <div class="row pb-5">
-            <div class="card">
-  <div class="card-body">
-    <p>Hej @Person.Fornavn! <br />
-    Vi er så glade for at have dig som en af os frivillige på dette års Miliø-Fest! <br />
-    På denne side kan du melde dig på vagter og holde styr på hvornår det er din tur til at hjælpe os med at holde den vildeste fest!<br />
-    Denne boks skal virkelig styles men det må vi gøre imorgen..
-    </p>
+<div class="container">
+    <div class="row pb-5">
+        <div class="card">
+            <div class="card-body">
+                <p>
+                    Hej @Person.Fornavn! <br />
+                    Vi er så glade for at have dig som en af os frivillige på dette års Miliø-Fest! <br />
+                    På denne side kan du melde dig på vagter og holde styr på hvornår det er din tur til at hjælpe os med at holde den vildeste fest!<br />
+                    Denne boks skal virkelig styles men det må vi gøre imorgen..
+                </p>
 
-  </div>
-</div>
+            </div>
         </div>
-        <div  class="row pb-5">
+    </div>
+    <div class="row pb-5">
         <div class="d-flex justify-content-evenly col-md-12">
-            
+
             <div class="card" style="width: 28rem">
-                <img class="card-img-top" src="/Images/vagter.jpg" alt="Card image cap"/>
+                <img class="card-img-top" src="/Images/vagter.jpg" alt="Card image cap" />
                 <div class="card-body">
                     <h1 class="card-title">Book Vagter</h1>
                     <p class="card-text">Vælg selv vagter og ta' kontrol over dit eget skema!</p>
+
                     <button class="btn btn-dark"  @onclick="@BookVagtPage">Book Vagter</button>
+
                 </div>
 
             </div>
-           
-             <div class="card" style="width: 28rem">
-                <img class="card-img-top" src="/Images/burger.jpg" alt="Card image cap"/>
+
+            <div class="card" style="width: 28rem">
+                <img class="card-img-top" src="/Images/burger.jpg" alt="Card image cap" />
                 <div class="card-body">
                     <h1 class="card-title">Dine Vagter</h1>
                     <p class="card-text">Tjek eller opdater dine allerede bookede vagter!</p>
@@ -49,90 +49,101 @@
                 </div>
 
             </div>
-        
-       
+
+
         </div>
-       </div>
-      
-   
+    </div>
 
 
-@if (r_id == 2)
-{
- <div  class="row">
-        <div class="d-flex justify-content-evenly col-sm-12">
-            <div class="card" style="width: 28rem">
-                <img class="card-img-top" src="/Images/lol.jpg" alt="Card image cap"/>
-                <div class="card-body">
-                    <h1 class="card-title">Se Alle Frivillige</h1>
-                    <p class="card-text">Find kontaktoplysinger på festivallens frivillige.</p>
-                    <button class="btn btn-dark"  @onclick="@AlleFrivilligePage">Alle Frivillige</button>
+
+    @if (r_id == 2)
+    {
+        <div class="row">
+            <div class="d-flex justify-content-evenly col-sm-12">
+                <div class="card" style="width: 28rem">
+                    <img class="card-img-top" src="/Images/lol.jpg" alt="Card image cap" />
+                    <div class="card-body">
+                        <h1 class="card-title">Se Alle Frivillige</h1>
+                        <p class="card-text">Find kontaktoplysinger på festivallens frivillige</p>
+                        <button class="btn btn-dark" @onclick="@AlleFrivilligePage">Alle Frivillige</button>
+                    </div>
+
+                </div>
+                <div class="card" style="width: 28rem">
+                    <img class="card-img-top" src="/Images/festival1.jpg" alt="Card image cap" />
+                    <div class="card-body">
+                        <h1 class="card-title">Administrer Vagter</h1>
+                        <p class="card-text">Tjek eller opdater dine allerede bookede vagter!</p>
+                        <button class="btn btn-dark" @onclick="@OverblikPage">Vagt Overblik</button>
+                    </div>
+
+
                 </div>
 
-            </div>
-             <div class="card" style="width: 28rem">
-                <img class="card-img-top" src="/Images/festival1.jpg" alt="Card image cap"/>
-                <div class="card-body">
-                    <h1 class="card-title">Administrer Vagter</h1>
-                    <p class="card-text">Overblik over, samt opret eller slet vagter og vagttyper.</p>
-                    <button class="btn btn-dark" @onclick="@OverblikPage">Vagt Overblik</button>
-                </div>
 
             </div>
-        
-       
         </div>
-       </div>
-    
-}
-  </div>
+
+    }
+</div>
 
 @code{
     public int r_id;
-    public int p_id;
-    public List<PersonDTO> TempList = new List<PersonDTO>();
-    public PersonDTO Person = new PersonDTO();
+        public int p_id;
+        public List<PersonDTO> TempList = new List<PersonDTO>();
+        public PersonDTO Person = new PersonDTO();
 
-    [Inject]
-    public IPersonService Service {get;set;}
+        [Inject]
+        public IPersonService Service { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        r_id = await localStorage.GetItemAsync<int>("RolleId");
-        p_id = await localStorage.GetItemAsync<int>("PersonId");
-        TempList = ((await Service.HentAllePersoner()).ToList());
-        TempList.RemoveAll(x => x.PersonId != p_id);
-        Person = TempList.First();
-
-        if (r_id == 0)
+        protected override async Task OnInitializedAsync()
         {
-            LoginPage();
+            r_id = await localStorage.GetItemAsync<int>("RolleId");
+            p_id = await localStorage.GetItemAsync<int>("PersonId");
+            if (r_id == 0)
+            {
+                LoginPage();
+
+            }
+            else
+            {
+                AppState.OnChange += StateHasChanged;
+                AppState.Log(true);
+                TempList = ((await Service.HentAllePersoner()).ToList());
+                TempList.RemoveAll(x => x.PersonId != p_id);
+                Person = TempList.First();
+                StateHasChanged();
+
+            }
         }
-    }
 
-    public void LoginPage()
-    {
-        NavigationManager.NavigateTo("/");
-    }
+        public void LoginPage()
+        {
+            NavigationManager.NavigateTo("/");
+        }
 
-    public void BookVagtPage()
-    {
-        NavigationManager.NavigateTo("/ledigevagter");
-    }
+        public void BookVagtPage()
+        {
+            NavigationManager.NavigateTo("/ledigevagter");
+        }
 
-    public void DineVagterPage()
-    {
-        NavigationManager.NavigateTo("/dinevagter");
-    }
+        public void DineVagterPage()
+        {
+            NavigationManager.NavigateTo("/dinevagter");
+        }
 
-    public void AlleFrivilligePage()
-    {
-        NavigationManager.NavigateTo("/allefrivillige");
-    }
+        public void AlleFrivilligePage()
+        {
+            NavigationManager.NavigateTo("/allefrivillige");
+        }
 
-    public void OverblikPage()
-    {
-        NavigationManager.NavigateTo("/overblikkoordinator");
-    }
+        public void OverblikPage()
+        {
+            NavigationManager.NavigateTo("/overblikkoordinator");
+        }
+        public void Dispose()
+        {
+            AppState.OnChange -= StateHasChanged;
+        }
 
-}
+    }

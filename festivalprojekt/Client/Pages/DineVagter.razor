@@ -6,7 +6,8 @@
 
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-
+@inject AppStatus AppState
+@implements IDisposable
 <PageTitle>Dine vagter</PageTitle>
 
 <!--Tæller antal vagter man har-->
@@ -75,9 +76,12 @@
         {
             LoginPage();
         }
-
-        DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", person_id)).ToList();
-
+        else
+        {
+            AppState.OnChange += StateHasChanged;
+            AppState.Log(true);
+            DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", person_id)).ToList();
+        }
     }
 
     /*
@@ -107,5 +111,9 @@
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
+    }
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
     }
 }

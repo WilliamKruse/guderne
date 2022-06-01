@@ -6,7 +6,8 @@
 
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-
+@inject AppStatus AppState
+@implements IDisposable
 
 <PageTitle>Alle frivllige</PageTitle>
 <div class="d-flex justify-content-center">
@@ -140,25 +141,26 @@
         {
             LoginPage();
         }
-
-        personListeUsorteret = (await Service.HentAllePersoner()).ToList();
-
-        frivilligListe = personListeUsorteret.FindAll(x => x.RolleId == 1);
-        foreach (var frivillig in frivilligListe)
+        else
         {
-            frivillig.RealF = DateTime.ParseExact(frivillig.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
+            AppState.OnChange += StateHasChanged;
+            AppState.Log(true);
+            personListeUsorteret = (await Service.HentAllePersoner()).ToList();
+
+            frivilligListe = personListeUsorteret.FindAll(x => x.RolleId == 1);
+            foreach (var frivillig in frivilligListe)
+            {
+                frivillig.RealF = DateTime.ParseExact(frivillig.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
+            }
+
+
+            frivilligKoordinatorListe = personListeUsorteret.FindAll(x => x.RolleId == 2);
+
+            foreach (var koordinator in frivilligKoordinatorListe)
+            {
+                koordinator.RealF = DateTime.ParseExact(koordinator.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
+            }
         }
-
-
-        frivilligKoordinatorListe = personListeUsorteret.FindAll(x => x.RolleId == 2);
-
-        foreach (var koordinator in frivilligKoordinatorListe)
-        {
-            koordinator.RealF = DateTime.ParseExact(koordinator.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
-        }
-
-
-
     }
     public int Alder(PersonDTO x)
     {
@@ -179,5 +181,8 @@
     {
         NavigationManager.NavigateTo("/");
     }
-
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
+    }
 }

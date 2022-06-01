@@ -6,6 +6,8 @@
 
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject AppStatus AppState
+@implements IDisposable
 
 <PageTitle>Vagtbooking</PageTitle>
 
@@ -64,8 +66,12 @@
         {
             LoginPage();
         }
-
-        LedigeVagterListe = (await Service.HentAlleVagter("LEDIGE", 0)).ToList();
+        else
+        {
+            AppState.OnChange += StateHasChanged;
+            AppState.Log(true);
+            LedigeVagterListe = (await Service.HentAlleVagter("LEDIGE", 0)).ToList();
+        }
 
     }
 
@@ -90,6 +96,10 @@
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
+    }
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
     }
 
 }

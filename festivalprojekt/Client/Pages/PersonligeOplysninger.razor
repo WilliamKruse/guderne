@@ -7,6 +7,9 @@
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
+@inject AppStatus AppState
+@implements IDisposable
+
 <PageTitle>Personlige oplysninger</PageTitle>
 
 <!-- Edit form der binder til context(persoDTO) -->
@@ -85,18 +88,23 @@
         {
             LoginPage();
         }
-
-        TempList = (await Service.HentPerson(p_id)).ToList();
-        Person = TempList.First();
-
-        Person.RealF = DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
-
-        AlleKompetencer = (await Service.HentAlleKompetencer()).ToList();
-        foreach (var k in AlleKompetencer)
+        else
         {
-            k.Checker = Array.Exists(Person.KompetenceNavn, x => x == k.KompetenceNavn);
+
+            AppState.OnChange += StateHasChanged;
+            AppState.Log(true);
+            TempList = (await Service.HentPerson(p_id)).ToList();
+            Person = TempList.First();
+            Person.RealF = DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
+
+            AlleKompetencer = (await Service.HentAlleKompetencer()).ToList();
+            foreach (var k in AlleKompetencer)
+            {
+                k.Checker = Array.Exists(Person.KompetenceNavn, x => x == k.KompetenceNavn);
+            }
+            Person.Kodeord = "";
         }
-        Person.Kodeord = "";
+
     }
     protected override void OnInitialized()
     {
@@ -141,6 +149,10 @@
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
+    }
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
     }
 }
 

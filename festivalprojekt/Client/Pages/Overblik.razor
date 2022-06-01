@@ -5,6 +5,8 @@
 
 @inject NavigationManager NavigationManager;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject AppStatus AppState
+@implements IDisposable
 
 <PageTitle>Vagt Overblik</PageTitle>
 <h3>Overblik</h3>
@@ -21,7 +23,12 @@
 
                     <li class="mt-4">
                         <div class="fw-bold">
-                            @vagttype.VagtTypeNavn - @foreach(var status in AlleStatus) { if (status.StatusId == vagttype.StatusId) { @status.StatusNavn; } }
+                            @vagttype.VagtTypeNavn - @foreach (var status in AlleStatus)
+                            {
+                                if (status.StatusId == vagttype.StatusId)
+                                {@status.StatusNavn;
+                            }
+                        }
                             <button type="button" class="btn delete" @onclick="() =>
                                 SletVagtTypeHandler(vagttype)">
                                 <span class="oi oi-trash"></span>
@@ -54,12 +61,12 @@
                                             <span class="oi oi-trash"></span>
                                         </button>
                                     </li>
-                                    }
                                 }
+                            }
                         </ul>
                     </li>
-                        
-                    }
+
+                }
             </ul>
         </div>
         <!-- Her starter EDIT FORM til oprettelse af vagter, en unik måde at udfylde forms i Blazor-->
@@ -67,7 +74,8 @@
             <div class="sticky-top">
                 <!-- Vi bruger VagtDTO som context og kalder vores opret metode onvalidsubmit -->
                 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="()
-                        => OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
+                          =>
+                    OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
                     <DataAnnotationsValidator />
                     <!-- Laver en drop down menu hvor man kan valge alle vagttyper vi har hentet on initialized-->
                     <div class="col-md-12 mb-3">
@@ -257,12 +265,17 @@
         {
             LoginPage();
         }
-        //Henter lister med alle status, alle vagter og alle vagttyper.
-        AlleStatus = (await TypeService.HentAlleStatus()).ToList();
-        VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
-        VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
-        //her laver vi lige default value på editform så man ikke kommer til at sende en null value
-        NyVagt.VagtTypeId = VagtTypeList.First().VagtTypeID.Value;
+        else
+        {
+            AppState.OnChange += StateHasChanged;
+            AppState.Log(true);
+            //Henter lister med alle status, alle vagter og alle vagttyper.
+            AlleStatus = (await TypeService.HentAlleStatus()).ToList();
+            VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
+            VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
+            //her laver vi lige default value på editform så man ikke kommer til at sende en null value
+            NyVagt.VagtTypeId = VagtTypeList.First().VagtTypeID.Value;
+        }
     }
     //Denne bliver også kørt ved hver reload, men kan ikke bruge asynkrone funktioner.
     protected override void OnInitialized()
@@ -335,6 +348,9 @@
             StateHasChanged();
             return;
         }
+        TidForkert = false;
+        AntalNegativt = false;
+        StateHasChanged();
         for (var i = 0; i < Antal; i++)
         {
             errorcode = await VagtService.OpretVagt(NyVagt);
@@ -385,6 +401,10 @@
     public void OpdaterVagtTypePage()
     {
         NavigationManager.NavigateTo("/opdatervagttype");
+    }
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
     }
 
 }

@@ -6,6 +6,8 @@
 
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject AppStatus AppState
+@implements IDisposable
 
 <PageTitle>Opret vagttype</PageTitle>
 
@@ -93,8 +95,12 @@
         {
             LoginPage();
         }
-
-        AlleStatus = (await Service.HentAlleStatus()).ToList();
+        else
+        {
+            AppState.OnChange += StateHasChanged;
+            AppState.Log(true);
+            AlleStatus = (await Service.HentAlleStatus()).ToList();
+        }
     }
 
     //Laver ny edit context objekt når siden starter, modelerer ud fra objektet NyVagtType
@@ -129,6 +135,10 @@
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
+    }
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
     }
 
 }

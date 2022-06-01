@@ -17,23 +17,40 @@
                 <DataAnnotationsValidator />
 
                 <div class="col-md-12 mb-3">
-                    <label>Email</label>
+                    <label></label>
 
-                    <InputText id="email" @bind-Value="emailkode.Email" class="form-control" />
+                    <InputText id="email" @bind-Value="emailkode.Email" class="form-control" placeholder="Email" />
 
                     <ValidationMessage For="@(() => emailkode.Email)" />
                 </div>
                 <div class="col-md-12 mb-3">
-                    <label>Kodeord</label>
+                    <label></label>
 
-                    <InputText type="password" id="kodeord" @bind-Value="emailkode.Kode" class="form-control" />
+                    <InputText type="password" id="kodeord" @bind-Value="emailkode.Kode" class="form-control" placeholder="Kodeord" />
 
                     <ValidationMessage For="@(() => emailkode.Kode)" />
                 </div>
 
-                <div class="d-flex justify-content-center mb-8">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </div>
+ 
+                    @if (loginLoading == false)
+                    {
+            <div class="d-flex justify-content-center mb-8">
+                <button type="submit" class="w-50 btn btn-primary mt-8">Login</button>
+            </div>
+                        
+                    }
+                    else if (loginLoading == true)
+                    {
+            <div class="d-flex justify-content-center mb-8">
+                <button class="w-50 btn btn-primary mt-8" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Loading...
+                </button>
+            </div>
+                    }
+                
+
+
             </EditForm>
             <div class="d-flex justify-content-center">
                 <div class="text-muted">Ikke allerede tilmeldt?</div>
@@ -42,12 +59,14 @@
             <div class="d-flex justify-content-center">
                 <a href="/signup" class="link-primary">Sign Up</a>
             </div>
+
             @if (loginejl)
             {
                 <div class="alert alert-danger" role="alert">
                     <strong>Fejl..</strong> Dine oplysninger er tastet forkert ind, prøv igen.
                 </div>
             }
+
         </div>
         <div class="col"></div>
     </div>
@@ -58,7 +77,8 @@
     public LoginDTO emailkode = new LoginDTO();
     public EditContext editContext;
     public bool loginejl = false;
-
+    public bool loginLoading = false;
+    
 
     [Inject]
     ILoginService Service { get; set; }
@@ -74,6 +94,8 @@
 
     public async void SubmitHandler(LoginDTO x)
     {
+        loginLoading = true;
+
         if (emailkode.Email.Length < 1)
         {
             return;

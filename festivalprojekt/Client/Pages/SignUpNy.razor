@@ -11,8 +11,6 @@
 
 <PageTitle>Sign up</PageTitle>
 
-<!--Knap til at komme tilbage til Login.razor-->
-<button class="button" @onclick="@LoginPage">Tilbage</button>
 
 <div class="d-flex justify-content-center">
     <h3>Sign up</h3>
@@ -21,6 +19,11 @@
 <!--edit context skaal være med, da den prøver at følge formen på et objekt(person)-->
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpretPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
     <DataAnnotationsValidator />
+
+    <!--Knap til at komme tilbage til Login.razor-->
+    <div class="col-md-12 mb-3">
+        <button class="btn btn-dark" @onclick="@LoginPage">Tilbage</button>
+    </div>  
 
     <!--Opretter et tomt felt til rolle og binder den til det object man er ved at oprette(rolle) på fra Rolle klassen-->
     <div class="col-md-12 mb-3">
@@ -91,7 +94,7 @@
 
     <!--Knap til opret person-->
     <div class="col-12 mb-6">
-        <button type="submit" class="btn btn-primary">Opret</button>
+        <button type="submit" class="btn btn-dark">Opret</button>
     </div>
 </EditForm>
 

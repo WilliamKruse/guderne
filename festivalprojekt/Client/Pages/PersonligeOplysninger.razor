@@ -11,6 +11,12 @@
 @implements IDisposable
 
 <PageTitle>Personlige oplysninger</PageTitle>
+@if (IkkeUdfyldt)
+{
+    <div class="alert alert-danger mt-4" role="alert">
+        <strong>Fejl..</strong> Du mangler at udfylde felter
+    </div>
+}
 
 <!-- Edit form der binder til context(persoDTO) -->
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
@@ -67,6 +73,7 @@
 </EditForm>
 
 
+
 @code {
     public PersonDTO Person = new PersonDTO();
     public List<PersonDTO> TempList = new List<PersonDTO>();
@@ -75,6 +82,7 @@
     public int r_id;
     public int errorcode;
     private EditContext editContext;
+    public bool IkkeUdfyldt = false;
 
     [Inject]
     IPersonService Service { get; set; }
@@ -113,9 +121,18 @@
 
     public async void OpdaterPersonHandler(PersonDTO person)
     {
+
         MatchBox();
-        errorcode = await Service.OpdaterPerson(person);
-        NavigationManager.NavigateTo("/home");
+        if (Person.Fornavn.Length > 0 && Person.Efternavn.Length > 0 && Person.Kodeord.Length > 0 && Person.Telefon.Length > 0 && Person.RealF.HasValue)
+        {
+            errorcode = await Service.OpdaterPerson(person);
+            NavigationManager.NavigateTo("/home");
+        }
+        else
+        {
+            IkkeUdfyldt = true;
+            StateHasChanged();
+        }
 
 
     }

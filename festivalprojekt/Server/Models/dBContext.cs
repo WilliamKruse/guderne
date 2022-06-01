@@ -11,7 +11,7 @@ namespace festivalprojekt.Server.Models
 
 		public dBContext(IConfiguration _configuration)
 		{
-			string connString = _configuration.GetConnectionString("Azure");
+			string connString = _configuration.GetConnectionString("Azure2");
 			Console.WriteLine("Azure constring get done" + connString);
 			this.Connection = new NpgsqlConnection(connString);
 		}

@@ -161,8 +161,8 @@
             person.PersonId = 1;
             errorcode = await Service.OpretPerson(person);
 
-            person.Email = loginDTO.Email;
-            person.Kodeord = loginDTO.Kode;
+            loginDTO.Email = person.Email;
+            loginDTO.Kode = person.Kodeord;
             IEnumerable<PersonDTO> TempList = await LoginService.HentLoginPerson(loginDTO);
             if (TempList.Count() > 0)
             {

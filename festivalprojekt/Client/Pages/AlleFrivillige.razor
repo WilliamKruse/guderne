@@ -45,14 +45,17 @@
                     <td>@frivillig.Email</td>
                     <td>@frivillig.Telefon</td>
                     <td>
-                        @foreach (var kompetence in frivillig.KompetenceNavn)
+                        @for (int i = 0; i < frivillig.KompetenceNavn.Length; i++)
                         {
+                            if (frivillig.KompetenceNavn[0] == frivillig.KompetenceNavn[i])
+                            {
+                                <a> @frivillig.KompetenceNavn[i]</a>
+                            }
+                            else
+                            {
+                                <a>, @frivillig.KompetenceNavn[i]</a>
+                            }
 
-                            <ul>
-                                <li>
-                                    @kompetence
-                                </li>
-                            </ul>
                         }
                     </td>
                     <td><button type="button" class="btn btn-dark btn-sm">Send mail</button></td>

@@ -60,7 +60,6 @@
     private EditContext EditContext;
     public VagtTypeDTO NyVagtType = new VagtTypeDTO();
     public List<VagtTypeDTO> vagtTypeListe = new List<VagtTypeDTO>();
-    public Overblik overblik;
     public int ErrorCode { get; set; }
     public int rolle_id;
     public int vagtType_id;
@@ -108,6 +107,7 @@
     //opdaterer vagttypen, clearer editform og går tilbage til Overblik.razor
     public async void OpdaterVagtTypeHandler(VagtTypeDTO NyVagtType)
     {
+        NyVagtType.StatusId = TempStatusId;
         ErrorCode = await Service.OpdaterVagtType(NyVagtType);
         NyVagtType = new VagtTypeDTO();
         EditContext = new EditContext(NyVagtType);

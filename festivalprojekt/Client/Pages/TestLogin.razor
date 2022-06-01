@@ -13,7 +13,7 @@
 <div class="container">
     <div class="row">
         <div class="col"></div>
-        <div class="col 6 pt-8" style="border-radius:10px; background-color:lightgray">
+        <div class="col 6 pt-8" style="border-radius:10px; ">
             <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => SubmitHandler(this.emailkode)" OnInvalidSubmit="@InvalidSubmitHandler">
                 <DataAnnotationsValidator />
 
@@ -33,37 +33,36 @@
                 </div>
 
 
-                @if (loginLoading == false)
-                {
-                    <div class="d-flex justify-content-center mb-8">
-                        <button type="submit" class="w-50 btn btn-primary mt-8">Login</button>
-                    </div>
-
-                }
-                else if (loginLoading == true)
-                {
-                    <div class="d-flex justify-content-center mb-8">
-                        <button class="w-50 btn btn-primary mt-8" type="button" disabled>
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            Loading...
-                        </button>
-                    </div>
-                }
-
-
+ 
+                    @if (loginLoading == false)
+                    {
+            <div class="d-flex justify-content-center mb-8">
+                <button type="submit" class="w-50 btn btn-dark mt-8">Login</button>
+            </div>
+                        
+                    }
+                    else if (loginLoading == true)
+                    {
+            <div class="d-flex justify-content-center mb-8">
+                <button class="w-50 btn" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Loading...
+                </button>
+            </div>
+                    }
+                
 
             </EditForm>
+
             <div class="d-flex justify-content-center">
-                <div class="text-muted">Ikke allerede tilmeldt?</div>
+                <div class="text-grey">Ikke allerede tilmeldt? <small> <a href="/signup" class="link-secondary"> Sign Up </a> </small> </div>
 
             </div>
-            <div class="d-flex justify-content-center">
-                <a href="/signup" class="link-primary">Sign Up</a>
-            </div>
+           
 
             @if (loginejl)
             {
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-danger mt-2" role="alert">
                     <strong>Fejl..</strong> Dine oplysninger er tastet forkert ind, prøv igen.
                 </div>
             }
@@ -114,10 +113,11 @@
 
             HomePage();
         }
-        else
-        {
-            loginejl = true;
-        }
+
+        loginejl = true;
+        loginLoading = false;
+        StateHasChanged();
+
 
     }
     public void InvalidSubmitHandler()

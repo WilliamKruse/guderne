@@ -10,7 +10,7 @@
 
 <PageTitle>Vagt Overblik</PageTitle>
 <h3>Overblik</h3>
-<button class="button" @onclick="@HomePage">Home</button>
+<button class="btn btn-dark" @onclick="@HomePage">Home</button>
 <!-- vi bruger bootstraps collonne system, hvor hver div kan tildeles en værdi fra 1 til 12 og dermed vide hvor meget det fylder på skærmen-->
 <div class="container">
     <div class="row">
@@ -190,7 +190,7 @@
                     <!-- En knap med typen submit kører validation og hvis alt er i orden bliver
                         onvalidsubmit kaldt -->
                     <div class="col-12 mb-6">
-                        <button type="submit" class="btn btn-primary">Opret Vagt</button>
+                        <button type="submit" class="btn btn-dark">Opret Vagt</button>
                         <!-- En ekstra knap der tager dig til siden, opretvagttype -->
                         <button href="opretvagttype" type="button" class="btn btn-secondary"
                                 @onclick="@OpretVagtTypePage">

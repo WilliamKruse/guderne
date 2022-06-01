@@ -11,11 +11,15 @@
 @implements IDisposable
 
 <PageTitle>Personlige oplysninger</PageTitle>
-<!-- Home knap der altid går til /home-->
-<button class="btn btn-primary btn-sm" @onclick="@HomePage">Home</button>
+
 <!-- Edit form der binder til context(persoDTO) -->
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
     <DataAnnotationsValidator />
+
+    <!-- Home knap der altid går til /home-->
+    <div class="col-md-12 mb-3">
+        <button class="btn btn-dark" @onclick="@HomePage">Home</button>
+    </div>
 
     <div class="col-md-12 mb-3">
         <label>Fornavn</label>
@@ -58,7 +62,7 @@
         }
     </ul>
     <div class="col-12 mb-6">
-        <button type="submit" class="btn btn-primary">Opdater</button>
+        <button type="submit" class="btn btn-dark">Opdater</button>
     </div>
 </EditForm>
 

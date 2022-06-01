@@ -11,7 +11,7 @@
 
 <PageTitle>Vagtbooking</PageTitle>
 
-<button class="button" @onclick="@HomePage">Home</button>
+<button class="btn btn-dark" @onclick="@HomePage">Home</button>
 
 <table class="table table-striped">
     <thead>
@@ -35,7 +35,7 @@
                 <td>@vagt.SlutTid.ToString("dd. MMMM H:mm", new CultureInfo("da-DK"))</td>
                 <td>@vagt.VagtTypeBeskrivelse</td>
                 <td>@vagt.VagtTypeOmråde</td>
-                <td><button @onclick="() => BookVagt(vagt)">Book</button></td>
+                <td><button class="btn btn-dark btn-sm" @onclick="() => BookVagt(vagt)">Book</button></td>
 
             </tr>
 

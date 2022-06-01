@@ -4,7 +4,8 @@
 @using System;
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
-
+@inject AppStatus AppState
+@implements IDisposable
 
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager;
@@ -162,6 +163,8 @@
             IEnumerable<PersonDTO> TempList = await LoginService.HentLoginPerson(loginDTO);
             if (TempList.Count() > 0)
             {
+                AppState.OnChange += StateHasChanged;
+                AppState.Log(true);
                 person = TempList.First();
                 await localStorage.SetItemAsync("PersonId", person.PersonId);
                 await localStorage.SetItemAsync("RolleId", person.RolleId);
@@ -208,6 +211,10 @@
     public void HomePage()
     {
         NavigationManager.NavigateTo("/home");
+    }
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
     }
 
 }

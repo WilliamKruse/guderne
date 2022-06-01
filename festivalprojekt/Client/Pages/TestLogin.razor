@@ -1,10 +1,11 @@
-﻿
-@page "/"
+﻿@page "/"
 @using festivalprojekt.Shared.Models;
 @using festivalprojekt.Client.Services;
 
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject AppStatus AppState
+@implements IDisposable
 
 <PageTitle>LOGIN</PageTitle>
 
@@ -31,24 +32,24 @@
                     <ValidationMessage For="@(() => emailkode.Kode)" />
                 </div>
 
- 
-                    @if (loginLoading == false)
-                    {
-            <div class="d-flex justify-content-center mb-8">
-                <button type="submit" class="w-50 btn btn-primary mt-8">Login</button>
-            </div>
-                        
-                    }
-                    else if (loginLoading == true)
-                    {
-            <div class="d-flex justify-content-center mb-8">
-                <button class="w-50 btn btn-primary mt-8" type="button" disabled>
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Loading...
-                </button>
-            </div>
-                    }
-                
+
+                @if (loginLoading == false)
+                {
+                    <div class="d-flex justify-content-center mb-8">
+                        <button type="submit" class="w-50 btn btn-primary mt-8">Login</button>
+                    </div>
+
+                }
+                else if (loginLoading == true)
+                {
+                    <div class="d-flex justify-content-center mb-8">
+                        <button class="w-50 btn btn-primary mt-8" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
+                    </div>
+                }
+
 
 
             </EditForm>
@@ -79,7 +80,7 @@
     public EditContext editContext;
     public bool loginejl = false;
     public bool loginLoading = false;
-    
+
 
     [Inject]
     ILoginService Service { get; set; }
@@ -108,6 +109,9 @@
             person = TempList.First();
             await localStorage.SetItemAsync("PersonId", person.PersonId);
             await localStorage.SetItemAsync("RolleId", person.RolleId);
+            AppState.OnChange += StateHasChanged;
+            AppState.Log(true);
+
             HomePage();
         }
         else
@@ -120,6 +124,11 @@
     {
         ;
     }
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
+    }
+
 
     public void HomePage()
     {

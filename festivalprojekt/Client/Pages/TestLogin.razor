@@ -13,13 +13,12 @@
     <h3> <u> Login </u> </h3>
 </div>
 
-
 <div class="container">
     <div class="row">
         <div class="col"></div>
         <div class="col 6 pt-8" style="border-radius:10px; ">
             <EditForm EditContext="@editContext" class="row p-3" 
-            OnValidSubmit="() => SubmitHandler(this.emailKode)" OnInvalidSubmit="@InvalidSubmitHandler">
+                      OnValidSubmit="() => SubmitHandler(this.emailKode)" OnInvalidSubmit="@InvalidSubmitHandler">
                 <DataAnnotationsValidator />
 
                 <!--Opretter et tomt felt til email-->
@@ -35,7 +34,6 @@
                     <InputText type="password" id="kodeord" @bind-Value="emailKode.Kode" class="form-control" placeholder="Kodeord" />
                     <ValidationMessage For="@(() => emailKode.Kode)" />
                 </div>
-
 
                     <!--Hvordan login knappen ser ud, når der ikke loades-->
                     @if (loginLoading == false)
@@ -55,7 +53,6 @@
                         </button>
                         </div>
                     }              
-
             </EditForm>
 
             <!--Link til signup-->
@@ -77,6 +74,7 @@
 </div>
 
 @code {
+
     //Variabler
     public PersonDTO person = new PersonDTO();
     public LoginDTO emailKode = new LoginDTO();

@@ -19,19 +19,16 @@
     <!--sticky top gør at dens position forbliver på skærmen når man scroller-->
     <div class="sticky-top">
         <!--edit context skal være med, da den prøver at følge formen på et objekt-->
-        <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="() => OpdaterVagtTypeHandler(this.NyVagtType)" OnInvalidSubmit="@HandleInvalidSubmit">
+        <EditForm EditContext="@EditContext" class="row p-3"
+                  OnValidSubmit="() => OpdaterVagtTypeHandler(this.NyVagtType)" OnInvalidSubmit="@HandleInvalidSubmit">
             <DataAnnotationsValidator />
 
-
-           
-          <!--Knap til tilbage-->
-
+            <!--Knap til tilbage-->
             <div class="col-12 pb-3">
                 <button class="btn btn-dark" @onclick="@OverblikPage">Tilbage</button>
             </div>
            
-
-           <!--Fylder InputSelect ud med de status der er i databasen-->
+            <!--Fylder InputSelect ud med de status der er i databasen-->
             <div class="col-md-12 mb-3">
                 <label>Vælg staus</label>
                 <InputSelect id="status" @bind-Value="TempStatusId" class="form-control">

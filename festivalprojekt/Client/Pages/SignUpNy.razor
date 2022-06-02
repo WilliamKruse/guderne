@@ -16,8 +16,8 @@
 </div>
 
 <!--edit context skal være med, da den prøver at følge formen på et objekt(person)-->
-
-<EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpretPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
+<EditForm EditContext="@editContext" class="row p-3"
+          OnValidSubmit="() => OpretPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
     <DataAnnotationsValidator />
 
     <!--Knap til at komme tilbage til Login.razor-->
@@ -106,7 +106,6 @@
         <strong>Ups</strong> Denne mail er allerede brugt..
     </div>
 }
-
 
 @code {
     // Variabler

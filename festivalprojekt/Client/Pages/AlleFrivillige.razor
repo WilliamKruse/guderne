@@ -146,6 +146,7 @@
             //AppState sætter dig til at være logget ind
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
+
             personListeUsorteret = (await Service.HentAllePersoner()).ToList();
 
             frivilligListe = personListeUsorteret.FindAll(x => x.RolleId == 1);

@@ -10,7 +10,6 @@
 
 <PageTitle>Vagt Overblik</PageTitle>
 
-
 <div class="d-flex justify-content-center">
     <h3> <u> Overblik </u> </h3>
 </div>
@@ -77,13 +76,15 @@
                 }
             </ul>
         </div>
+
         <!-- Her starter EDIT FORM til oprettelse af vagter, en unik måde at udfylde forms i Blazor-->
         <div class="col-sm-6 pt-4">
             <div class="sticky-top">
                 <!-- Vi bruger VagtDTO som context og kalder vores opret metode onvalidsubmit -->
                 <EditForm EditContext="@editContext" class="row p-3" 
-                OnValidSubmit="() =>OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
+                          OnValidSubmit="() =>OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
                     <DataAnnotationsValidator />
+
                     <!-- Laver en drop down menu hvor man kan valge alle vagttyper vi har hentet on initialized-->
                     <div class="col-md-12 mb-3">
                         <label>Vagt Type</label>
@@ -233,24 +234,29 @@
 </div>
 
 @code {
+
     //Local storage
     public int person_id = 1;
     public int rolle_id;
+
     //bruges til listen, første del, venstre side
     public int errorcode;
     public int errorcodevagt;
     public List<VagtView>? VagterList = new List<VagtView>();
     public List<VagtTypeDTO>? VagtTypeList = new List<VagtTypeDTO>();
     public List<Status> AlleStatus = new List<Status>();
+
     //Bruges til Editform
     public EditContext editContext;
     public VagtDTO NyVagt = new VagtDTO();
     public int Antal = 1;
+
     //Sætter default values på options felter
     public string StarttidTimer = "12";
     public string StarttidMinutter = "30";
     public string SluttidTimer = "16";
     public string SluttidMinutter = "30";
+
     //bliver true hvis noget får galt
     public bool AntalNegativt = false;
     public bool TidForkert = false;
@@ -261,12 +267,12 @@
     [Inject]
     public IVagtService VagtService { get; set; }
 
-
     //Denne metode bliver altid kørt når siden bliver initializeret.
     protected override async Task OnInitializedAsync()
     {
         //henter data fra Local Storage for at vide hvem der bruger siden
         rolle_id = await localStorage.GetItemAsync<int>("RolleId");
+
         //Hvis man ikke er logget som koordinator kan man ikke bruge siden og bliver sendt til login
         if (rolle_id == 0 && rolle_id == 1)
         {
@@ -277,19 +283,23 @@
             //AppState sætter dig til at være logget ind
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
+
             //Henter lister med alle status, alle vagter og alle vagttyper.
             AlleStatus = (await TypeService.HentAlleStatus()).ToList();
             VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
             VagterList = (await VagtService.HentAlleVagter("ALLE", person_id)).ToList();
+
             //her laves default value på editform så man ikke kommer til at sende en null value
             NyVagt.VagtTypeId = VagtTypeList.First().VagtTypeID.Value;
         }
     }
+
     //Bliver kørt ved hver reload, men kan ikke bruge asynkrone funktioner.
     protected override void OnInitialized()
     {
         //Beder EditForm bruge NyVagt som context.
         editContext = new EditContext(NyVagt);
+
         //sætter defalut values for tiden og vagttypen i editform.
         NyVagt.StartTid = DateTime.Now;
         NyVagt.SlutTid = DateTime.Now;
@@ -300,8 +310,10 @@
     {
         //sletter vagt og taget statuskode fra HTTP request og gemmer den i errorcode
         errorcodevagt = await VagtService.SletVagt(Vagt.VagtId);
+
         //opdatere UI
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
+
         //Beder Blzor re-render UI fordi noget har ændret sig
         StateHasChanged();
         VagterList = (await VagtService.HentAlleVagter("ALLE", person_id)).ToList();
@@ -321,8 +333,10 @@
         }
         //sletter så selve vagttypen
         errorcodevagt = await TypeService.SletVagtType(v.VagtTypeID.Value);
+
         //opdatere UI
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
+
         //Beder Blzor re-render UI fordi noget har ændret sig
         StateHasChanged();
         VagterList = (await VagtService.HentAlleVagter("ALLE", person_id)).ToList();
@@ -366,6 +380,7 @@
         Antal = 1;
         editContext = new EditContext(NyVagt);
         TidForkert = false;
+
         //henter lister igen efter oprettelse er fuldført
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
         StateHasChanged();

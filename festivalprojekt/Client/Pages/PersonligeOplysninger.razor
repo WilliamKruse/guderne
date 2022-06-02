@@ -10,6 +10,7 @@
 @inject AppStatus AppState
 
 <PageTitle>Personlige oplysninger</PageTitle>
+
 @if (IkkeUdfyldt)
 {
     <div class="alert alert-danger mt-4" role="alert">
@@ -21,9 +22,9 @@
     <h3> <u> Din profil </u> </h3>
 </div>
 
-
 <!-- Edit form der binder til context(persoDTO) -->
-<EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
+<EditForm EditContext="@editContext" class="row p-3"
+          OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
     <DataAnnotationsValidator />
 
     <!-- Home knap der altid går til /home-->
@@ -91,7 +92,6 @@
         <button type="submit" class="btn btn-dark">Opdater</button>
     </div>
 </EditForm>
-
 
 
 @code {

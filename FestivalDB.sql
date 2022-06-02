@@ -8,11 +8,11 @@ CREATE ROLE app_server_festival2022 WITH
   NOREPLICATION;
 
   CREATE ROLE udvikler WITH
-  NOLOGIN
+  LOGIN
   NOSUPERUSER
   INHERIT
-  NOCREATEDB
-  NOCREATEROLE
+  CREATEDB
+  CREATEROLE
   NOREPLICATION;
 
   CREATE ROLE adminbruger WITH
@@ -38,7 +38,7 @@ ALTER TABLE public.roller
 
 GRANT SELECT ON TABLE public.roller TO app_server_festival2022;
 
-GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.roller TO udvikler;
+GRANT ALL ON TABLE public.roller TO udvikler;
 
 GRANT ALL ON TABLE public.roller TO adminbruger;
 
@@ -59,7 +59,7 @@ TABLESPACE pg_default;
 ALTER TABLE public.personer
     OWNER to adminbruger;
 
-GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.personer TO udvikler;
+GRANT ALL ON TABLE public.personer TO udvikler;
 
 GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.personer TO app_server_festival2022;
 
@@ -87,7 +87,7 @@ TABLESPACE pg_default;
 ALTER TABLE public.personlige_oplysninger
     OWNER to adminbruger;
 
-GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.personlige_oplysninger TO udvikler;
+GRANT ALL ON TABLE public.personlige_oplysninger TO udvikler;
 
 GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.personlige_oplysninger TO app_server_festival2022;
 
@@ -108,7 +108,7 @@ ALTER TABLE public.kompetencer
 
 GRANT SELECT ON TABLE public.kompetencer TO app_server_festival2022;
 
-GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.kompetencer TO udvikler;
+GRANT ALL ON TABLE public.kompetencer TO udvikler;
 
 GRANT ALL ON TABLE public.kompetencer TO adminbruger;
 
@@ -132,7 +132,7 @@ TABLESPACE pg_default;
 ALTER TABLE public.perskomp
     OWNER to adminbruger;
 
-GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.perskomp TO udvikler;
+GRANT ALL ON TABLE public.perskomp TO udvikler;
 
 GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.perskomp TO app_server_festival2022;
 
@@ -154,6 +154,7 @@ ALTER TABLE public.status
 GRANT SELECT ON TABLE public.status TO app_server_festival2022;
 
 GRANT ALL ON TABLE public.status TO adminbruger;
+GRANT ALL ON TABLE public.status TO udvikler;
 
 
 CREATE TABLE IF NOT EXISTS public.vagt_typer
@@ -171,7 +172,7 @@ TABLESPACE pg_default;
 ALTER TABLE public.vagt_typer
     OWNER to adminbruger;
 
-GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.vagt_typer TO udvikler;
+GRANT ALL ON TABLE public.vagt_typer TO udvikler;
 
 GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.vagt_typer TO app_server_festival2022;
 
@@ -201,7 +202,7 @@ TABLESPACE pg_default;
 ALTER TABLE public.vagter
     OWNER to adminbruger;
 
-GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.vagter TO udvikler;
+GRANT ALL ON TABLE public.vagter TO udvikler;
 
 GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.vagter TO app_server_festival2022;
 
@@ -230,6 +231,7 @@ CREATE OR REPLACE VIEW public.fuld_person_view_3
 ALTER TABLE public.fuld_person_view_3
     OWNER TO adminbruger;
 
+GRANT ALL ON TABLE public.fuld_person_view_3 TO udvikler;
 GRANT SELECT ON TABLE public.fuld_person_view_3 TO app_server_festival2022;
 GRANT ALL ON TABLE public.fuld_person_view_3 TO adminbruger;
 
@@ -251,6 +253,7 @@ ALTER TABLE public.fuld_vagt_view
 
 GRANT SELECT ON TABLE public.fuld_vagt_view TO app_server_festival2022;
 GRANT ALL ON TABLE public.fuld_vagt_view TO adminbruger;
+GRANT ALL ON TABLE public.fuld_vagt_view TO udvikler;
 
 
 CREATE OR REPLACE PROCEDURE public.opdater_person(
@@ -305,3 +308,6 @@ $BODY$;
 
 GRANT USAGE ON SCHEMA public TO "app_server_festival2022";
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public to "app_server_festival2022"
+
+GRANT USAGE ON SCHEMA public TO "udvikler";
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public to "udvikler";

@@ -9,7 +9,11 @@
 
 <PageTitle>LOGIN</PageTitle>
 
-<h3 class="d-flex justify-content-center">Login</h3>
+<div class="d-flex justify-content-center">
+    <h3> <u> Login </u> </h3>
+</div>
+
+
 <div class="container">
     <div class="row">
         <div class="col"></div>
@@ -32,6 +36,7 @@
                     <ValidationMessage For="@(() => emailKode.Kode)" />
                 </div>
 
+
                     <!--Hvordan login knappen ser ud, når der ikke loades-->
                     @if (loginLoading == false)
                     {
@@ -50,6 +55,7 @@
                         </button>
                         </div>
                     }              
+
             </EditForm>
 
             <!--Link til signup-->
@@ -59,6 +65,7 @@
            
             <!--Alert hvis der er forkerte oplysninger-->
             @if (loginFejl)
+
             {
                 <div class="alert alert-danger mt-2" role="alert">
                     <strong>Fejl..</strong> Dine oplysninger er tastet forkert ind, prøv igen.

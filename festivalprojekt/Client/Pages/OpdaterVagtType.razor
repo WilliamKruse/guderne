@@ -10,12 +10,10 @@
 
 <PageTitle>Opdater vagttype</PageTitle>
 
-<div class="d-flex justify-content-center">
-    <h3>Opdater vagttype</h3>
-</div>
 
-<!--Knap til tilbage-->
-<button class="btn btn-dark" @onclick="@OverblikPage">Tilbage</button>
+    <div class="d-flex justify-content-center">
+        <h3> <u> Opdater </u> </h3>
+    </div>
 
 <div class="col-sm-6">
     <!--sticky top gør at dens position forbliver på skærmen når man scroller-->
@@ -24,7 +22,16 @@
         <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="() => OpdaterVagtTypeHandler(this.NyVagtType)" OnInvalidSubmit="@HandleInvalidSubmit">
             <DataAnnotationsValidator />
 
-            <!--Fylder InputSelect ud med de status der er i databasen-->
+
+           
+          <!--Knap til tilbage-->
+
+            <div class="col-12 pb-3">
+                <button class="btn btn-dark" @onclick="@OverblikPage">Tilbage</button>
+            </div>
+           
+
+           <!--Fylder InputSelect ud med de status der er i databasen-->
             <div class="col-md-12 mb-3">
                 <label>Vælg staus</label>
                 <InputSelect id="status" @bind-Value="TempStatusId" class="form-control">
@@ -58,7 +65,7 @@
 
             <!--Knap til at opdater vagttype-->
             <div class="col-12 mb-6">
-                <button type="submit" class="btn btn-primary">Opdater vagttype</button>
+                <button type="submit" class="btn btn-dark">Opdater vagttype</button>
             </div>
         </EditForm>
     </div>
@@ -70,7 +77,7 @@
     //Variabler
     private EditContext EditContext;
     public VagtTypeDTO NyVagtType = new VagtTypeDTO();
-    public Overblik overblik;
+    public List<VagtTypeDTO> vagtTypeListe = new List<VagtTypeDTO>();
     public int ErrorCode { get; set; }
     public int TempStatusId = 1;
 
@@ -125,6 +132,7 @@
     //opdaterer vagttypen, clearer editform og går tilbage til Overblik.razor
     public async void OpdaterVagtTypeHandler(VagtTypeDTO NyVagtType)
     {
+        NyVagtType.StatusId = TempStatusId;
         ErrorCode = await Service.OpdaterVagtType(NyVagtType);
         NyVagtType = new VagtTypeDTO();
         EditContext = new EditContext(NyVagtType);

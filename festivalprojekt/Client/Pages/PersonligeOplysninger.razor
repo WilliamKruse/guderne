@@ -10,6 +10,17 @@
 @inject AppStatus AppState
 
 <PageTitle>Personlige oplysninger</PageTitle>
+@if (IkkeUdfyldt)
+{
+    <div class="alert alert-danger mt-4" role="alert">
+        <strong>Fejl..</strong> Du mangler at udfylde felter
+    </div>
+}
+
+<div class="d-flex justify-content-center">
+    <h3> <u> Din profil </u> </h3>
+</div>
+
 
 <!-- Edit form der binder til context(persoDTO) -->
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
@@ -82,12 +93,14 @@
 </EditForm>
 
 
+
 @code {
 
     //Variabler
     public PersonDTO Person = new PersonDTO();
     public int errorcode;
     private EditContext editContext;
+    public bool IkkeUdfyldt = false;
 
     //Local storage 
     public int person_id;
@@ -139,7 +152,16 @@
     public async void OpdaterPersonHandler(PersonDTO person)
     {
         ValgteKompetencer();
-        errorcode = await Service.OpdaterPerson(person);
+        if (Person.Fornavn.Length > 0 && Person.Efternavn.Length > 0 && Person.Kodeord.Length > 0 && Person.Telefon.Length > 0 && Person.RealF.HasValue)
+        {
+            errorcode = await Service.OpdaterPerson(person);
+            NavigationManager.NavigateTo("/home");
+        }
+        else
+        {
+            IkkeUdfyldt = true;
+            StateHasChanged();
+        }
     }
 
     //Tilføjer de valgte komtencer til personen

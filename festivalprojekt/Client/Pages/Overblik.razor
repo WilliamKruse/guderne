@@ -3,52 +3,55 @@
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
 
+<!-- Injecter Blazors navigation manager, Nuget pakket LocalStorage og AppStatus -->
 @inject NavigationManager NavigationManager;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject AppStatus AppState
-@implements IDisposable
 
 <PageTitle>Vagt Overblik</PageTitle>
+
 
 <div class="d-flex justify-content-center">
     <h3> <u> Overblik </u> </h3>
 </div>
-
 
 <button class="btn btn-dark" @onclick="@HomePage">Home</button>
 <!-- vi bruger bootstraps collonne system, hvor hver div kan tildeles en værdi fra 1 til 12 og dermed vide hvor meget det fylder på skærmen-->
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
-            <!-- Vi har to lister med objekter, for hvert item i den ydre liste bliver items der matcher på vagt_type fra den indre liste indsat -->
+            <!-- Vi har to lister med objekter, for hvert item i den ydre liste bliver items der matcher på vagt_type fra den indre liste indsat-->
             <ul class="list-unstyled">
                 @foreach (var vagttype in VagtTypeList)
-
                 {
-
                     <li class="mt-4">
                         <div class="fw-bold">
                             @vagttype.VagtTypeNavn - @foreach (var status in AlleStatus)
                             {
                                 if (status.StatusId == vagttype.StatusId)
-                                {@status.StatusNavn;
+                                {
+                                    @status.StatusNavn;
+                                }
                             }
-                        }
+                            <!--Tilføjer knap til slet på hver vagttype-->
                             <button type="button" class="btn delete" @onclick="() =>
                                 SletVagtTypeHandler(vagttype)">
                                 <span class="oi oi-trash"></span>
                             </button>
+                            <!--Tilføjer knap til opdater på hver vagttype-->
                             <button type="button" class="btn update" @onclick="() =>
                                 OpdaterVagtTypeHandler(vagttype)">
                                 <span class="oi oi-pencil"></span>
                             </button>
                         </div>
+
                         <ul class="list-group list-group-light">
                             <!-- for hver vagttype bliver der nu kørt et foreach på alle vagter der sortere efter vagttype-->
                             @foreach (var vagt in VagterList)
                             {
                                 @if (vagt.VagtTypeId == vagttype.VagtTypeID)
                                 {
+                                    <!--Sætter oplysninger på vagten-->
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <div class="fw-bold"> @vagt.VagtTypeOmråde</div>
                                         <div class="text-muted">
@@ -61,6 +64,7 @@
                                             else
                                             { <p>Taget</p>}
                                         </div>
+                                        <!--Dele knap til hver vagt-->
                                         <button type="button" class="btn delete"
                                                 @onclick="() => SletVagtHandler(vagt)">
                                             <span class="oi oi-trash"></span>
@@ -70,7 +74,6 @@
                             }
                         </ul>
                     </li>
-
                 }
             </ul>
         </div>
@@ -78,9 +81,8 @@
         <div class="col-sm-6 pt-4">
             <div class="sticky-top">
                 <!-- Vi bruger VagtDTO som context og kalder vores opret metode onvalidsubmit -->
-                <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="()
-                          =>
-                    OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
+                <EditForm EditContext="@editContext" class="row p-3" 
+                OnValidSubmit="() =>OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
                     <DataAnnotationsValidator />
                     <!-- Laver en drop down menu hvor man kan valge alle vagttyper vi har hentet on initialized-->
                     <div class="col-md-12 mb-3">
@@ -90,7 +92,6 @@
                             {
                                 <option value=@type.VagtTypeID>@type.VagtTypeNavn - @type.VagtTypeOmråde</option>
                             }
-
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.VagtId)" />
                     </div>
@@ -211,7 +212,7 @@
                         <strong>Succes!</strong> Den nye vagt er registreret i systemet.
                     </div>
                 }
-                <!-- Hvis man prøver at kalde opret metode men med et netaivt antal vagter ønsket
+                <!-- Hvis man prøver at kalde opret metode men med et negativt antal vagter ønsket
                     vil denne fejlmeddelser blive vist.
                 -->
                 @if (AntalNegativt)
@@ -230,10 +231,11 @@
         </div>
     </div>
 </div>
+
 @code {
     //Local storage
-    public int p_id = 1;
-    public int r_id;
+    public int person_id = 1;
+    public int rolle_id;
     //bruges til listen, første del, venstre side
     public int errorcode;
     public int errorcodevagt;
@@ -260,29 +262,30 @@
     public IVagtService VagtService { get; set; }
 
 
-    //Denne metode bliver altid kørt når siden bliver gået initializeret.
+    //Denne metode bliver altid kørt når siden bliver initializeret.
     protected override async Task OnInitializedAsync()
     {
         //henter data fra Local Storage for at vide hvem der bruger siden
-        r_id = await localStorage.GetItemAsync<int>("RolleId");
+        rolle_id = await localStorage.GetItemAsync<int>("RolleId");
         //Hvis man ikke er logget som koordinator kan man ikke bruge siden og bliver sendt til login
-        if (r_id == 0 && r_id == 1)
+        if (rolle_id == 0 && rolle_id == 1)
         {
             LoginPage();
         }
         else
         {
+            //AppState sætter dig til at være logget ind
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
             //Henter lister med alle status, alle vagter og alle vagttyper.
             AlleStatus = (await TypeService.HentAlleStatus()).ToList();
             VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
-            VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
-            //her laver vi lige default value på editform så man ikke kommer til at sende en null value
+            VagterList = (await VagtService.HentAlleVagter("ALLE", person_id)).ToList();
+            //her laves default value på editform så man ikke kommer til at sende en null value
             NyVagt.VagtTypeId = VagtTypeList.First().VagtTypeID.Value;
         }
     }
-    //Denne bliver også kørt ved hver reload, men kan ikke bruge asynkrone funktioner.
+    //Bliver kørt ved hver reload, men kan ikke bruge asynkrone funktioner.
     protected override void OnInitialized()
     {
         //Beder EditForm bruge NyVagt som context.
@@ -301,7 +304,7 @@
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
         //Beder Blzor re-render UI fordi noget har ændret sig
         StateHasChanged();
-        VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
+        VagterList = (await VagtService.HentAlleVagter("ALLE", person_id)).ToList();
         StateHasChanged();
     }
 
@@ -322,7 +325,7 @@
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
         //Beder Blzor re-render UI fordi noget har ændret sig
         StateHasChanged();
-        VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
+        VagterList = (await VagtService.HentAlleVagter("ALLE", person_id)).ToList();
         StateHasChanged();
     }
 
@@ -333,10 +336,8 @@
         OpdaterVagtTypePage();
     }
 
-
-
     //metode der først opretter "Antal" mængde vagter og derefter opdatere lister i UI.
-    //Tjekker også de ting Validation i klasserne ikke kunne, Tid og Antal
+    //Tjekker også de ting Validation i klasserne ikke kunne, Tid og Antal.
     public async Task OpretVagtHandler(VagtDTO NyVagt)
     {
         if (Antal < 1)
@@ -368,7 +369,7 @@
         //henter lister igen efter oprettelse er fuldført
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
         StateHasChanged();
-        VagterList = (await VagtService.HentAlleVagter("ALLE", p_id)).ToList();
+        VagterList = (await VagtService.HentAlleVagter("ALLE", person_id)).ToList();
         StateHasChanged();
     }
 
@@ -387,6 +388,7 @@
     {
         Console.WriteLine("Invalid Submit er blevet kaldt");
     }
+
     //metoder der navigere til andre sider via Blazors Navigation Manager:
     public void OpretVagtTypePage()
     {
@@ -407,9 +409,4 @@
     {
         NavigationManager.NavigateTo("/opdatervagttype");
     }
-    public void Dispose()
-    {
-        AppState.OnChange -= StateHasChanged;
-    }
-
 }

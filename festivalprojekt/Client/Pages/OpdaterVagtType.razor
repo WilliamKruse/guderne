@@ -3,33 +3,35 @@
 @using festivalprojekt.Shared.Models;
 @using System;
 
+<!-- Injecter Blazors navigation manager, Nuget pakket LocalStorage og AppStatus -->
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject AppStatus AppState
-@implements IDisposable
 
 <PageTitle>Opdater vagttype</PageTitle>
-<div class="d-flex justify-content-center">
 
 
     <div class="d-flex justify-content-center">
         <h3> <u> Opdater </u> </h3>
     </div>
 
-
-</div>
-
 <div class="col-sm-6">
     <!--sticky top gør at dens position forbliver på skærmen når man scroller-->
     <div class="sticky-top">
-        <!--editform er en del af blazor, edit context skal være med, da den prøver at følge formen på et objekt-->
+        <!--edit context skal være med, da den prøver at følge formen på et objekt-->
         <EditForm EditContext="@EditContext" class="row p-3" OnValidSubmit="() => OpdaterVagtTypeHandler(this.NyVagtType)" OnInvalidSubmit="@HandleInvalidSubmit">
             <DataAnnotationsValidator />
+
+
+           
+          <!--Knap til tilbage-->
 
             <div class="col-12 pb-3">
                 <button class="btn btn-dark" @onclick="@OverblikPage">Tilbage</button>
             </div>
            
+
+           <!--Fylder InputSelect ud med de status der er i databasen-->
             <div class="col-md-12 mb-3">
                 <label>Vælg staus</label>
                 <InputSelect id="status" @bind-Value="TempStatusId" class="form-control">
@@ -38,23 +40,30 @@
                         <option value="@status.StatusId"> @status.StatusNavn</option>
                     }
                 </InputSelect>
-
             </div>
+
+            <!--Opretter et tomt felt til vagttype navn og binder den til det object man er ved at opdater(vagttype) på fra VagtTypeDTO-->
             <div class="col-md-12 mb-3">
                 <label>Vagttype navn</label>
                 <InputText id="vagttypenavn" @bind-Value="NyVagtType.VagtTypeNavn" class="form-control" />
                 <ValidationMessage For="@(() => NyVagtType.VagtTypeNavn)" />
             </div>
+
+            <!--Opretter et tomt felt til vagttype beskrivelse og binder den til det object man er ved at opdater(vagttype) på fra VagtTypeDTO-->
             <div class="col-md-12 mb-3">
                 <label>Beskrivelse</label>
                 <InputText id="vagttypebeskrivelse" @bind-Value="NyVagtType.VagtTypeBeskrivelse" class="form-control" />
                 <ValidationMessage For="@(() => NyVagtType.VagtTypeBeskrivelse)" />
             </div>
+
+            <!--Opretter et tomt felt til vagttype område og binder den til det object man er ved at opdater(vagttype) på fra VagtTypeDTO-->
             <div class="col-md-12 mb-3">
                 <label>Område</label>
                 <InputText id="tlf" @bind-Value="NyVagtType.VagtTypeOmråde" class="form-control" />
                 <ValidationMessage For="@(() => NyVagtType.VagtTypeOmråde)" />
             </div>
+
+            <!--Knap til at opdater vagttype-->
             <div class="col-12 mb-6">
                 <button type="submit" class="btn btn-dark">Opdater vagttype</button>
             </div>
@@ -64,19 +73,27 @@
 
 
 @code {
+
+    //Variabler
     private EditContext EditContext;
     public VagtTypeDTO NyVagtType = new VagtTypeDTO();
     public List<VagtTypeDTO> vagtTypeListe = new List<VagtTypeDTO>();
     public int ErrorCode { get; set; }
-    public int rolle_id;
-    public int vagtType_id;
-    public List<Status> AlleStatus = new List<Status>();
     public int TempStatusId = 1;
+
+    //Local storage
+     public int rolle_id;
+     public int vagtType_id;
+
+    //Lister
+    public List<Status> AlleStatus = new List<Status>();
+    public List<VagtTypeDTO> vagtTypeListe = new List<VagtTypeDTO>();
 
     //Injecter Service så vi kan bruge metoderne derfra.
     [Inject]
     public IVagtTypeService Service { get; set; }
 
+    //Hvis man ikke er logget ind, bliver man sendt til Login. Liste med status bliver fyldt ud. 
     protected override async Task OnInitializedAsync()
     {
         rolle_id = await localStorage.GetItemAsync<int>("RolleId");
@@ -87,18 +104,19 @@
         }
         else
         {
+            //AppState sætter dig til at være logget ind
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
+
             AlleStatus = (await Service.HentAlleStatus()).ToList();
 
             vagtType_id = await localStorage.GetItemAsync<int>("VagtTypeId");
-
             vagtTypeListe = (await Service.HentAlleVagtTyper()).ToList();
-            foreach (var item in vagtTypeListe)
+            foreach (var vagtType in vagtTypeListe)
             {
-                if (item.VagtTypeID.Value == vagtType_id)
+                if (vagtType.VagtTypeID.Value == vagtType_id)
                 {
-                    NyVagtType = item;
+                    NyVagtType = vagtType;
                     break;
                 }
             }
@@ -138,10 +156,6 @@
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
-    }
-    public void Dispose()
-    {
-        AppState.OnChange -= StateHasChanged;
     }
 }
 

@@ -3,12 +3,11 @@
 @using System;
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
-<!-- Injecter Blazors navigation manager og Nuget pakket LocalStorage -->
+
+<!-- Injecter Blazors navigation manager, Nuget pakket LocalStorage og AppStatus -->
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-
 @inject AppStatus AppState
-@implements IDisposable
 
 <PageTitle>Personlige oplysninger</PageTitle>
 @if (IkkeUdfyldt)
@@ -32,46 +31,62 @@
         <button class="btn btn-dark" @onclick="@HomePage">Home</button>
     </div>
 
+    <!--Opretter et tomt felt til fornavn og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-12 mb-3">
         <label>Fornavn</label>
         <InputText id="fornavn" @bind-Value="Person.Fornavn" class="form-control" />
         <ValidationMessage For="@(() => Person.Fornavn)" />
     </div>
+
+    <!--Opretter et tomt felt til Efternavn og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-12 mb-3">
         <label>Efternavn</label>
         <InputText id="efternavn" @bind-Value="Person.Efternavn" class="form-control" />
         <ValidationMessage For="@(() => Person.Efternavn)" />
     </div>
+
+    <!--Opretter et tomt felt til telefon og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-12 mb-3">
         <label>Telefon</label>
         <InputText id="telefon" @bind-Value="Person.Telefon" class="form-control" />
         <ValidationMessage For="@(() => Person.Telefon)" />
     </div>
+
+    <!--Opretter et tomt felt til Fødselsdato og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-6 mb-3">
         <label>FødselsDato</label>
         <InputDate id="føds" @bind-Value="Person.RealF" class="form-control" />
         <ValidationMessage For="@(() => Person.RealF)" />
     </div>
+
+    <!--Opretter et tomt felt til email og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-6 mb-3">
         <label>Email</label>
         <InputText id="email" @bind-Value="Person.Email" class="form-control" readonly="readonly" />
         <ValidationMessage For="@(() => Person.Email)" />
     </div>
+
+    <!--Opretter et tomt felt til Kodeord og binder den til det object man er ved at oprette(person) på fra PersonDTO-->
     <div class="col-md-6 mb-3">
         <label>Nyt Kodeord</label>
         <InputText type="password" id="kodeord" @bind-Value="Person.Kodeord" class="form-control" />
         <ValidationMessage For="@(() => Person.Kodeord)" />
     </div>
+
+    <!--Alle komptencer bliver vist og det kan markeres hvilke kompetencer personen har-->
     <h5>Dine kompetencer</h5>
     <ul>
-        @foreach (var k in AlleKompetencer)
+        @foreach (var kompetence in AlleKompetencer)
         {
             <div>
-                <input type="checkbox" id="@k.KompetenceNavn.ToLower()" name="@k.KompetenceNavn.ToLower()" @bind="k.Checker" />
-                <label for="@k.KompetenceNavn.ToLower()">@k.KompetenceNavn</label>
+                <input type="checkbox" id="@kompetence.KompetenceNavn.ToLower()" name="@kompetence.KompetenceNavn.ToLower()" 
+                @bind="kompetence.Checker" />
+                <label for="@kompetence.KompetenceNavn.ToLower()">@kompetence.KompetenceNavn</label>
             </div>
         }
     </ul>
+
+    <!--Knap til opdater person-->
     <div class="col-12 mb-6">
         <button type="submit" class="btn btn-dark">Opdater</button>
     </div>
@@ -80,54 +95,63 @@
 
 
 @code {
+
+    //Variabler
     public PersonDTO Person = new PersonDTO();
-    public List<PersonDTO> TempList = new List<PersonDTO>();
-    public List<Kompetencer> AlleKompetencer = new List<Kompetencer>();
-    public int p_id;
-    public int r_id;
     public int errorcode;
     private EditContext editContext;
     public bool IkkeUdfyldt = false;
 
+    //Local storage 
+    public int person_id;
+    public int rolle_id;
+
+    //Lister 
+    public List<PersonDTO> TempList = new List<PersonDTO>();
+    public List<Kompetencer> AlleKompetencer = new List<Kompetencer>();
+
+    //Service
     [Inject]
     IPersonService Service { get; set; }
 
+    //Protect async metode som henter person id og rolle id fra localStorage og initialiserer siden.
     protected override async Task OnInitializedAsync()
     {
-        p_id = await localStorage.GetItemAsync<int>("PersonId");
-        r_id = await localStorage.GetItemAsync<int>("RolleId");
+        person_id = await localStorage.GetItemAsync<int>("PersonId");
+        rolle_id = await localStorage.GetItemAsync<int>("RolleId");
 
-        if (r_id == 0)
+        if (rolle_id == 0)
         {
             LoginPage();
         }
         else
         {
-
+            //AppState sætter dig til at være logget ind
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
-            TempList = (await Service.HentPerson(p_id)).ToList();
+            TempList = (await Service.HentPerson(person_id)).ToList();
             Person = TempList.First();
             Person.RealF = DateTime.ParseExact(Person.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
 
             AlleKompetencer = (await Service.HentAlleKompetencer()).ToList();
-            foreach (var k in AlleKompetencer)
+            foreach (var kompetence in AlleKompetencer)
             {
-                k.Checker = Array.Exists(Person.KompetenceNavn, x => x == k.KompetenceNavn);
+                kompetence.Checker = Array.Exists(Person.KompetenceNavn, x => x == kompetence.KompetenceNavn);
             }
             Person.Kodeord = "";
         }
-
     }
+
+    //Laver nyt edit context objekt når siden starter, modelerer ud fra objektet Person.
     protected override void OnInitialized()
     {
         editContext = new EditContext(Person);
     }
 
+    //Async metode der opdater person 
     public async void OpdaterPersonHandler(PersonDTO person)
     {
-
-        MatchBox();
+        ValgteKompetencer();
         if (Person.Fornavn.Length > 0 && Person.Efternavn.Length > 0 && Person.Kodeord.Length > 0 && Person.Telefon.Length > 0 && Person.RealF.HasValue)
         {
             errorcode = await Service.OpdaterPerson(person);
@@ -138,43 +162,42 @@
             IkkeUdfyldt = true;
             StateHasChanged();
         }
-
-
     }
-    public void MatchBox()
-    {
-        List<int> i = new List<int>();
-        List<string> s = new List<string>();
 
-        foreach (var k in AlleKompetencer)
+    //Tilføjer de valgte komtencer til personen
+    public void ValgteKompetencer()
+    {
+        List<int> KompetenceId = new List<int>();
+        List<string> KompetenceNavn = new List<string>();
+
+        foreach (var kompetence in AlleKompetencer)
         {
-            if (k.Checker)
+            if (kompetence.Checker)
             {
-                i.Add(k.KompetenceId);
-                s.Add(k.KompetenceNavn);
+                KompetenceId.Add(kompetence.KompetenceId);
+                KompetenceNavn.Add(kompetence.KompetenceNavn);
             }
         }
-        Person.KompetenceNavn = s.ToArray();
-        Person.KompetenceId = i.ToArray();
-
+        Person.KompetenceId = KompetenceId.ToArray();
+        Person.KompetenceNavn = KompetenceNavn.ToArray();   
     }
+
+   //Hvis der indtastes indvalid data
     public void InvalidSubmitHandler()
     {
-        ;
+        Console.WriteLine("Invalid data");
     }
 
+    //Navigere tilbage til Home
     public void HomePage()
     {
         NavigationManager.NavigateTo("/home");
     }
 
+    //Navigere tilbage til Login
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
-    }
-    public void Dispose()
-    {
-        AppState.OnChange -= StateHasChanged;
     }
 }
 

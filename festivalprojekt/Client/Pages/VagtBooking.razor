@@ -4,10 +4,10 @@
 @using System;
 @using System.Globalization;
 
+<!-- Injecter Blazors navigation manager, Nuget pakket LocalStorage og AppStatus -->
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject AppStatus AppState
-@implements IDisposable
 
 <PageTitle>Vagtbooking</PageTitle>
 
@@ -15,9 +15,10 @@
     <h3> <u> Book vagter </u> </h3>
 </div>
 
-
+<!--Knap til home-->
 <button class="btn btn-dark" @onclick="@HomePage">Home</button>
 
+<!--Laver tabel-->
 <table class="table table-striped">
     <thead>
         <tr>
@@ -30,7 +31,7 @@
         </tr>
     </thead>
 
-    <!--går igennem ledigevagterliste og laver en tabel-->
+    <!--går igennem ledigevagterliste og udfylder tabel-->
     <tbody>
         @foreach (var vagt in LedigeVagterListe)
         {
@@ -41,72 +42,70 @@
                 <td>@vagt.VagtTypeBeskrivelse</td>
                 <td>@vagt.VagtTypeOmråde</td>
                 <td><button class="btn btn-dark btn-sm" @onclick="() => BookVagt(vagt)">Book</button></td>
-
             </tr>
-
         }
     </tbody>
 </table>
 
 @code {
 
-    public List<VagtView> LedigeVagterListe = new List<VagtView>();
+    //Variabler
     public BookVagtDTO Wrapper = new BookVagtDTO();
     public int ErrorCode { get; set; }
 
-    public int r_id = 1;
-    public int p_id = 1;
+    //Local stoage 
+    public int rolle_id = 1;
+    public int person_id = 1;
 
+    //Lister 
+    public List<VagtView> LedigeVagterListe = new List<VagtView>();
 
+    //Service
     [Inject]
     public IVagtService Service { get; set; }
 
     //Henter alle ledige vagter
     protected override async Task OnInitializedAsync()
     {
-        r_id = await localStorage.GetItemAsync<int>("RolleId");
-        p_id = await localStorage.GetItemAsync<int>("PersonId");
+        rolle_id = await localStorage.GetItemAsync<int>("RolleId");
+        person_id = await localStorage.GetItemAsync<int>("PersonId");
 
-        if (r_id == 0)
+        if (rolle_id == 0)
         {
             LoginPage();
         }
         else
         {
+            //AppState sætter dig til at være logget ind
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
             LedigeVagterListe = (await Service.HentAlleVagter("LEDIGE", 0)).ToList();
         }
-
     }
 
 
     //første del af metoden (ved ErrorCode) sletter valgte vagt på vagtId
     public async void BookVagt(VagtView Vagt)
     {
-        Wrapper.PersonId = p_id;
+        Wrapper.PersonId = person_id;
         Wrapper.VagtId = Vagt.VagtId;
         ErrorCode = await Service.BookVagt(Wrapper);
         LedigeVagterListe.RemoveAll(x => x == Vagt);
         //LedigeVagterListe = (await Service.HentAlleVagter("LEDIGE", 0)).ToList();
         StateHasChanged();
-
     }
 
+    //Naviger tilbage til Home
     public void HomePage()
     {
         NavigationManager.NavigateTo("/home");
     }
 
+    //Naviger tilbage til Login
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
-    }
-    public void Dispose()
-    {
-        AppState.OnChange -= StateHasChanged;
-    }
-
+    }  
 }
 
 

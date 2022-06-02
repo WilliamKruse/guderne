@@ -4,10 +4,10 @@
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
 
+<!-- Injecter Blazors navigation manager, Nuget pakket LocalStorage og AppStatus -->
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject AppStatus AppState
-@implements IDisposable
 
 <PageTitle>Home</PageTitle>
 
@@ -20,13 +20,13 @@
                     Vi er så glade for at have dig som en af os frivillige på dette års Miliø-Fest! <br />
                     På denne side kan du melde dig på vagter og holde styr på hvornår det er din tur til at hjælpe os med at holde den vildeste fest!
                 </p>
-
             </div>
         </div>
     </div>
+
+    <!--Kasse der indeholder knap til book vagt-->
     <div class="row pb-5">
         <div class="d-flex justify-content-evenly col-md-12">
-
             <div class="card" style="width: 28rem">
                 <img class="card-img-top" src="/Images/vagter.jpg" alt="Card image cap" />
                 <div class="card-body">
@@ -34,11 +34,10 @@
                     <p class="card-text">Vælg selv vagter og ta' kontrol over dit eget skema!</p>
 
                     <button class="btn btn-dark"  @onclick="@BookVagtPage">Book Vagter</button>
-
                 </div>
-
             </div>
 
+             <!--Kasse der indeholder knap til dine vagter-->
             <div class="card" style="width: 28rem">
                 <img class="card-img-top" src="/Images/burger.jpg" alt="Card image cap" />
                 <div class="card-body">
@@ -46,18 +45,18 @@
                     <p class="card-text">Tjek eller opdater dine allerede bookede vagter!</p>
                     <button class="btn btn-dark" @onclick="@DineVagterPage">Se Dine Vagter</button>
                 </div>
-
             </div>
-
-
         </div>
     </div>
 
-
-
-    @if (r_id == 2)
+    <!--Hvis man er loggede som koordinator vises nedenstående også-->
+    @if (rolle_id == 2)
     {
+
+        <!--Kasse der indeholder knap til se alle frivillige-->
+
         <div class="row pb-5">
+
             <div class="d-flex justify-content-evenly col-sm-12">
                 <div class="card" style="width: 28rem">
                     <img class="card-img-top" src="/Images/lol.jpg" alt="Card image cap" />
@@ -67,6 +66,7 @@
                         <button class="btn btn-dark" @onclick="@AlleFrivilligePage">Alle Frivillige</button>
                     </div>
 
+                <!--Kasse der indeholder knap til administrer-->
                 </div>
                 <div class="card" style="width: 28rem">
                     <img class="card-img-top" src="/Images/festival1.jpg" alt="Card image cap" />
@@ -75,74 +75,76 @@
                         <p class="card-text">Tjek eller opdater dine allerede bookede vagter!</p>
                         <button class="btn btn-dark" @onclick="@OverblikPage">Vagt Overblik</button>
                     </div>
-
-
                 </div>
-
-
             </div>
         </div>
-
     }
 </div>
 
+
 @code{
-    public int r_id;
-        public int p_id;
-        public List<PersonDTO> TempList = new List<PersonDTO>();
+        //Variabler
         public PersonDTO Person = new PersonDTO();
 
+        //Local storage 
+        public int rolle_id;
+        public int person_id;
+
+        //Lister
+        public List<PersonDTO> TempList = new List<PersonDTO>();
+        
+        //Service 
         [Inject]
         public IPersonService Service { get; set; }
 
+        //Protect async metode som henter person id og rolle id fra localStorage og initialiserer siden.
         protected override async Task OnInitializedAsync()
         {
-            r_id = await localStorage.GetItemAsync<int>("RolleId");
-            p_id = await localStorage.GetItemAsync<int>("PersonId");
-            if (r_id == 0)
+            rolle_id = await localStorage.GetItemAsync<int>("RolleId");
+            person_id = await localStorage.GetItemAsync<int>("PersonId");
+            if (rolle_id == 0)
             {
                 LoginPage();
-
             }
             else
             {
+                //AppState sætter dig til at være logget ind
                 AppState.OnChange += StateHasChanged;
                 AppState.Log(true);
                 TempList = ((await Service.HentAllePersoner()).ToList());
-                TempList.RemoveAll(x => x.PersonId != p_id);
+                TempList.RemoveAll(x => x.PersonId != person_id);
                 Person = TempList.First();
                 StateHasChanged();
-
             }
         }
 
+        //Navigere tilbage til Login
         public void LoginPage()
         {
             NavigationManager.NavigateTo("/");
         }
 
+        //Navigere tilbage til Book vagt
         public void BookVagtPage()
         {
             NavigationManager.NavigateTo("/ledigevagter");
         }
 
+        //Navigere tilbage til Dine vagter
         public void DineVagterPage()
         {
             NavigationManager.NavigateTo("/dinevagter");
         }
 
+        //Navigere tilbage til alle frivillige
         public void AlleFrivilligePage()
         {
             NavigationManager.NavigateTo("/allefrivillige");
         }
 
+        //Navigere tilbage til Overblik
         public void OverblikPage()
         {
             NavigationManager.NavigateTo("/overblikkoordinator");
         }
-        public void Dispose()
-        {
-            AppState.OnChange -= StateHasChanged;
-        }
-
     }

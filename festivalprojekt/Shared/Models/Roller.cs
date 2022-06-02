@@ -6,10 +6,8 @@ namespace festivalprojekt.Shared.Models
     {
         public int RolleId { get; set; }
         public string RolleNavn { get; set; }
-
         public Roller() 
         {
         }
-
     }
 }

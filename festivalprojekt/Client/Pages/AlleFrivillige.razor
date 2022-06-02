@@ -23,13 +23,13 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Fornavn</th>
-                <th>Efternavn</th>
+                <th>Navn</th>
+                <th style="width: 6%">Alder</th>
                 <th>Fødselsdag</th>
-                <th>Email</th>
+                <th style="width: 18%">Email</th>
                 <th>Telefon</th>
-                <th>Kompetencer</th>
-                <th> </th>
+                <th style="width: 26%">Kompetencer</th>
+                <th style="width: 8%"> </th>
             </tr>
         </thead>
 
@@ -38,28 +38,28 @@
             @foreach (var frivillig in frivilligListe)
             {
 
-                <tr>
-                    <td>@frivillig.Fornavn</td>
-                    <td>@frivillig.Efternavn</td>
-                    <td>@frivillig.RealF.Value.ToString("dd.MMMMM yyyy")</td>
-                    <td>@frivillig.Email</td>
-                    <td>@frivillig.Telefon</td>
-                    <td>
-                        @for (int i = 0; i < frivillig.KompetenceNavn.Length; i++)
+            <tr>
+                <td>@frivillig.Fornavn @frivillig.Efternavn</td>
+                <td>@Alder(frivillig)</td>
+                <td>@frivillig.RealF.Value.ToString("dd.MMMMM yyyy")</td>
+                <td>@frivillig.Email</td>
+                <td>@frivillig.Telefon</td>
+                <td>
+                    @for (int i = 0; i < frivillig.KompetenceNavn.Length; i++)
+                    {
+                        if (frivillig.KompetenceNavn[0] == frivillig.KompetenceNavn[i])
                         {
-                            if (frivillig.KompetenceNavn[0] == frivillig.KompetenceNavn[i])
-                            {
-                                <a> @frivillig.KompetenceNavn[i]</a>
-                            }
-                            else
-                            {
-                                <a>, @frivillig.KompetenceNavn[i]</a>
-                            }
-
+                            <a> @frivillig.KompetenceNavn[i]</a>
                         }
-                    </td>
-                    <td><button type="button" class="btn btn-dark btn-sm">Send mail</button></td>
-                </tr>
+                        else
+                        {
+                            <a>, @frivillig.KompetenceNavn[i]</a>
+                        }
+
+                    }
+                </td>
+                <td><button type="button" class="btn btn-dark btn-sm">Send mail</button></td>
+            </tr>
 
 
             }
@@ -74,14 +74,15 @@
 
     <table class="table table-striped">
         <thead>
+            
             <tr>
                 <th>Navn</th>
-                <th>Alder</th>
+                <th style="width: 6%">Alder</th>
                 <th>Fødselsdag</th>
-                <th>Email</th>
+                <th style="width: 18%">Email</th>
                 <th>Telefon</th>
-                <th>Kompetencer</th>
-                <th> </th>
+                <th style="width: 26%">Kompetencer</th>
+                <th style="width: 8%" > </th>
             </tr>
         </thead>
 
@@ -170,8 +171,6 @@
         int nu = int.Parse(DateTime.Now.ToString("yyyyMMdd"));
         int født = int.Parse(x.RealF.Value.ToString("yyyyMMdd"));
         return (nu - født) / 10000;
-
-
 
     }
 

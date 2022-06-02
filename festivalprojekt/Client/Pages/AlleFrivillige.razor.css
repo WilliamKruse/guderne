@@ -1,5 +1,12 @@
-﻿.th .tr .td {
-    text-align: center;
-    white-space:nowrap;
+﻿th, td {
+    width: 14%;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+table {
+    width: 100%;
+    table-layout: fixed;
 }

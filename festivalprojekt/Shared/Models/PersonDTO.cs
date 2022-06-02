@@ -42,7 +42,7 @@ namespace festivalprojekt.Shared.Models
         public string Email { get; set; }
 
         //Valerdering af telefonnummer
-        [StringLength(8, MinimumLength = 8, ErrorMessage = "skriv dit 8-cifrede telefonnummer tak")]
+        [StringLength(8, MinimumLength = 8, ErrorMessage = "skriv dit 8-cifrede telefonnummer")]
         public string Telefon { get; set; }
 
         //Valerdering af kodeord

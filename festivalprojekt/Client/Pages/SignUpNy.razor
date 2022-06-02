@@ -86,8 +86,8 @@
         @foreach (var kompetence in AlleKompetencer)
         {
             <div>
-                <input type="checkbox" id="@kompetence.KompetenceNavn.ToLower()" name="@kompetence.KompetenceNavn.ToLower()" 
-                @bind="kompetence.Checker" />
+                <input type="checkbox" id="@kompetence.KompetenceNavn.ToLower()" name="@kompetence.KompetenceNavn.ToLower()"
+                       @bind="kompetence.Checker" />
                 <label for="@kompetence.KompetenceNavn.ToLower()">@kompetence.KompetenceNavn</label>
             </div>
         }
@@ -106,6 +106,12 @@
         <strong>Ups</strong> Denne mail er allerede brugt..
     </div>
 }
+@if (loginfejl)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Ups</strong> Du er oprettet med ikke logget ind
+    </div>
+}
 
 @code {
     // Variabler
@@ -116,6 +122,7 @@
     public int ValgtRolleId = 1;
     public bool EmailFejl = false;
     public bool loginfejl = false;
+
 
     //Lister
     public List<Roller> AlleRoller = new List<Roller>();
@@ -149,34 +156,37 @@
         if (EmailCheckList.Exists(x => x.Email == person.Email))
         {
             EmailFejl = true;
+            StateHasChanged();
         }
         else
         {
-            // Kalder ValgteKompetencer() metoden
-            ValgteKompetencer();
+           
+                // Kalder ValgteKompetencer() metoden
+                ValgteKompetencer();
 
-            person.RolleId = ValgtRolleId;
-            person.Fødselsdag = person.RealF.Value.ToString("yyyy-MM-dd H:mm:ss");
-            person.PersonId = 1;
-            errorcode = await Service.OpretPerson(person);
+                person.RolleId = ValgtRolleId;
+                person.Fødselsdag = person.RealF.Value.ToString("yyyy-MM-dd H:mm:ss");
+                person.PersonId = 1;
+                errorcode = await Service.OpretPerson(person);
 
-            loginDTO.Email = person.Email;
-            loginDTO.Kode = person.Kodeord;
-            IEnumerable<PersonDTO> TempList = await LoginService.HentLoginPerson(loginDTO);
-            if (TempList.Count() > 0)
-            {
-                //AppState sætter dig til at være logget ind
-                AppState.OnChange += StateHasChanged;
-                AppState.Log(true);
-                person = TempList.First();
-                await localStorage.SetItemAsync("PersonId", person.PersonId);
-                await localStorage.SetItemAsync("RolleId", person.RolleId);
-                HomePage();
-            }
-            else
-            {
-                loginfejl = true;
-            }
+                loginDTO.Email = person.Email;
+                loginDTO.Kode = person.Kodeord;
+                IEnumerable<PersonDTO> TempList = await LoginService.HentLoginPerson(loginDTO);
+                if (TempList.Count() > 0)
+                {
+                    //AppState sætter dig til at være logget ind
+                    AppState.OnChange += StateHasChanged;
+                    AppState.Log(true);
+                    person = TempList.First();
+                    await localStorage.SetItemAsync("PersonId", person.PersonId);
+                    await localStorage.SetItemAsync("RolleId", person.RolleId);
+                    HomePage();
+                }
+                else
+                {
+                    loginfejl = true;
+                    StateHasChanged();
+                }
         }
     }
 

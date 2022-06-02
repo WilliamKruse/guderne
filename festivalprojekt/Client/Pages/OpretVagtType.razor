@@ -11,14 +11,13 @@
 
 <PageTitle>Opret vagttype</PageTitle>
 
+
 <div class="d-flex justify-content-center">
-    <h3>Opret vagttype</h3>
+    <h3> <u> Opret vagttype </u> </h3>
 </div>
 
-
-
 <div class="col-sm-6">
-    
+
     <!--sticky top gør at dens position forbliver på skærmen når man scroller-->
     <div class="sticky-top">
         <!--edit context skal være med, da den prøver at følge formen på et objekt-->
@@ -27,44 +26,44 @@
 
             <div class="col-12 pb-3">
                 <button class="btn btn-dark" @onclick="@OverblikPage">Tilbage</button>
-              </div>
+            </div>
 
-                <!--Fylder InputSelect ud med de status der er i databasen-->
-                <div class="col-md-12 mb-3">
-                    <label>Vælg status</label>
-                    <InputSelect id="status" @bind-Value="ValgtStatusId" class="form-control">
-                        @foreach (var status in AlleStatus)
-                        {
-                            <option value="@status.StatusId"> @status.StatusNavn</option>
-                        }
-                    </InputSelect>
-                </div>
+            <!--Fylder InputSelect ud med de status der er i databasen-->
+            <div class="col-md-12 mb-3">
+                <label>Vælg status</label>
+                <InputSelect id="status" @bind-Value="ValgtStatusId" class="form-control">
+                    @foreach (var status in AlleStatus)
+                    {
+                        <option value="@status.StatusId"> @status.StatusNavn</option>
+                    }
+                </InputSelect>
+            </div>
 
-                <!--Opretter et tomt felt til vagttype navn og binder den til det object man er ved at oprette(vagttype) på fra VagtTypeDTO-->
-                <div class="col-md-12 mb-3">
-                    <label>Vagttype navn</label>
-                    <InputText id="vagttypenavn" @bind-Value="NyVagtType.VagtTypeNavn" class="form-control" />
-                    <ValidationMessage For="@(() => NyVagtType.VagtTypeNavn)" />
-                </div>
+            <!--Opretter et tomt felt til vagttype navn og binder den til det object man er ved at oprette(vagttype) på fra VagtTypeDTO-->
+            <div class="col-md-12 mb-3">
+                <label>Vagttype navn</label>
+                <InputText id="vagttypenavn" @bind-Value="NyVagtType.VagtTypeNavn" class="form-control" />
+                <ValidationMessage For="@(() => NyVagtType.VagtTypeNavn)" />
+            </div>
 
-                <!--Opretter et tomt felt til vagttype beskrivelse og binder den til det object man er ved at oprette(vagttype) på fra VagtTypeDTO-->
-                <div class="col-md-12 mb-3">
-                    <label>Beskrivelse</label>
-                    <InputText id="vagttypebeskrivelse" @bind-Value="NyVagtType.VagtTypeBeskrivelse" class="form-control" />
-                    <ValidationMessage For="@(() => NyVagtType.VagtTypeBeskrivelse)" />
-                </div>
+            <!--Opretter et tomt felt til vagttype beskrivelse og binder den til det object man er ved at oprette(vagttype) på fra VagtTypeDTO-->
+            <div class="col-md-12 mb-3">
+                <label>Beskrivelse</label>
+                <InputText id="vagttypebeskrivelse" @bind-Value="NyVagtType.VagtTypeBeskrivelse" class="form-control" />
+                <ValidationMessage For="@(() => NyVagtType.VagtTypeBeskrivelse)" />
+            </div>
 
-                <!--Opretter et tomt felt til vagttype område og binder den til det object man er ved at oprette(vagttype) på fra VagtTypeDTO-->
-                <div class="col-md-12 mb-3">
-                    <label>Område</label>
-                    <InputText id="tlf" @bind-Value="NyVagtType.VagtTypeOmråde" class="form-control" />
-                    <ValidationMessage For="@(() => NyVagtType.VagtTypeOmråde)" />
-                </div>
+            <!--Opretter et tomt felt til vagttype område og binder den til det object man er ved at oprette(vagttype) på fra VagtTypeDTO-->
+            <div class="col-md-12 mb-3">
+                <label>Område</label>
+                <InputText id="tlf" @bind-Value="NyVagtType.VagtTypeOmråde" class="form-control" />
+                <ValidationMessage For="@(() => NyVagtType.VagtTypeOmråde)" />
+            </div>
 
-                <!--Knap til at oprette vagttype-->
-                <div class="col-12 mb-6">
-                    <button type="submit" class="btn btn-dark">Opret vagttype</button>
-                </div>
+            <!--Knap til at oprette vagttype-->
+            <div class="col-12 mb-6">
+                <button type="submit" class="btn btn-dark">Opret vagttype</button>
+            </div>
         </EditForm>
     </div>
 </div>

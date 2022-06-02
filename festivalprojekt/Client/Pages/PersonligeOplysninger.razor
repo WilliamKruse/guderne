@@ -18,6 +18,11 @@
     </div>
 }
 
+<div class="d-flex justify-content-center">
+    <h3> <u> Din profil </u> </h3>
+</div>
+
+
 <!-- Edit form der binder til context(persoDTO) -->
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpdaterPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
     <DataAnnotationsValidator />

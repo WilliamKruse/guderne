@@ -9,7 +9,11 @@
 
 <PageTitle>LOGIN</PageTitle>
 
-<h3 class="d-flex justify-content-center">Login</h3>
+<div class="d-flex justify-content-center">
+    <h3> <u> Login </u> </h3>
+</div>
+
+
 <div class="container">
     <div class="row">
         <div class="col"></div>
@@ -33,24 +37,24 @@
                 </div>
 
 
- 
-                    @if (loginLoading == false)
-                    {
-            <div class="d-flex justify-content-center mb-8">
-                <button type="submit" class="w-50 btn btn-dark mt-8">Login</button>
-            </div>
-                        
-                    }
-                    else if (loginLoading == true)
-                    {
-            <div class="d-flex justify-content-center mb-8">
-                <button class="w-50 btn" type="button" disabled>
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Loading...
-                </button>
-            </div>
-                    }
-                
+
+                @if (loginLoading == false)
+                {
+                    <div class="d-flex justify-content-center mb-8">
+                        <button type="submit" class="w-50 btn btn-dark mt-8">Login</button>
+                    </div>
+
+                }
+                else if (loginLoading == true)
+                {
+                    <div class="d-flex justify-content-center mb-8">
+                        <button class="w-50 btn" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
+                    </div>
+                }
+
 
             </EditForm>
 
@@ -58,7 +62,7 @@
                 <div class="text-grey">Ikke allerede tilmeldt? <small> <a href="/signup" class="link-secondary"> Sign Up </a> </small> </div>
 
             </div>
-           
+
 
             @if (loginejl)
             {

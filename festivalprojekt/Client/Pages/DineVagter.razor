@@ -117,6 +117,8 @@
     {
         NavigationManager.NavigateTo("/");
     }
+
+    //Metode der sorterer lister med VagtView efter starttid
     static List<VagtView> Sorter(List<VagtView> list)
     {
         list.Sort((x, y) => x.StartTid.CompareTo(y.StartTid));

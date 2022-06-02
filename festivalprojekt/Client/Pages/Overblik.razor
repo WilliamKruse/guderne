@@ -285,8 +285,9 @@
             AlleStatus = (await TypeService.HentAlleStatus()).ToList();
             VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
             VagterList = (await VagtService.HentAlleVagter("ALLE", person_id)).ToList();
-
-            //her laves default value på editform så man ikke kommer til at sende en null value
+            VagterList = Sorter(VagterList);
+            //her laves default value på vagttypeID så man ikke kommer til at sende
+            //en null value hvis man ikke vælger noget i drop down.
             NyVagt.VagtTypeId = VagtTypeList.First().VagtTypeID.Value;
         }
     }

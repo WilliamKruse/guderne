@@ -385,6 +385,7 @@
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();
         StateHasChanged();
         VagterList = (await VagtService.HentAlleVagter("ALLE", person_id)).ToList();
+        VagterList = Sorter(VagterList);
         StateHasChanged();
     }
 
@@ -404,6 +405,11 @@
         Console.WriteLine("Invalid Submit er blevet kaldt");
     }
 
+    static List<VagtView> Sorter(List<VagtView> list)
+    {
+        list.Sort((x, y) => x.StartTid.CompareTo(y.StartTid));
+        return list;
+    }
     //metoder der navigere til andre sider via Blazors Navigation Manager:
     public void OpretVagtTypePage()
     {

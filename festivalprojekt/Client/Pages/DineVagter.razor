@@ -61,7 +61,7 @@
 
     //Lister
     public List<VagtView> DineVagterListe = new List<VagtView>();
-    
+
     //Service 
     [Inject]
     public IVagtService Service { get; set; }
@@ -86,6 +86,7 @@
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
             DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", person_id)).ToList();
+            DineVagterListe = Sorter(DineVagterListe);
         }
     }
 
@@ -115,5 +116,10 @@
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
+    }
+    static List<VagtView> Sorter(List<VagtView> list)
+    {
+        list.Sort((x, y) => x.StartTid.CompareTo(y.StartTid));
+        return list;
     }
 }

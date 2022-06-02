@@ -80,6 +80,7 @@
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
             LedigeVagterListe = (await Service.HentAlleVagter("LEDIGE", 0)).ToList();
+            LedigeVagterListe = Sorter(LedigeVagterListe);
         }
     }
 
@@ -104,7 +105,13 @@
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
-    }  
+    }
+
+    static List<VagtView> Sorter(List<VagtView> list)
+    {
+        list.Sort((x, y) => x.StartTid.CompareTo(y.StartTid));
+        return list;
+    }
 }
 
 

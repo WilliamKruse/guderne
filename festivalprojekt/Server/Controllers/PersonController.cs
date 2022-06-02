@@ -14,7 +14,7 @@ namespace festivalprojekt.Server.Controllers
 
     public class PersonController : ControllerBase
     {
-        //Attribut
+        //Variable
         private readonly IPersonRepositoryDapper repo;
 
         //Contructor tjekker om PersonRepositoryDapper er tom og hvis den er, initialiseres repository

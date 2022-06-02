@@ -1,21 +1,18 @@
 ﻿@page "/opretvagttype"
-
 @using festivalprojekt.Client.Services;
 @using festivalprojekt.Shared.Models;
 @using System;
 
+<!-- Injecter Blazors navigation manager, Nuget pakket LocalStorage og AppStatus -->
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject AppStatus AppState
-@implements IDisposable
 
 <PageTitle>Opret vagttype</PageTitle>
 
 <div class="d-flex justify-content-center">
     <h3>Opret vagttype</h3>
 </div>
-
-
 
 <div class="col-sm-6">
     
@@ -75,6 +72,8 @@
     public VagtTypeDTO NyVagtType = new VagtTypeDTO();
     public int ValgtStatusId = 1;
     public int ErrorCode { get; set; }
+   
+    //Local storage 
     public int rolle_id;
 
     //Lister
@@ -84,12 +83,10 @@
     [Inject]
     public IVagtTypeService Service { get; set; }
 
-    //Liste med status bliver fyldt ud. Hvis man ikke er logget ind, bliver man sendt til Login.Razor
+    //Hvis man ikke er logget ind, bliver man sendt til Login. Liste med status bliver fyldt ud.
     protected override async Task OnInitializedAsync()
     {
-
         rolle_id = await localStorage.GetItemAsync<int>("RolleId");
-
 
         if (rolle_id == 0)
         {
@@ -97,6 +94,7 @@
         }
         else
         {
+            //AppState sætter dig til at være logget ind
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
             AlleStatus = (await Service.HentAlleStatus()).ToList();
@@ -136,9 +134,4 @@
     {
         NavigationManager.NavigateTo("/");
     }
-    public void Dispose()
-    {
-        AppState.OnChange -= StateHasChanged;
-    }
-
 }

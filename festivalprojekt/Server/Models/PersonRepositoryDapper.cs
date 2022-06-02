@@ -11,17 +11,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace festivalprojekt.Server.Models
 {
+    //definere klasse som implementer interfacet
     public class PersonRepositoryDapper : IPersonRepositoryDapper
     {
-
+        //Variable der gør det muligt at skrive SQL
         private string sql = "";
+        //Variable der bruger Context klassen
         private dBContext Context;
 
+        //Contructor
         public PersonRepositoryDapper(dBContext context)
         {
             this.Context = context;
         }
 
+        //Async metode der henter alle roller via sql statement fra databasen
         public async Task<IEnumerable<Roller>> HentAlleRoller()
         {
             sql = $"SELECT rolle_id AS \"RolleId\", rolle_navn AS \"RolleNavn\" FROM roller";
@@ -30,8 +34,7 @@ namespace festivalprojekt.Server.Models
             return RolleListe.ToList();
         }
 
-
-
+        //Async metode der henter alle kompetencer via sql statement fra databasen
         public async Task<IEnumerable<Kompetencer>> HentAlleKompetencer()
         {
             sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\" FROM kompetencer";
@@ -39,52 +42,31 @@ namespace festivalprojekt.Server.Models
             var KompetenceListe = await Context.Connection.QueryAsync<Kompetencer>(sql);
             return KompetenceListe.ToList();
         }
+
+        //Async metode der henter alle personer via sql statement fra databasen
         public async Task<IEnumerable<PersonDTO>> HentAllePersoner()
         {
-            //laver sql statement til query (postgres). Det er vigtigt med AS fordi eller kan dapper ikke matche til klassens navne automatisk.
-            sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\", person_id AS \"PersonId\", rolle_id AS \"RolleId\", email AS \"Email\", telefon AS \"Telefon\", kodeord AS \"Kodeord\", fornavn AS \"Fornavn\", efternavn AS \"Efternavn\", fødselsdag::text AS \"Fødselsdag\" FROM fuld_person_view_3;";
-
-            //try catch, hvis det ikke virker går den til catch
-            try
-            {
+            // Det er vigtigt med AS fordi eller kan dapper ikke matche til klassens navne automatisk.
+            sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\", person_id AS \"PersonId\", " +
+                $"rolle_id AS \"RolleId\", email AS \"Email\", telefon AS \"Telefon\", kodeord AS \"Kodeord\", fornavn AS \"Fornavn\", " +
+                $"efternavn AS \"Efternavn\", fødselsdag::text AS \"Fødselsdag\" FROM fuld_person_view_3;";
 
                 var PersonListe = await Context.Connection.QueryAsync<PersonDTO>(sql);
-
                 return PersonListe.ToList();
-
-            }
-            catch (NotImplementedException)
-            {
-                //hvis den ikke kan returne VagtTypeListe returnere den en tom liste
-                return new List<PersonDTO>();
-            }
         }
+
+        //Async metode der henter person via sql statement fra databasen
         public async Task<IEnumerable<PersonDTO>> HentPerson(int PersonId)
         {
-            //laver sql statement til query (postgres). Det er vigtigt med AS fordi eller kan dapper ikke matche til klassens navne automatisk.
-            sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\", person_id AS \"PersonId\", rolle_id AS \"RolleId\", email AS \"Email\", telefon AS \"Telefon\", kodeord AS \"Kodeord\", fornavn AS \"Fornavn\", efternavn AS \"Efternavn\", fødselsdag::text AS \"Fødselsdag\" FROM fuld_person_view_3 WHERE person_id = {PersonId};";
-
-
-            //try catch, hvis det ikke virker går den til catch
-            try
-            {
-
-
-
-
+            sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\", person_id AS \"PersonId\", " +
+                $"rolle_id AS \"RolleId\", email AS \"Email\", telefon AS \"Telefon\", kodeord AS \"Kodeord\", fornavn AS \"Fornavn\"," +
+                $" efternavn AS \"Efternavn\", fødselsdag::text AS \"Fødselsdag\" FROM fuld_person_view_3 WHERE person_id = {PersonId};";
+       
                 var Person = await Context.Connection.QueryAsync<PersonDTO>(sql);
-
-                return Person.ToList();
-
-            }
-            catch (NotImplementedException)
-            {
-                //hvis den ikke kan returne VagtTypeListe returnere den en tom liste
-                return new List<PersonDTO>();
-            }
+                return Person.ToList();           
         }
 
-
+        //Async metode der opretter person med komptencer og hvis man ikke vælger nogle komptencer får man array 5 som default
         public async void OpretPerson(PersonDTO NyPerson)
         {
             string arr = "";
@@ -92,34 +74,25 @@ namespace festivalprojekt.Server.Models
             if (NyPerson.KompetenceId.Length == 0)
             {
                 arr = "5";
-                Console.WriteLine("ingen kompetencer");
             }
             else
             {
-
-
                 foreach (var item in NyPerson.KompetenceId)
                 {
                     if (tal == 0)
-                    {
-                       
+                    {                      
                         arr += item + "";
-                        Console.WriteLine("debug tal 1: " + arr);
-
                         tal++;
                     }
                     else
-                    {
-                        
+                    {                        
                         arr += "," + item;
-                        Console.WriteLine("debug enter tal 2: " + arr);
                         tal++;
                     }
-
                 }
             }
-            Console.WriteLine("repo ramt");
 
+            //Opretter dictionary til Opret person som bruges i sql statment 
             DynamicParameters dp = new DynamicParameters();
             dp.Add("PersonId", NyPerson.PersonId);
             dp.Add("RolleId", NyPerson.RolleId);
@@ -132,18 +105,11 @@ namespace festivalprojekt.Server.Models
 
             sql = $"CALL opret_person(ARRAY[{arr}], @PersonId, @RolleId, @Email, @Telefon, @Kodeord, @Fornavn, @Efternavn, @RealF);";
 
-           // sql = $"CALL opret_person(ARRAY[{arr}],{NyPerson.PersonId},{NyPerson.RolleId},'{NyPerson.Email}','{NyPerson.Telefon}','{NyPerson.Kodeord}','{NyPerson.Fornavn}','{NyPerson.Efternavn}','{NyPerson.RealF}');";
-            try
-            {
-
-                await Context.Connection.ExecuteAsync(sql, dp);
-
-            }
-            catch (NotImplementedException)
-            {
-                ;
-            }
+            //Execute gør at SQL statementet bliver kørt i databasen
+            await Context.Connection.ExecuteAsync(sql, dp);         
         }
+
+        //Async metode der Opdater en person med komptencer og hvis man ikke vælger nogle komptencer får man array 5 som default
         public async void OpdaterPerson(PersonDTO NyPerson)
         {
 
@@ -152,31 +118,25 @@ namespace festivalprojekt.Server.Models
             if (NyPerson.KompetenceId.Length == 0)
             {
                 arr = "5";
-                Console.WriteLine("ingen kompetencer");
             }
             else
             {
-
-
                 foreach (var item in NyPerson.KompetenceId)
                 {
                     if (tal == 0)
                     {
-
                         arr += item + "";
                         tal++;
                     }
                     else
                     {
-
                         arr += "," + item;
                         tal++;
                     }
-
                 }
             }
-           
 
+            //Opretter dictionary til opdater person som bruges i sql statment 
             DynamicParameters dp = new DynamicParameters();
             dp.Add("PersonId", NyPerson.PersonId);
             dp.Add("RolleId", NyPerson.RolleId);
@@ -189,36 +149,20 @@ namespace festivalprojekt.Server.Models
 
             sql = $"CALL opdater_person(ARRAY[{arr}], @PersonId, @RolleId, @Email, @Telefon, @Kodeord, @Fornavn, @Efternavn, @RealF);";
 
-          //  sql = $"CALL opdater_person(ARRAY[{arr}], {NyPerson.PersonId} ,{NyPerson.RolleId}, '{NyPerson.Email}', '{NyPerson.Telefon}', '{NyPerson.Kodeord}', '{NyPerson.Fornavn}', '{NyPerson.Efternavn}', '{NyPerson.RealF/*ToString("yyyy-MM-dd HH:mm:ss")*/}');";
-            try
-            {
-
-                await Context.Connection.ExecuteAsync(sql, dp);
-
-            }
-            catch (NotImplementedException)
-            {
-                ;
-            }
+            //Execute gør at SQL statementet bliver kørt i databasen
+            await Context.Connection.ExecuteAsync(sql, dp);
         }
+
+        //Async metode der logger en person ind  
         public async Task<IEnumerable<PersonDTO>> Login(string email, string kode)
         {
-            sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\", person_id AS \"PersonId\", rolle_id AS \"RolleId\", email AS \"Email\", telefon AS \"Telefon\", kodeord AS \"Kodeord\", fornavn AS \"Fornavn\", efternavn AS \"Efternavn\", fødselsdag::text AS \"Fødselsdag\" FROM fuld_person_view_3 WHERE email = '{email}' AND kodeord = crypt('{kode}', kodeord);";
-            try
-            {
-
-
-
-                var person = await Context.Connection.QueryAsync<PersonDTO>(sql);
-                return person;
-            }
-            catch (SystemException)
-            {
-                //hvis den ikke kan returne VagtTypeListe returnere den en tom liste
-                throw;
-            }
-
-
+            sql = $"SELECT kompetence_id AS \"KompetenceId\", kompetence_navn AS \"KompetenceNavn\", person_id AS \"PersonId\", " +
+                $"rolle_id AS \"RolleId\", " +
+                $"email AS \"Email\", telefon AS \"Telefon\", kodeord AS \"Kodeord\", fornavn AS \"Fornavn\", efternavn AS \"Efternavn\", " +
+                $"fødselsdag::text AS \"Fødselsdag\" FROM fuld_person_view_3 WHERE email = '{email}' AND kodeord = crypt('{kode}', kodeord);";
+        
+            var person = await Context.Connection.QueryAsync<PersonDTO>(sql);
+            return person;
         }
     }
 }

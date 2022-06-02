@@ -1,23 +1,21 @@
 ﻿@page "/signup"
-
 @using festivalprojekt.Shared.Models;
 @using System;
 @using festivalprojekt.Client.Services;
 @using System.Globalization;
-@inject AppStatus AppState
-@implements IDisposable
 
+<!-- Injecter Blazors navigation manager, Nuget pakket LocalStorage og AppStatus -->
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager;
+@inject AppStatus AppState
 
 <PageTitle>Sign up</PageTitle>
-
 
 <div class="d-flex justify-content-center">
     <h3>Sign up</h3>
 </div>
 
-<!--edit context skaal være med, da den prøver at følge formen på et objekt(person)-->
+<!--edit context skal være med, da den prøver at følge formen på et objekt(person)-->
 <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => OpretPersonHandler(this.Person)" OnInvalidSubmit="@InvalidSubmitHandler">
     <DataAnnotationsValidator />
 
@@ -81,13 +79,14 @@
         <ValidationMessage For="@(() => Person.Kodeord)" />
     </div>
 
-    <!--Alle komptencer bliver vist og man markere hvilke kompetencer personen har. -->
+    <!--Alle komptencer bliver vist og man markere hvilke kompetencer personen har-->
     <h5>Vælg kompetencer</h5>
     <ul>
         @foreach (var kompetence in AlleKompetencer)
         {
             <div>
-                <input type="checkbox" id="@kompetence.KompetenceNavn.ToLower()" name="@kompetence.KompetenceNavn.ToLower()" @bind="kompetence.Checker" />
+                <input type="checkbox" id="@kompetence.KompetenceNavn.ToLower()" name="@kompetence.KompetenceNavn.ToLower()" 
+                @bind="kompetence.Checker" />
                 <label for="@kompetence.KompetenceNavn.ToLower()">@kompetence.KompetenceNavn</label>
             </div>
         }
@@ -166,6 +165,7 @@
             IEnumerable<PersonDTO> TempList = await LoginService.HentLoginPerson(loginDTO);
             if (TempList.Count() > 0)
             {
+                //AppState sætter dig til at være logget ind
                 AppState.OnChange += StateHasChanged;
                 AppState.Log(true);
                 person = TempList.First();

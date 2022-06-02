@@ -15,7 +15,7 @@ namespace festivalprojekt.Server.Controllers
 
     public class VagtController : ControllerBase
 	{
-        //Attribut
+        //Variabel
         private readonly IVagtRepositoryDapper repo;
 
         //contructor tjekker om VagtRepositoryDapper er tom og hvis den er, initialiseres repository

@@ -8,24 +8,15 @@ using festivalprojekt.Shared.Models;
 
 namespace festivalprojekt.Server.Models
 {
-
     //laver interfacet med metoder til klasserne
     public interface IPersonRepositoryDapper
     {
-        Task<IEnumerable<Kompetencer>> HentAlleKompetencer();
-
-        Task<IEnumerable<Roller>> HentAlleRoller();
-        Task<IEnumerable<PersonDTO>> HentAllePersoner();
-
-        Task<IEnumerable<PersonDTO>> HentPerson(int PersonId);
-
-        void OpdaterPerson(PersonDTO NyPerson);
-
+       Task<IEnumerable<Kompetencer>> HentAlleKompetencer();
+       Task<IEnumerable<Roller>> HentAlleRoller();
+       Task<IEnumerable<PersonDTO>> HentAllePersoner();
+       Task<IEnumerable<PersonDTO>> HentPerson(int PersonId);
+       void OpdaterPerson(PersonDTO NyPerson);
        void OpretPerson(PersonDTO NyPerson);
-        Task<IEnumerable<PersonDTO>> Login(string email, string kode);
-
-
-
-
+       Task<IEnumerable<PersonDTO>> Login(string email, string kode);
     }
 }

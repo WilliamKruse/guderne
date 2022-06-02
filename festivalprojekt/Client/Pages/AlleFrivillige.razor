@@ -4,22 +4,23 @@
 @using System;
 @using System.Globalization;
 
+<!-- Injecter Blazors navigation manager, Nuget pakket LocalStorage og AppStatus -->
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject AppStatus AppState
-@implements IDisposable
 
 <PageTitle>Alle frivllige</PageTitle>
+
 <div class="d-flex justify-content-center">
     <h3>Alle frivillige</h3>
 </div>
 
+<!-- Home knap der altid går til /home-->
 <button class="btn btn-dark" @onclick="@HomePage">Home</button>
 
+<!--Opretter tabel med alle frivillige-->
 <div>
-
     <h5> <br /> Frivillig </h5>
-
     <table class="table table-striped">
         <thead>
             <tr>
@@ -33,11 +34,10 @@
             </tr>
         </thead>
 
-        <!--går igennem ledigevagterliste og laver en tabel-->
+        <!--går igennem friviiligliste og fylder tabellen ud-->
         <tbody>
             @foreach (var frivillig in frivilligListe)
             {
-
                 <tr>
                     <td>@frivillig.Fornavn</td>
                     <td>@frivillig.Efternavn</td>
@@ -47,7 +47,6 @@
                     <td>
                         @foreach (var kompetence in frivillig.KompetenceNavn)
                         {
-
                             <ul>
                                 <li>
                                     @kompetence
@@ -55,20 +54,17 @@
                             </ul>
                         }
                     </td>
+                    <!-- Knap med send mail-->
                     <td><button type="button" class="btn btn-dark btn-sm">Send mail</button></td>
                 </tr>
-
-
             }
         </tbody>
     </table>
-
 </div>
 
+<!--Opretter tabel med alle frivillige-koordinator-->
 <div>
-
     <h5> <br /> Frivillig koordinator </h5>
-
     <table class="table table-striped">
         <thead>
             <tr>
@@ -82,7 +78,7 @@
             </tr>
         </thead>
 
-        <!--går igennem ledigevagterliste og laver en tabel-->
+        <!--går igennem friviiligkoordinatorliste og fylder tabellen ud-->
         <tbody>
             @foreach (var koordinator in frivilligKoordinatorListe)
             {
@@ -103,46 +99,45 @@
                             {
                                 <a>, @koordinator.KompetenceNavn[i]</a>
                             }
-
                         }
                     </td>
                     <td><button type="button" class="btn btn-dark btn-sm">Send mail</button></td>
                 </tr>
-
             }
         </tbody>
     </table>
-
 </div>
-
-
 
 @code {
 
+    //Variabler 
+    public int ErrorCode { get; set; }
 
+    //Local storage 
+    public int rolle_id;
+
+    //Lister 
     public List<PersonDTO> frivilligListe = new List<PersonDTO>();
     public List<PersonDTO> frivilligKoordinatorListe = new List<PersonDTO>();
     public List<PersonDTO> personListeUsorteret = new List<PersonDTO>();
 
-    public int r_id;
-    public int ErrorCode { get; set; }
-
-
+    //Injecter Service så vi kan bruge metoderne derfra.
     [Inject]
     public IPersonService Service { get; set; }
 
     //personListeUsorteret henter alle personer.
-    //derefter hentes alle frivillige (bliver sorteret på RolleId som er 1) og frivillige koordinatorer (bliver sorteret på RolleId som er 2)
+    //derefter hentes alle frivillige, bliver sorteret på RolleId = 1 og frivillige koordinatorer bliver sorteret på RolleId = 2
     protected override async Task OnInitializedAsync()
     {
-        r_id = await localStorage.GetItemAsync<int>("RolleId");
+        rolle_id = await localStorage.GetItemAsync<int>("RolleId");
 
-        if (r_id == 0)
+        if (rolle_id == 0)
         {
             LoginPage();
         }
         else
         {
+            //AppState sætter dig til at være logget ind
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
             personListeUsorteret = (await Service.HentAllePersoner()).ToList();
@@ -153,36 +148,31 @@
                 frivillig.RealF = DateTime.ParseExact(frivillig.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
             }
 
-
             frivilligKoordinatorListe = personListeUsorteret.FindAll(x => x.RolleId == 2);
-
             foreach (var koordinator in frivilligKoordinatorListe)
             {
                 koordinator.RealF = DateTime.ParseExact(koordinator.Fødselsdag.Substring(0, 19), "yyyy-MM-dd H:mm:ss", CultureInfo.InvariantCulture);
             }
         }
     }
+
+    //Udregner alder 
     public int Alder(PersonDTO x)
     {
         int nu = int.Parse(DateTime.Now.ToString("yyyyMMdd"));
         int født = int.Parse(x.RealF.Value.ToString("yyyyMMdd"));
         return (nu - født) / 10000;
-
-
-
     }
 
+    //Navigere tilbage til Home
     public void HomePage()
     {
         NavigationManager.NavigateTo("/home");
     }
 
+    //Navigere tilbage til Login
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
-    }
-    public void Dispose()
-    {
-        AppState.OnChange -= StateHasChanged;
     }
 }

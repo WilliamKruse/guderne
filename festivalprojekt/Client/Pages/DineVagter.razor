@@ -4,15 +4,17 @@
 @using System;
 @using System.Globalization;
 
+<!-- Injecter Blazors navigation manager, Nuget pakket LocalStorage og AppStatus -->
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject AppStatus AppState
-@implements IDisposable
+
 <PageTitle>Dine vagter</PageTitle>
 
 <!--Tæller antal vagter man har-->
 <h4>Antal vagter: @DineVagterListe.Count() </h4>
 
+<!--Knap til hjem-->
 <button class="btn btn-dark" @onclick="@HomePage">Home</button>
 
 <!--Tabel oprettes med følgende navne-->
@@ -28,7 +30,7 @@
         </tr>
     </thead>
 
-    <!--Går igennem DineVagterListe og laver en tabel-->
+    <!--Går igennem DineVagterListe og fylder tabel ud-->
     <tbody>
         @foreach (var vagt in DineVagterListe)
         {
@@ -38,35 +40,36 @@
                 <td>@vagt.SlutTid.ToString("dd. MMMM H:mm", new CultureInfo("da-DK"))</td>
                 <td>@vagt.VagtTypeBeskrivelse</td>
                 <td>@vagt.VagtTypeOmråde</td>
+                <!--Knap til afmelde vagt-->
                 <td><button @onclick="() => AfmeldVagt(vagt)" class="btn delete"><span class="oi oi-trash"></span></button></td>
             </tr>
-
         }
     </tbody>
 </table>
 
-
-
 @code {
 
-    public List<VagtView> DineVagterListe = new List<VagtView>();
+    //Variabler
     public PersonDTO Person = new PersonDTO();
     public BookVagtDTO wrapper = new BookVagtDTO();
     public int ErrorCode { get; set; }
 
+    //Local storage
     public int rolle_id;
     public int person_id;
 
+    //Lister
+    public List<VagtView> DineVagterListe = new List<VagtView>();
+    
+    //Service 
     [Inject]
     public IVagtService Service { get; set; }
-
 
     /* Er man er logget ind bruges localStorage via RolleId og PersonId til at huske brugeren som er logget ind
        og dermed hentes alle personlige vagter på PERSONLIG og person_id.
 
        Hvis man ikke er logget ind (rolle_id == 0) føres man til LoginPage.
     */
-
     protected override async Task OnInitializedAsync()
     {
         rolle_id = await localStorage.GetItemAsync<int>("RolleId");
@@ -78,6 +81,7 @@
         }
         else
         {
+            //AppState sætter dig til at være logget ind
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
             DineVagterListe = (await Service.HentAlleVagter("PERSONLIG", person_id)).ToList();
@@ -85,13 +89,12 @@
     }
 
     /*
-    Wrapper er et objekt af BookVagtDTO klassen med kun de attributter der skal bruges for at afmelde en vagt.
+    Wrapper er et objekt af BookVagtDTO klassen med PersonId og VagtId.
 
     Grunden til vi sætter PersonId til 0 er for at signalere til repository at vagten skal afmeldes(PersonId = NULL i SQL).
 
-    DineVagterListe.RemoveAll tjekkes om vagten findes nogle steder på DineVagterListe - hvis den findes fjernes den fra den lokale liste.
+    DineVagterListe.RemoveAll tjekker om vagten findes nogle steder på DineVagterListe - hvis den findes fjernes den fra den lokale liste.
     */
-
     public async void AfmeldVagt(VagtView Vagt)
     {
         wrapper.PersonId = 0;
@@ -99,21 +102,17 @@
         ErrorCode = await Service.BookVagt(wrapper);
         DineVagterListe.RemoveAll(x => x == Vagt);
         StateHasChanged();
-
     }
 
-
+    //Navigere tilbage til Home
     public void HomePage()
     {
         NavigationManager.NavigateTo("/home");
     }
 
+    //Navigere tilbage til Login
     public void LoginPage()
     {
         NavigationManager.NavigateTo("/");
-    }
-    public void Dispose()
-    {
-        AppState.OnChange -= StateHasChanged;
     }
 }

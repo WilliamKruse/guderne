@@ -2,10 +2,10 @@
 @using festivalprojekt.Shared.Models;
 @using festivalprojekt.Client.Services;
 
+<!-- Injecter Blazors navigation manager, Nuget pakket LocalStorage og AppStatus -->
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject AppStatus AppState
-@implements IDisposable
 
 <PageTitle>LOGIN</PageTitle>
 
@@ -14,78 +14,77 @@
     <div class="row">
         <div class="col"></div>
         <div class="col 6 pt-8" style="border-radius:10px; ">
-            <EditForm EditContext="@editContext" class="row p-3" OnValidSubmit="() => SubmitHandler(this.emailkode)" OnInvalidSubmit="@InvalidSubmitHandler">
+            <EditForm EditContext="@editContext" class="row p-3" 
+            OnValidSubmit="() => SubmitHandler(this.emailKode)" OnInvalidSubmit="@InvalidSubmitHandler">
                 <DataAnnotationsValidator />
 
+                <!--Opretter et tomt felt til email-->
                 <div class="col-md-12 mb-3">
                     <label></label>
-
-                    <InputText id="email" @bind-Value="emailkode.Email" class="form-control" placeholder="Email" />
-
-                    <ValidationMessage For="@(() => emailkode.Email)" />
+                    <InputText id="email" @bind-Value="emailKode.Email" class="form-control" placeholder="Email" />
+                    <ValidationMessage For="@(() => emailKode.Email)" />
                 </div>
+
+                <!--Opretter et tomt felt til kodeord-->
                 <div class="col-md-12 mb-3">
                     <label></label>
-
-                    <InputText type="password" id="kodeord" @bind-Value="emailkode.Kode" class="form-control" placeholder="Kodeord" />
-
-                    <ValidationMessage For="@(() => emailkode.Kode)" />
+                    <InputText type="password" id="kodeord" @bind-Value="emailKode.Kode" class="form-control" placeholder="Kodeord" />
+                    <ValidationMessage For="@(() => emailKode.Kode)" />
                 </div>
 
-
- 
+                    <!--Hvordan login knappen ser ud, når der ikke loades-->
                     @if (loginLoading == false)
                     {
-            <div class="d-flex justify-content-center mb-8">
-                <button type="submit" class="w-50 btn btn-dark mt-8">Login</button>
-            </div>
+                        <div class="d-flex justify-content-center mb-8">
+                            <button type="submit" class="w-50 btn btn-dark mt-8">Login</button>
+                        </div>
                         
                     }
                     else if (loginLoading == true)
                     {
-            <div class="d-flex justify-content-center mb-8">
-                <button class="w-50 btn" type="button" disabled>
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Loading...
-                </button>
-            </div>
-                    }
-                
-
+                         <!--Hvordan login knappen ser ud, når der loades-->
+                        <div class="d-flex justify-content-center mb-8">
+                            <button class="w-50 btn" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
+                        </div>
+                    }              
             </EditForm>
 
+            <!--Link til signup-->
             <div class="d-flex justify-content-center">
-                <div class="text-grey">Ikke allerede tilmeldt? <small> <a href="/signup" class="link-secondary"> Sign Up </a> </small> </div>
-
+                <div class="text-grey">Ikke allerede tilmeldt? <small> <a href="/signup" class="link-secondary"> Sign Up</a></small></div>
             </div>
            
-
-            @if (loginejl)
+            <!--Alert hvis der er forkerte oplysninger-->
+            @if (loginFejl)
             {
                 <div class="alert alert-danger mt-2" role="alert">
                     <strong>Fejl..</strong> Dine oplysninger er tastet forkert ind, prøv igen.
                 </div>
             }
-
         </div>
         <div class="col"></div>
     </div>
 </div>
 
 @code {
-    //wuhu
+    //Variabler
     public PersonDTO person = new PersonDTO();
-    public LoginDTO emailkode = new LoginDTO();
+    public LoginDTO emailKode = new LoginDTO();
     public EditContext editContext;
-    public bool loginejl = false;
+    public bool loginFejl = false;
     public bool loginLoading = false;
 
-
+    //Service
     [Inject]
     ILoginService Service { get; set; }
+
+    //Laver nyt edit context objekt når siden starter, modelerer ud fra email og kode.
     protected override void OnInitialized()
     {
-        editContext = new EditContext(emailkode);
+        editContext = new EditContext(emailKode);
     }
 
     protected override async Task OnInitializedAsync()
@@ -93,43 +92,44 @@
         ;
     }
 
-    public async void SubmitHandler(LoginDTO x)
+    //Logger en person ind
+    public async void SubmitHandler(LoginDTO login)
     {
         loginLoading = true;
 
-        if (emailkode.Email.Length < 1)
+        if (emailKode.Email.Length < 1)
         {
             return;
         }
-        IEnumerable<PersonDTO> TempList = await Service.HentLoginPerson(x);
+
+        IEnumerable<PersonDTO> TempList = await Service.HentLoginPerson(login);
 
         if (TempList.Count() > 0)
         {
             person = TempList.First();
             await localStorage.SetItemAsync("PersonId", person.PersonId);
             await localStorage.SetItemAsync("RolleId", person.RolleId);
+
+            //AppState sætter dig til at være logget ind
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
 
             HomePage();
         }
-
-        loginejl = true;
-        loginLoading = false;
-        StateHasChanged();
-
-
+        else {
+            loginFejl = true;
+            loginLoading = false;
+            StateHasChanged();
+        }
     }
+
+    //Hvis der indtastes indvalid data
     public void InvalidSubmitHandler()
     {
-        ;
-    }
-    public void Dispose()
-    {
-        AppState.OnChange -= StateHasChanged;
+        Console.WriteLine("Invalid data");
     }
 
-
+    //Navigere til Home 
     public void HomePage()
     {
         NavigationManager.NavigateTo("/home");

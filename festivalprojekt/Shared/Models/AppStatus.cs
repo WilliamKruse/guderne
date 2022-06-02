@@ -16,6 +16,7 @@ namespace festivalprojekt.Shared.Models
             NotifyStateChanged();
         }
 
+        //opdater siden på 
         private void NotifyStateChanged() => OnChange?.Invoke();
       
 	}

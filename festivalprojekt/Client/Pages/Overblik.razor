@@ -11,7 +11,7 @@
 <PageTitle>Vagt Overblik</PageTitle>
 
 <div class="d-flex justify-content-center">
-    <h3> <u> Overblik </u> </h3>
+    <h3> <u> Adminstrer Vagter</u> </h3>
 </div>
 
 <button class="btn btn-dark" @onclick="@HomePage">Home</button>
@@ -78,10 +78,13 @@
         </div>
 
         <!-- Her starter EDIT FORM til oprettelse af vagter, en unik måde at udfylde forms i Blazor-->
-        <div class="col-sm-6 pt-4">
+        <div class="col-sm-6">
+            <div class="d-flex justify-content-center">
+                <h4><u>Opret Vagt</u></h4>
+            </div>
             <div class="sticky-top">
                 <!-- Vi bruger VagtDTO som context og kalder vores opret metode onvalidsubmit -->
-                <EditForm EditContext="@editContext" class="row p-3" 
+                <EditForm EditContext="@editContext" class="row p-3"
                           OnValidSubmit="() =>OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
                     <DataAnnotationsValidator />
 
@@ -102,8 +105,7 @@
                         <InputDate id="sluttid" @bind-Value="NyVagt.StartTid" class="form-control" />
                         <ValidationMessage For="@(() => NyVagt.StartTid)" />
                     </div>
-                    <!-- Laver drop down med alle dagens timer som strings,
-                    bliver senere parse'et-->
+                    <!-- Laver drop down med alle dagens timer som strings, bliver senere parse'et-->
                     <div class="col-md-3 mb-3">
                         <label>Start Tid</label>
                         <InputSelect id="sluttid" @bind-Value="StarttidTimer" class="form-control">
@@ -122,8 +124,7 @@
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.SlutTid)" />
                     </div>
-                    <!-- Laver dropdown med minutter med at 5 minutters
-                    interval(string), bliver senere parse'et-->
+                    <!-- Laver dropdown med minutter med at 5 minutters interval(string), bliver senere parse'et-->
                     <div class="col-md-3 mb-3 ">
                         <label></label>
                         <InputSelect id="sluttid" @bind-Value="StarttidMinutter" class="form-control">
@@ -167,8 +168,7 @@
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.SlutTid)" />
                     </div>
-                    <!-- Laver dropdown med minutter med at 5 minutters
-                    interval(string), bliver senere parse'et-->
+                    <!-- Laver dropdown med minutter med at 5 minutters interval(string), bliver senere parse'et-->
                     <div class="col-md-3 mb-3">
                         <label></label>
                         <InputSelect id="sluttid" @bind-Value="SluttidMinutter" class="form-control">
@@ -187,26 +187,23 @@
                         </InputSelect>
                         <ValidationMessage For="@(() => NyVagt.SlutTid)" />
                     </div>
-                    <!-- Her kan vi vælge et vilkårligt int og den binder til den
-                    lokale atribut "Antal", bruges i loop ved submit -->
+                    <!-- Her kan vi vælge et vilkårligt int og den binder til den lokale atribut "Antal", bruges i loop ved submit -->
                     <div class="col-md-4 mb-3">
                         <label>Antal vagter</label>
                         <InputNumber id="telefon" @bind-Value="Antal" class="form-control" />
 
                     </div>
-                    <!-- En knap med typen submit kører validation og hvis alt er i orden bliver
-                        onvalidsubmit kaldt -->
+                    <!-- En knap med typen submit kører validation og hvis alt er i orden bliver onvalidsubmit kaldt -->
                     <div class="col-12 mb-6">
                         <button type="submit" class="btn btn-dark">Opret Vagt</button>
+                 
                         <!-- En ekstra knap der tager dig til siden, opretvagttype -->
-                        <button href="opretvagttype" type="button" class="btn btn-secondary"
-                                @onclick="@OpretVagtTypePage">
-                            Opret ny vagttype
-                        </button>
+                        <button href="opretvagttype" type="button" class="btn btn-secondary" style="float:right"
+                                @onclick="@OpretVagtTypePage">Opret Ny Vagttype</button>
                     </div>
                 </EditForm>
                 <!-- Vores Service returnere en Errorcode og hvis den er 200 er der sket en fejl
-                    Det ville vise denne fejl meddelese til brugeren -->
+        Det ville vise denne fejl meddelese til brugeren -->
                 @if (errorcode == 200)
                 {
                     <div class="alert alert-success mt-4" role="alert">
@@ -214,8 +211,8 @@
                     </div>
                 }
                 <!-- Hvis man prøver at kalde opret metode men med et negativt antal vagter ønsket
-                    vil denne fejlmeddelser blive vist.
-                -->
+            vil denne fejlmeddelser blive vist.
+        -->
                 @if (AntalNegativt)
                 {
                     <div class="alert alert-danger mt-4" role="alert">

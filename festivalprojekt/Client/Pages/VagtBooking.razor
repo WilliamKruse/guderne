@@ -91,7 +91,6 @@
         Wrapper.VagtId = Vagt.VagtId;
         ErrorCode = await Service.BookVagt(Wrapper);
         LedigeVagterListe.RemoveAll(x => x == Vagt);
-        //LedigeVagterListe = (await Service.HentAlleVagter("LEDIGE", 0)).ToList();
         StateHasChanged();
     }
 

@@ -59,7 +59,7 @@ namespace festivalprojekt.Server.Models
             }
         }
 
-        //Async metode der booker en vagt via VagtId og PersonId
+        //Async metode der booker eller afmelder en vagt via VagtId og PersonId
         public async void BookVagt(int VagtId, int PersonId)
         {
             int p_id = PersonId;

@@ -109,7 +109,7 @@ namespace festivalprojekt.Server.Models
             await Context.Connection.ExecuteAsync(sql, dp);         
         }
 
-        //Async metode der Opdater en person med komptencer og hvis man ikke vælger nogle komptencer får man array 5 som default
+        //Async metode der opdaterer en person med komptencer og hvis man ikke vælger nogle komptencer får man array 5 som default.
         public async void OpdaterPerson(PersonDTO NyPerson)
         {
 

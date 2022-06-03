@@ -104,6 +104,7 @@
             AppState.OnChange += StateHasChanged;
             AppState.Log(true);
 
+            //Henter al info om den valgte vagttype ved at gå alle vagttyper igennem og matche på valgte id.
             AlleStatus = (await Service.HentAlleStatus()).ToList();
 
             vagtType_id = await localStorage.GetItemAsync<int>("VagtTypeId");
@@ -133,7 +134,7 @@
         NyVagtType = new VagtTypeDTO();
         EditContext = new EditContext(NyVagtType);
         OverblikPage();
-        Console.WriteLine("Vagttype tilføjet: return code: " + ErrorCode);
+      
     }
 
     //metode hvis bruger indtaster invalid data, kommer kun i console.

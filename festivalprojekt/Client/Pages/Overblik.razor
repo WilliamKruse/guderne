@@ -81,7 +81,7 @@
         <div class="col-sm-6">
             <div class="sticky-top">
                 <div class="d-flex justify-content-center">
-                    <h4><u>Opret vagt</u></h4>
+                    <h4 class="pt-2"><u>Opret vagt</u></h4>
                 </div>
 
                 <!-- Vi bruger VagtDTO som context og kalder vores opret metode onvalidsubmit -->
@@ -206,7 +206,7 @@
                     </div>
                 </EditForm>
                 <!-- Vores Service returnere en Errorcode og hvis den er 200 er der sket en fejl
-        Det ville vise denne fejl meddelese til brugeren -->
+    Det ville vise denne fejl meddelese til brugeren -->
                 @if (errorcode == 200)
                 {
                     <div class="alert alert-success mt-4" role="alert">
@@ -214,12 +214,18 @@
                     </div>
                 }
                 <!-- Hvis man prøver at kalde opret metode men med et negativt antal vagter ønsket
-            vil denne fejlmeddelser blive vist.
-        -->
+        vil denne fejlmeddelser blive vist.
+    -->
                 @if (AntalNegativt)
                 {
                     <div class="alert alert-danger mt-4" role="alert">
                         <strong>Fejl..</strong> Du skal oprette mindst én vagt!
+                    </div>
+                }
+                @if (AntalForStort)
+                {
+                    <div class="alert alert-danger mt-4" role="alert">
+                        <strong>Fejl..</strong> Du kan maksimalt oprette 10 vagter ad gangen...
                     </div>
                 }
                 @if (TidForkert)
@@ -260,6 +266,7 @@
     //bliver true hvis noget får galt
     public bool AntalNegativt = false;
     public bool TidForkert = false;
+    public bool AntalForStort = false;
 
     //Vi injecter to forskellige services på denne side, giver dem relevante navne.
     [Inject]
@@ -361,8 +368,17 @@
             StateHasChanged();
             return;
         }
-        LavDato();
         AntalNegativt = false;
+        StateHasChanged();
+        if (Antal >10)
+        {
+            AntalForStort = true;
+            StateHasChanged();
+            return;
+        }
+        AntalForStort = false;
+        StateHasChanged();
+        LavDato();
         if (NyVagt.StartTid >= NyVagt.SlutTid)
         {
             TidForkert = true;
@@ -370,7 +386,6 @@
             return;
         }
         TidForkert = false;
-        AntalNegativt = false;
         StateHasChanged();
         for (var i = 0; i < Antal; i++)
         {
@@ -380,7 +395,6 @@
         NyVagt = new VagtDTO();
         Antal = 1;
         editContext = new EditContext(NyVagt);
-        TidForkert = false;
 
         //henter lister igen efter oprettelse er fuldført
         VagtTypeList = (await TypeService.HentAlleVagtTyper()).ToList();

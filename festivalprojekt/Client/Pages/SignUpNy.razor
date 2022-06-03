@@ -153,6 +153,7 @@
     //Async metode som først checker om emailen allerede eksister. Hvis ikke oprettes personen og logges ind
     public async void OpretPersonHandler(PersonDTO person)
     {
+        person.Email = person.Email.ToLower();
         if (EmailCheckList.Exists(x => x.Email == person.Email))
         {
             EmailFejl = true;

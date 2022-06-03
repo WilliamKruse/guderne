@@ -100,10 +100,14 @@
     //Logger en person ind
     public async void SubmitHandler(LoginDTO login)
     {
+        login.Email = login.Email.ToLower();
         loginLoading = true;
 
         if (emailKode.Email.Length < 1)
         {
+            loginFejl = true;
+            loginLoading = false;
+            StateHasChanged();
             return;
         }
 

@@ -153,6 +153,7 @@
     //Async metode der opdater person
     public async void OpdaterPersonHandler(PersonDTO person)
     {
+        
         ValgteKompetencer();
         if (Person.Fornavn.Length > 0 && Person.Efternavn.Length > 0 && Person.Kodeord.Length > 0 && Person.Telefon.Length > 0 && Person.RealF.HasValue)
         {

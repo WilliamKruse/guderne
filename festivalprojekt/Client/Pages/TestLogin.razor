@@ -103,13 +103,6 @@
         login.Email = login.Email.ToLower();
         loginLoading = true;
 
-        if (emailKode.Email.Length < 1)
-        {
-            loginFejl = true;
-            loginLoading = false;
-            StateHasChanged();
-            return;
-        }
 
         IEnumerable<PersonDTO> TempList = await Service.HentLoginPerson(login);
 

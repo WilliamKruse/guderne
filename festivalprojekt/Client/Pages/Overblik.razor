@@ -79,10 +79,11 @@
 
         <!-- Her starter EDIT FORM til oprettelse af vagter, en unik måde at udfylde forms i Blazor-->
         <div class="col-sm-6">
-            <div class="d-flex justify-content-center">
-                <h4><u>Opret vagt</u></h4>
-            </div>
             <div class="sticky-top">
+                <div class="d-flex justify-content-center">
+                    <h4><u>Opret vagt</u></h4>
+                </div>
+
                 <!-- Vi bruger VagtDTO som context og kalder vores opret metode onvalidsubmit -->
                 <EditForm EditContext="@editContext" class="row p-3"
                           OnValidSubmit="() =>OpretVagtHandler(this.NyVagt)" OnInvalidSubmit="@InvalidSubmitHandler">
@@ -196,10 +197,12 @@
                     <!-- En knap med typen submit kører validation og hvis alt er i orden bliver onvalidsubmit kaldt -->
                     <div class="col-12 mb-6">
                         <button type="submit" class="btn btn-dark">Opret Vagt</button>
-                 
+
                         <!-- En ekstra knap der tager dig til siden, opretvagttype -->
                         <button href="opretvagttype" type="button" class="btn btn-secondary" style="float:right"
-                                @onclick="@OpretVagtTypePage">Opret Ny Vagttype</button>
+                                @onclick="@OpretVagtTypePage">
+                            Opret Ny Vagttype
+                        </button>
                     </div>
                 </EditForm>
                 <!-- Vores Service returnere en Errorcode og hvis den er 200 er der sket en fejl
